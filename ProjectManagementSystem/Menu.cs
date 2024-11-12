@@ -10,23 +10,28 @@
     interface IMenu
     {
         void Show();
-        void AddItem(IMenuItem item);
+        void AddItem(MenuItem item);
         void AddSubMenu(Menu submenu);
     }
 
 
-    public abstract class MenuItem : IMenuItem
+    public abstract class BaseMenu
     {
-        string _name = string.Empty;
+        public string Name { get; set; }
 
-        public MenuItem(string name)
+        protected BaseMenu(string name)
         {
-            this._name = name;
+            this.Name = name;
         }
+    }
+
+
+    public abstract class MenuItem : BaseMenu, IMenuItem
+    {
+        protected MenuItem(string name) : base(name) { }
 
         public abstract void Execute();
     }
-
 
 
     public class Option1MenuItem : MenuItem
@@ -39,6 +44,7 @@
         }
     }
 
+   
     public class Option2MenuItem : MenuItem
     {
         public Option2MenuItem(string name) : base(name) { }
@@ -61,20 +67,25 @@
     }
 
 
-    class Menu : IMenu
+    class Menu : BaseMenu, IMenu
     {
-        string _title = string.Empty;
-        List<IMenuItem> _items = new List<IMenuItem>();
-        List<IMenu> _submenus = new List<IMenu>();
-        List<object> _current = new List<object>();
+        List<MenuItem> _items = new List<MenuItem>();
+        List<Menu> _submenus = new List<Menu>();
+        List<BaseMenu> _current = new List<BaseMenu>();
         Menu? parent = null;
 
-        public Menu(string title)
+        public Menu(string name) : base(name) { }
+
+
+        private void UpdateCurrent()
         {
-            this._title = title;
+            this._current = this._current
+           .Concat(this._items.Except(this._current))   
+           .Concat(this._submenus.Except(this._current))
+           .ToList();
         }
 
-        public void AddItem(IMenuItem item)
+        public void AddItem(MenuItem item)
         {
             this._items.Add(item);
             this.UpdateCurrent();
@@ -86,13 +97,27 @@
             submenu.parent = this;
             this._submenus.Add(submenu);
             this.UpdateCurrent();
+
         }
 
         public void DisplayOptions()
         {
+            System.Console.WriteLine($"{this.Name} menu");
+
+            int index = 0;
+
             for (int i = 0; i < this._current.Count; i++)
             {
-                System.Console.WriteLine($"{this._current[i]}");
+                System.Console.WriteLine($"{index++}. {this._current[i].Name}");
+            }
+
+
+            if (this.parent is not null)
+            {
+                System.Console.WriteLine("0. Go Back");
+            } else
+            {
+                System.Console.WriteLine("0. Exit");
             }
         }
 
@@ -112,9 +137,10 @@
         {
             while (true)
             {
+                this.DisplayOptions();
                 try
                 {
-                    int option = int.Parse(Console.ReadLine());  // Lê a entrada e converte para int
+                    int option = int.Parse(Console.ReadLine()); 
                     Console.WriteLine($"Input: {option}");
                     bool result = this.HandleChoice(option);
                     if (!result) {
@@ -129,11 +155,6 @@
           
         }
 
-        private void UpdateCurrent()
-        {
-            this._current.AddRange(this._items);
-            this._current.AddRange(this._submenus);
-        }
 
     }
 }
