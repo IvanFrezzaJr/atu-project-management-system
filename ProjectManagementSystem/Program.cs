@@ -54,8 +54,28 @@ internal class Program
 
 
 
-        MenuStudent menuStudent = new MenuStudent();
-        menuStudent.Show();
+
+
+        //MenuStudent menuStudent = new MenuStudent();
+        //menuStudent.Show();
+
+
+        // Create an instance of the Authentication class
+        Authentication auth = new Authentication();
+
+        // Ask for username and password
+        string inputUsername = auth.GetUsername();
+        string inputPassword = auth.GetPassword();
+
+        // Authenticate the user
+        if (auth.Authenticate(inputUsername, inputPassword))
+        {
+            Console.WriteLine("Login successful!");
+        }
+        else
+        {
+            Console.WriteLine("Invalid username or password.");
+        }
 
     }
 }
