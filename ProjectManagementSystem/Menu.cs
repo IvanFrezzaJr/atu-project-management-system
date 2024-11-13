@@ -1,22 +1,59 @@
 ﻿using ProjectManagementSystem;
 
+
+/* how to create a menu
+
+    MenuItem option1 = new Option1MenuItem("Option 1");
+    MenuItem option2 = new Option2MenuItem("Option 2");
+    MenuItem option3 = new Option3MenuItem("Option 3");
+
+    //create menus and submenus
+    Menu mainMenu = new Menu("Main menu");
+    mainMenu.AddItem(option1);
+    mainMenu.AddItem(option2);
+
+    // example of submenu
+    Menu submenu = new Menu("Submenu example");
+    submenu.AddItem(option1);
+    submenu.AddItem(option2);
+
+    // add submenu to main menu
+    mainMenu.AddSubMenu(submenu);
+    mainMenu.AddItem(option3);
+
+    // show main menu
+    mainMenu.Show();
+
+ */
+
+/* how to instantiate a menu
+ * 
+    MenuStudent menuStudent = new MenuStudent();
+    menuStudent.Show();
+
+ */
+
 namespace ProjectManagementSystem
 {
-
-
     interface IMenuItem
     {
+        // Abstract method to execute the menu item
         abstract void Execute();
     }
 
     interface IMenu
     {
+        // Method to display the menu options
         void Show();
+
+        // Method to add a menu item to the menu
         void AddItem(MenuItem item);
+
+        // Method to add a submenu to the menu
         void AddSubMenu(Menu submenu);
     }
 
-
+    // Abstract class for a base menu with a name
     public abstract class BaseMenu
     {
         public string Name { get; set; }
@@ -27,48 +64,52 @@ namespace ProjectManagementSystem
         }
     }
 
-
+    // Abstract class for a menu item, which extends from BaseMenu and implements IMenuItem
     public abstract class MenuItem : BaseMenu, IMenuItem
     {
         protected MenuItem(string name) : base(name) { }
 
+        // Abstract method to execute the menu item
         public abstract void Execute();
     }
 
-
+    // Class representing the first menu option
     public class Option1MenuItem : MenuItem
     {
         public Option1MenuItem(string name) : base(name) { }
 
+        // Executes the action for Option 1
         public override void Execute()
         {
             System.Console.WriteLine("Option1MenuItem");
         }
     }
 
-   
+    // Class representing the second menu option
     public class Option2MenuItem : MenuItem
     {
         public Option2MenuItem(string name) : base(name) { }
 
+        // Executes the action for Option 2
         public override void Execute()
         {
             System.Console.WriteLine("Option2MenuItem");
         }
     }
 
-
+    // Class representing the third menu option
     public class Option3MenuItem : MenuItem
     {
         public Option3MenuItem(string name) : base(name) { }
 
+        // Executes the action for Option 3
         public override void Execute()
         {
             System.Console.WriteLine("Option3MenuItem");
         }
     }
 
-
+    // Class representing a menu, which contains menu items and submenus
     public class Menu : BaseMenu, IMenu
     {
         List<MenuItem> _items = new List<MenuItem>();
@@ -78,30 +119,31 @@ namespace ProjectManagementSystem
 
         public Menu(string name) : base(name) { }
 
-
+        // Updates the current list of menu items and submenus
         private void UpdateCurrent()
         {
             this._current = this._current
-           .Concat(this._items.Except(this._current))   
-           .Concat(this._submenus.Except(this._current))
-           .ToList();
+               .Concat(this._items.Except(this._current))
+               .Concat(this._submenus.Except(this._current))
+               .ToList();
         }
 
+        // Adds a menu item to the current menu
         public void AddItem(MenuItem item)
         {
             this._items.Add(item);
             this.UpdateCurrent();
-
         }
 
+        // Adds a submenu to the current menu
         public void AddSubMenu(Menu submenu)
         {
             submenu.parent = this;
             this._submenus.Add(submenu);
             this.UpdateCurrent();
-
         }
 
+        // Displays the available options in the current menu
         public void DisplayOptions()
         {
             System.Console.WriteLine($"\n--- {this.Name} menu ---\n");
@@ -114,22 +156,25 @@ namespace ProjectManagementSystem
                 System.Console.WriteLine($"{index}. {this._current[i].Name}");
             }
 
-
+            // Show the back option or exit option based on the presence of a parent menu
             if (this.parent is not null)
             {
                 System.Console.WriteLine("0. Go Back");
-            } else
+            }
+            else
             {
                 System.Console.WriteLine("0. Exit");
             }
         }
 
+        // Handles the user's choice and executes the corresponding action
         public bool HandleChoice(int option)
         {
             if (option == 0)
             {
                 return false;
-            } else
+            }
+            else
             {
                 if (option >= 1 && option <= this._current.Count)
                 {
@@ -152,6 +197,7 @@ namespace ProjectManagementSystem
             }
         }
 
+        // Displays the menu and processes user input in a loop
         public void Show()
         {
             while (true)
@@ -163,7 +209,8 @@ namespace ProjectManagementSystem
                     int option = int.Parse(Console.ReadLine());
                     Console.Clear();
                     bool result = this.HandleChoice(option);
-                    if (!result) {
+                    if (!result)
+                    {
                         break;
                     }
                 }
@@ -172,13 +219,10 @@ namespace ProjectManagementSystem
                     Console.WriteLine("Invalid input! Please enter an integer.");
                 }
             }
-          
         }
-
-
     }
 
-
+    // Abstract builder class to create a menu
     public abstract class MenuBuilder
     {
         protected Menu mainMenu = new Menu("Main");
@@ -188,16 +232,18 @@ namespace ProjectManagementSystem
             this.Build();
         }
 
+        // Shows the constructed menu
         public void Show()
         {
             this.mainMenu.Show();
         }
 
+        // Abstract method to build the menu
         public abstract void Build();
     }
 
-
-    class MenuIT : MenuBuilder
+    // Builder class for the admin menu
+    class MenuAdmin : MenuBuilder
     {
         public override void Build()
         {
@@ -208,44 +254,43 @@ namespace ProjectManagementSystem
         }
     }
 
-
+    // Builder class for the principal menu
     class MenuPrincipal : MenuBuilder
     {
         public override void Build()
-        {;
-            MenuItem Principalption1 = new Option1MenuItem("Add New Student to Class");
-            MenuItem Principalption2 = new Option1MenuItem("Add Office Secretary to Class");
-            MenuItem Principalption3 = new Option1MenuItem(" Add Teacher to Class");
-            MenuItem Principalption4 = new Option1MenuItem("Enable/Disable User Accounts");
-            MenuItem Principalption5 = new Option1MenuItem("view Grades (Read-Only Access)");
+        {
+            MenuItem PrincipalOption1 = new Option1MenuItem("Add New Student to Class");
+            MenuItem PrincipalOption2 = new Option1MenuItem("Add Office Secretary to Class");
+            MenuItem PrincipalOption3 = new Option1MenuItem("Add Teacher to Class");
+            MenuItem PrincipalOption4 = new Option1MenuItem("Enable/Disable User Accounts");
+            MenuItem PrincipalOption5 = new Option1MenuItem("View Grades (Read-Only Access)");
 
-            this.mainMenu.AddItem(Principalption1);
-            this.mainMenu.AddItem(Principalption2);
-            this.mainMenu.AddItem(Principalption3);
-            this.mainMenu.AddItem(Principalption4);
-            this.mainMenu.AddItem(Principalption5);
+            this.mainMenu.AddItem(PrincipalOption1);
+            this.mainMenu.AddItem(PrincipalOption2);
+            this.mainMenu.AddItem(PrincipalOption3);
+            this.mainMenu.AddItem(PrincipalOption4);
+            this.mainMenu.AddItem(PrincipalOption5);
         }
     }
 
-
-    class MenuOfficeSecretary : MenuBuilder
+    // Builder class for the staff menu
+    class MenuStaff : MenuBuilder
     {
-
         public override void Build()
         {
-            MenuItem OfficeSecretaryOption1 = new Option1MenuItem("Create New Classroom");
-            MenuItem OfficeSecretaryOption2 = new Option1MenuItem("Assign Teacher to Classroom");
-            MenuItem OfficeSecretaryOption3 = new Option1MenuItem("Assign Student to Classroom");
-            MenuItem OfficeSecretaryOption4 = new Option1MenuItem("Mark Student Attendance");
+            MenuItem StaffOption1 = new Option1MenuItem("Create New Classroom");
+            MenuItem StaffOption2 = new Option1MenuItem("Assign Teacher to Classroom");
+            MenuItem StaffOption3 = new Option1MenuItem("Assign Student to Classroom");
+            MenuItem StaffOption4 = new Option1MenuItem("Mark Student Attendance");
 
-            this.mainMenu.AddItem(OfficeSecretaryOption1);
-            this.mainMenu.AddItem(OfficeSecretaryOption2);
-            this.mainMenu.AddItem(OfficeSecretaryOption3);
-            this.mainMenu.AddItem(OfficeSecretaryOption4);
+            this.mainMenu.AddItem(StaffOption1);
+            this.mainMenu.AddItem(StaffOption2);
+            this.mainMenu.AddItem(StaffOption3);
+            this.mainMenu.AddItem(StaffOption4);
         }
     }
 
-
+    // Builder class for the teacher menu
     class MenuTeacher : MenuBuilder
     {
         public override void Build()
@@ -262,7 +307,7 @@ namespace ProjectManagementSystem
         }
     }
 
-
+    // Builder class for the student menu
     class MenuStudent : MenuBuilder
     {
         public override void Build()
@@ -275,5 +320,43 @@ namespace ProjectManagementSystem
         }
     }
 
+    // Factory class to create different menus based on the role
+    class MenuFactory
+    {
+        private string? _roletype = null;
 
+        public MenuFactory(string roletype)
+        {
+            this._roletype = roletype;
+        }
+
+        // Builds the appropriate menu based on the role
+        public MenuBuilder Build()
+        {
+            if (this._roletype == "admin")
+            {
+                return new MenuAdmin();
+            }
+            else if (this._roletype == "principal")
+            {
+                return new MenuPrincipal();
+            }
+            else if (this._roletype == "staff")
+            {
+                return new MenuStaff();
+            }
+            else if (this._roletype == "teacher")
+            {
+                return new MenuTeacher();
+            }
+            else if (this._roletype == "student")
+            {
+                return new MenuStudent();
+            }
+            else
+            {
+                throw new ArgumentException("Role type not found");
+            }
+        }
+    }
 }

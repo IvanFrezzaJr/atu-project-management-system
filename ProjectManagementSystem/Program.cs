@@ -1,5 +1,11 @@
 ﻿using ProjectManagementSystem;
 
+/* IMPORTANT
+ * 
+ * RUN `dotnet add package Microsoft.Data.Sqlite` INTO ProjectManagementSystem folder
+ * 
+ */
+
 /// <summary>
 /// The main program that demonstrates the publish-subscribe pattern.
 /// </summary>
@@ -11,70 +17,48 @@ internal class Program
     /// <param name="args">Command line arguments (not used in this program).</param>
     static void Main(string[] args)
     {
-        //// Create instances of students and an admin
-        //Student ivan = new Student("Ivan");
-        //Student bruna = new Student("Bruna");
-        //Admin admin = new Admin("Super admin");
-
-        //// Subscribe the admin to both students
-        //ivan.AddSubscriber(admin);
-        //bruna.AddSubscriber(admin);
-
-        //// Students submit events
-        //ivan.Submit("Hello");
-        //bruna.Submit("World");
-
-        //// Admin prints the logs of the events it received
-        //admin.PrintLogs();
 
 
+        Database database = new Database();
+        database.CreateDatabase();
 
-
-
-        //MenuItem option1 = new Option1MenuItem("Option 1");
-        //MenuItem option2 = new Option2MenuItem("Option 2");
-        //MenuItem option3 = new Option3MenuItem("Option 3");
-
-        ////Criando menus e submenus
-        //Menu mainMenu = new Menu("Main menu");
-        //mainMenu.AddItem(option1);
-        //mainMenu.AddItem(option2);
-
-        //// Submenu de exemplo
-        //Menu submenu = new Menu("Submenu example");
-        //submenu.AddItem(option1);
-        //submenu.AddItem(option2);
-
-        //// Adiciona o submenu ao menu principal
-        //mainMenu.AddSubMenu(submenu);
-        //mainMenu.AddItem(option3);
-
-        //// Exibindo o menu principal
-        //mainMenu.Show();
-
-
-
-
-
-        //MenuStudent menuStudent = new MenuStudent();
-        //menuStudent.Show();
-
-
-        // Create an instance of the Authentication class
+        // Create an authentication instance
         Authentication auth = new Authentication();
 
-        // Ask for username and password
-        string inputUsername = auth.GetUsername();
-        string inputPassword = auth.GetPassword();
+        string? inputUsername = null;
+        string? inputPassword = null;
+        int count = 0;
+        while (true)
+        {
+            // request user and password
+            inputUsername = auth.GetUsername();
+            inputPassword = auth.GetPassword();
 
-        // Authenticate the user
-        if (auth.Authenticate(inputUsername, inputPassword))
-        {
-            Console.WriteLine("Login successful!");
-        }
-        else
-        {
-            Console.WriteLine("Invalid username or password.");
+            // Try to authenticate
+            if (auth.Authenticate(inputUsername, inputPassword))
+            {
+                Console.WriteLine("Login successful!");
+                UserModel? usernModel = database.GetUserByUsername(inputUsername);
+
+                /* TODO: load the domain Role and use it as a parameter in the menuFactory.
+                 * The Role class will contain the operations to be call in the menu.
+                 */
+                MenuFactory menuFactory = new MenuFactory(usernModel.RoleType);
+                MenuBuilder menu = menuFactory.Build();
+                menu.Show();
+            }
+            else
+            {
+                count++;
+                Console.WriteLine("Invalid username or password.\n");
+
+                // after 3 attempts, exit
+                if (count == 3)
+                {
+                    Console.WriteLine("Exceded numbers of attempts.\n");
+                    break;
+                }
+            }
         }
 
     }

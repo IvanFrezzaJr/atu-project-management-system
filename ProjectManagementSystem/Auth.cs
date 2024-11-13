@@ -1,44 +1,61 @@
-
+using System;
+using System.Data.SQLite;
 using ProjectManagementSystem;
 
 namespace ProjectManagementSystem
 {
 
-
-
     public class Authentication
     {
-        // Predefined username and password (these can be replaced with database logic in a real-world scenario)
-        private string correctUsername = "user123";
-        private string correctPassword = "pass123";
+        private string dbFile = "database.db"; // Path to the SQLite database file
+        private int? currentUser = null;
 
-        // Method to get the username from the user
+        // Constructor
+        public Authentication()
+        {
+            // No parameters needed, as the database is managed by the class itself
+        }
+
+        // Method to authenticate the user in the database
+        public bool Authenticate(string username, string password)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={dbFile};Version=3;"))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(1) FROM Role WHERE Username = @Username AND Password = @Password";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Password", password);
+                    long count = (long)command.ExecuteScalar();
+                    return count > 0; // Returns true if the user is found
+                }
+            }
+        }
+
+
+
+        // Method to ask the user for the username
         public string GetUsername()
         {
             Console.Write("Enter username: ");
             return Console.ReadLine();
         }
 
-        // Method to get the password from the user (hidden input)
+        // Method to ask the user for the password
         public string GetPassword()
         {
             Console.Write("Enter password: ");
             return ReadPassword();
         }
 
-        // Method to authenticate the user based on the username and password
-        public bool Authenticate(string username, string password)
-        {
-            return username == correctUsername && password == correctPassword;
-        }
-
-        // Method to read the password securely (without showing it on the screen)
+        // Method to read the password in a hidden way (not displaying the typed characters)
         private string ReadPassword()
         {
             string password = "";
             while (true)
             {
-                ConsoleKeyInfo key = Console.ReadKey(intercept: true); // intercept key press
+                ConsoleKeyInfo key = Console.ReadKey(intercept: true); // Intercepts the key pressed
                 if (key.Key == ConsoleKey.Enter)
                 {
                     break;
@@ -48,18 +65,17 @@ namespace ProjectManagementSystem
                     if (password.Length > 0)
                     {
                         password = password.Substring(0, password.Length - 1);
-                        Console.Write("\b \b"); // Remove the last character on screen
+                        Console.Write("\b \b"); // Removes the last character from the screen
                     }
                 }
                 else
                 {
                     password += key.KeyChar;
-                    Console.Write("*"); // Display asterisk for each typed character
+                    Console.Write("*"); // Displays an asterisk for each typed character
                 }
             }
-            Console.WriteLine(); // Move to the next line after password input
+            Console.WriteLine(); // New line after entering the password
             return password;
         }
     }
-
 }
