@@ -27,27 +27,35 @@ internal class Program
         //// Admin prints the logs of the events it received
         //admin.PrintLogs();
 
-        MenuItem option1 = new Option1MenuItem("Option 1");
-        MenuItem option2 = new Option2MenuItem("Option 2");
-        MenuItem option3 = new Option3MenuItem("Option 3");
 
-        //Criando menus e submenus
-        Menu mainMenu = new Menu("Main menu");
-        mainMenu.AddItem(option1);
-        mainMenu.AddItem(option2);
 
-        // Submenu de exemplo
-        Menu submenu = new Menu("Submenu example");
-        submenu.AddItem(option1);
-        submenu.AddItem(option2);
 
-        // Adiciona o submenu ao menu principal
-        mainMenu.AddSubMenu(submenu);
-        mainMenu.AddItem(option3);
 
-        // Exibindo o menu principal
-        mainMenu.Show();
+        //MenuItem option1 = new Option1MenuItem("Option 1");
+        //MenuItem option2 = new Option2MenuItem("Option 2");
+        //MenuItem option3 = new Option3MenuItem("Option 3");
 
+        ////Criando menus e submenus
+        //Menu mainMenu = new Menu("Main menu");
+        //mainMenu.AddItem(option1);
+        //mainMenu.AddItem(option2);
+
+        //// Submenu de exemplo
+        //Menu submenu = new Menu("Submenu example");
+        //submenu.AddItem(option1);
+        //submenu.AddItem(option2);
+
+        //// Adiciona o submenu ao menu principal
+        //mainMenu.AddSubMenu(submenu);
+        //mainMenu.AddItem(option3);
+
+        //// Exibindo o menu principal
+        //mainMenu.Show();
+
+
+
+        MenuStudent menuStudent = new MenuStudent();
+        menuStudent.Show();
 
     }
 }
