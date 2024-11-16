@@ -8,7 +8,7 @@ namespace ProjectManagementSystem.Domain.Models
     /// <summary>
     /// Represents an admin subscriber, who can receive and log alerts.
     /// </summary>
-    public class Admin : Subscriber
+    public class Admin : Role, ISubscriber
     {
         /// <summary>
         /// The role of the admin.
@@ -24,9 +24,8 @@ namespace ProjectManagementSystem.Domain.Models
         /// Initializes a new instance of the <see cref="Admin"/> class with the specified role.
         /// </summary>
         /// <param name="role">The role of the admin.</param>
-        public Admin(string role)
+        public Admin(int id, string userName, string password, string roleType) : base(id, userName, password, roleType)
         {
-            this._role = role;
         }
 
 
@@ -34,7 +33,7 @@ namespace ProjectManagementSystem.Domain.Models
         /// Updates the admin with the alert, logging it for future reference.
         /// </summary>
         /// <param name="alert">The alert to log.</param>
-        public override void Update(Alert alert)
+        public void Update(Alert alert)
         {
             this._logs.Add(alert);
         }
@@ -47,7 +46,7 @@ namespace ProjectManagementSystem.Domain.Models
         {
             foreach (var log in this._logs)
             {
-                System.Console.WriteLine($"[{log.CreatedAt}] - {log.Role.Name}.{log.Action}: {log.Message}");
+                System.Console.WriteLine($"[{log.CreatedAt}] - {log.Role.UserName}.{log.Action}: {log.Message}");
             }
         }
     }

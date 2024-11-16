@@ -19,24 +19,24 @@ internal class Program
     static void Main(string[] args)
     {
 
-        // Create instances of students and an admin
-        Student ivan = new Student("Ivan");
-        Student jose = new Student("Jose");
-        Admin admin = new Admin("Super admin");
+        //// Create instances of students and an admin
+        //Student ivan = new Student("Ivan");
+        //Student jose = new Student("Jose");
+        //Admin admin = new Admin("Super admin");
 
-        // Subscribe the admin to both students
-        ivan.AddSubscriber(admin);
-        jose.AddSubscriber(admin);
+        //// Subscribe the admin to both students
+        //ivan.AddSubscriber(admin);
+        //jose.AddSubscriber(admin);
 
-        // Students submit events
-        ivan.SubmitAssessment("Hello");
-        jose.SubmitAssessment("World");
+        //// Students submit events
+        //ivan.SubmitAssessment("Hello");
+        //jose.SubmitAssessment("World");
 
-        // Admin prints the logs of the events it received
-        admin.PrintLogs();
+        //// Admin prints the logs of the events it received
+        //admin.PrintLogs();
 
 
-        return;
+        //return;
 
 
 
@@ -66,7 +66,7 @@ internal class Program
                 /* TODO: load the domain Role and use it as a parameter in the menuFactory.
                  * The Role class will contain the operations to be call in the menu.
                  */
-                MenuFactory menuFactory = new MenuFactory(usernModel.RoleType);
+                MenuFactory menuFactory = new MenuFactory(usernModel);
                 MenuBuilder menu = menuFactory.Build();
                 menu.Show();
             }

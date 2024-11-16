@@ -136,7 +136,7 @@ namespace ProjectManagementSystem
                             return new UserModel
                             {
                                 Id = reader.GetInt32(0), // User ID
-                                Username = reader.GetString(1), // Username
+                                UserName = reader.GetString(1), // Username
                                 Password = reader.GetString(2), // User password
                                 RoleType = reader.GetString(3) // User role type
                             };
