@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem;
+using ProjectManagementSystem.Domain.Models;
 
 /* IMPORTANT
  * 
@@ -17,6 +18,28 @@ internal class Program
     /// <param name="args">Command line arguments (not used in this program).</param>
     static void Main(string[] args)
     {
+
+        // Create instances of students and an admin
+        Student ivan = new Student("Ivan");
+        Student jose = new Student("Jose");
+        Admin admin = new Admin("Super admin");
+
+        // Subscribe the admin to both students
+        ivan.AddSubscriber(admin);
+        jose.AddSubscriber(admin);
+
+        // Students submit events
+        ivan.SubmitAssessment("Hello");
+        jose.SubmitAssessment("World");
+
+        // Admin prints the logs of the events it received
+        admin.PrintLogs();
+
+
+        return;
+
+
+
 
 
         Database database = new Database();

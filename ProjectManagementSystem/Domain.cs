@@ -1,4 +1,4 @@
-using ProjectManagementSystem;
+
 
 /* how to subscribe a object
  
@@ -20,7 +20,7 @@ using ProjectManagementSystem;
 
  */
 
-namespace ProjectManagementSystem
+namespace OldProjectManagementSystem
 {
     /// <summary>
     /// Represents an event that can be sent to observers.
@@ -153,9 +153,9 @@ namespace ProjectManagementSystem
     /// <summary>
     /// Represents a student, which is a type of role and can submit events.
     /// </summary>
-    public class Student : Role
+    public class Student2 : Role
     {
-        public Student(string name) : base(name) { }
+        public Student2(string name) : base(name) { }
 
         /// <summary>
         /// Submits an event with the given message, notifying subscribers.
@@ -174,7 +174,7 @@ namespace ProjectManagementSystem
     /// <summary>
     /// Represents an admin subscriber, who can receive and log events.
     /// </summary>
-    public class Admin : Subscriber
+    public class Admin2 : Subscriber
     {
         /// <summary>
         /// The role of the admin.
@@ -190,7 +190,7 @@ namespace ProjectManagementSystem
         /// Initializes a new instance of the <see cref="Admin"/> class with the specified role.
         /// </summary>
         /// <param name="role">The role of the admin.</param>
-        public Admin(string role)
+        public Admin2(string role)
         {
             this._role = role;
         }
