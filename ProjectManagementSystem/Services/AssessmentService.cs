@@ -5,7 +5,7 @@ using System.Data.SQLite;
 
 namespace ProjectManagementSystem.Domain.Services
 {
-    public class DatabaseService
+    public class AssessmentService
     {
         private string _dbFile = "database.db";
 
