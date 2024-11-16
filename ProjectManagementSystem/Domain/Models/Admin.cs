@@ -1,7 +1,12 @@
 using ProjectManagementSystem.Domain.Interfaces;
+using ProjectManagementSystem.Services;
 
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.IO;
+using ProjectManagementSystem;
+
 
 namespace ProjectManagementSystem.Domain.Models
 {
@@ -10,21 +15,14 @@ namespace ProjectManagementSystem.Domain.Models
     /// </summary>
     public class Admin : Role, ISubscriber
     {
-        /// <summary>
-        /// The role of the admin.
-        /// </summary>
+
         private string _role = string.Empty;
 
-        /// <summary>
-        /// A list of logs containing alerts received by the admin.
-        /// </summary>
         private List<Alert> _logs = new List<Alert>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Admin"/> class with the specified role.
-        /// </summary>
-        /// <param name="role">The role of the admin.</param>
-        public Admin(int id, string userName, string password, string roleType) : base(id, userName, password, roleType)
+        private Database database = new Database();
+
+        public Admin()
         {
         }
 
@@ -46,14 +44,30 @@ namespace ProjectManagementSystem.Domain.Models
         {
             foreach (var log in this._logs)
             {
-                System.Console.WriteLine($"[{log.CreatedAt}] - {log.Role.UserName}.{log.Action}: {log.Message}");
+                System.Console.WriteLine($"[{log.CreatedAt}] - 'log.Role.UserName'.{log.Action}: {log.Message}");
             }
         }
 
 
-        public void CreatePrincipal()
+        public bool CreatePrincipal(string username, string password)
         {
-            System.Console.WriteLine("Create principal with success!!");
+            bool exists = this.database.RoleExists(username);
+
+            if (exists)
+            {
+                System.Console.WriteLine("\nUser already exists\n");
+                return false;
+            }
+
+            this.database.InsertRole(username, password, "principal");
+            return true;
+        }
+
+
+        public bool ResetPassword(string username, string password)
+        {
+            this.database.UpdateRolePassword(username, password);
+            return true;
         }
     }
 }

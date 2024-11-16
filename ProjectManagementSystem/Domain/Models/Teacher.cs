@@ -5,7 +5,7 @@ namespace ProjectManagementSystem.Domain.Models
 {
     public class Teacher : Role
     {
-        public Teacher(int id, string userName, string password, string roleType) : base(id, userName, password, roleType) { }
+        public Teacher() { }
 
 
         //public List<Grade> ViewGrades()

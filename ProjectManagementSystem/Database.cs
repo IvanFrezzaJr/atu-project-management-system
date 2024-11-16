@@ -3,7 +3,9 @@ using System.Data.SQLite;
 using System.IO;
 using ProjectManagementSystem;
 
-namespace ProjectManagementSystem
+using ProjectManagementSystem.Domain.Models;
+
+namespace ProjectManagementSystem.Services
 {
 
     public class Database
@@ -118,12 +120,12 @@ namespace ProjectManagementSystem
         }
 
         // Method to retrieve a user by username
-        public UserModel GetUserByUsername(string username)
+        public string GetUserRole(string username)
         {
             using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
             {
                 connection.Open();
-                string query = "SELECT Id, Username, Password, RoleType FROM Role WHERE Username = @Username";
+                string query = "SELECT RoleType FROM Role WHERE Username = @Username";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
@@ -133,13 +135,7 @@ namespace ProjectManagementSystem
                     {
                         if (reader.Read()) // If the user is found
                         {
-                            return new UserModel
-                            {
-                                Id = reader.GetInt32(0), // User ID
-                                UserName = reader.GetString(1), // Username
-                                Password = reader.GetString(2), // User password
-                                RoleType = reader.GetString(3) // User role type
-                            };
+                            return reader.GetString(0);
                         }
                         else
                         {
@@ -149,6 +145,70 @@ namespace ProjectManagementSystem
                 }
             }
         }
+   
+        public bool InsertRole(string username, string password, string roletype)
+        {
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+
+                // SQL para inserir um novo registro
+                string sql = "INSERT INTO Role (Username, Password, RoleType) VALUES (@username, @password, 'principal')";
+
+                // Criando o comando
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, conn))
+                {
+                    // Adicionando parâmetros para evitar SQL Injection
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    // Executando o comando
+                    cmd.ExecuteNonQuery();
+                }
+
+                
+            }
+
+            return true;
+
+        }
+
+
+        public bool UpdateRolePassword(string username, string password)
+        {
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+
+                // SQL para atualizar o tipo de role do usuário com base no username
+                string sql = "UPDATE Role SET Password = @password WHERE Username = @username";
+
+                // Criando o comando
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, conn))
+                {
+                    // Adicionando parâmetros para evitar SQL Injection
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    // Executando o comando
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    // Se nenhuma linha for afetada, significa que o usuário não foi encontrado
+                    if (rowsAffected == 0)
+                    {
+                        return false; // Usuário não encontrado
+                    }
+                }
+            }
+
+            return true; // A atualização foi bem-sucedida
+        }
+
+
     }
 
 }

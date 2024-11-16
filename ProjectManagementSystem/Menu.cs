@@ -210,17 +210,17 @@ namespace ProjectManagementSystem
     // Builder class for the admin menu
     class MenuAdmin : MenuBuilder
     {
-        public Admin _Admin { get; set; }
+        public Admin Admin { get; set; }
 
         public MenuAdmin(Admin admin)
         {
-            this._Admin = admin;
+            this.Admin = admin;
         }
 
         public override void Build()
         {
-            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", this._Admin);
-            MenuItem ITOption2 = new Option2MenuItem("Perform Password Reset for Users");
+            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", this.Admin);
+            MenuItem ITOption2 = new ResetPasswordMenuItem("Perform Password Reset for Users", this.Admin);
             this.mainMenu.AddItem(ITOption1);
             this.mainMenu.AddItem(ITOption2);
         }
@@ -322,76 +322,61 @@ namespace ProjectManagementSystem
     // Factory class to create different menus based on the role
     class MenuFactory
     {
-        private UserModel UserModel { get; set; }
+        private string UserRole { get; set; }
 
-        public MenuFactory(UserModel userModel)
+        public MenuFactory(string userRole)
         {
-            this.UserModel = userModel;
+            this.UserRole = userRole;
         }
 
         // Builds the appropriate menu based on the role
         public MenuBuilder Build()
         {
-            if (this.UserModel.RoleType == "admin")
+            if (this.UserRole == "admin")
             {
-                Admin admin = new Admin(
-                    this.UserModel.Id, 
-                    this.UserModel.UserName, 
-                    this.UserModel.Password, 
-                    this.UserModel.RoleType
-                );
+                Admin admin = new Admin();
 
                 MenuAdmin menuAdmin = new MenuAdmin(admin);
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            //else if (this.UserModel.RoleType == "principal")
+            //else if (this.UserRole == "principal")
             //{
             //    Principal principal = new Principal(
-            //        this.UserModel.Id,
-            //        this.UserModel.UserName,
-            //        this.UserModel.Password,
-            //        this.UserModel.RoleType
+            //        this.Login.Id,
+            //        this.Login.UserName,
+            //        this.Login.Password,
+            //        this.UserRole
             //    );
 
             //    MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
             //    menuPrincipal.Build();
             //    return menuPrincipal;
             //}
-            //else if (this.UserModel.RoleType == "staff")
+            //else if (this.UserRole == "staff")
             //{
             //    Staff staff = new Staff(
-            //        this.UserModel.Id,
-            //        this.UserModel.UserName,
-            //        this.UserModel.Password,
-            //        this.UserModel.RoleType
+            //        this.Login.Id,
+            //        this.Login.UserName,
+            //        this.Login.Password,
+            //        this.UserRole
             //    );
 
             //    MenuStaff menuStaff = new MenuStaff(staff);
             //    menuStaff.Build();
             //    return menuStaff;
             //}
-            else if (this.UserModel.RoleType == "teacher")
+            else if (this.UserRole == "teacher")
             {
-                Teacher teacher = new Teacher(
-                    this.UserModel.Id,
-                    this.UserModel.UserName,
-                    this.UserModel.Password,
-                    this.UserModel.RoleType
-                );
+                Teacher teacher = new Teacher();
 
                 MenuTeacher menuTeacher = new MenuTeacher(teacher);
                 menuTeacher.Build();
                 return menuTeacher;
             }
-            else if (this.UserModel.RoleType == "student")
+            else if (this.UserRole == "student")
             {
-                Student student = new Student(
-                    this.UserModel.Id,
-                    this.UserModel.UserName,
-                    this.UserModel.Password,
-                    this.UserModel.RoleType
-                );
+                Student student = new Student();
 
                 MenuStudent menuStudent = new MenuStudent(student);
                 menuStudent.Build();

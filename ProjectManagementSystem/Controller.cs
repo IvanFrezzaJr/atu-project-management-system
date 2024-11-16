@@ -1,5 +1,6 @@
 using ProjectManagementSystem.Domain.Models;
 using System.Data.SQLite;
+using System;
 
 namespace ProjectManagementSystem
 {
@@ -43,6 +44,7 @@ namespace ProjectManagementSystem
     // Class representing the third menu option
     public class CreatePrincipalMenuItem : MenuItem
     {
+
         public Admin Admin { get; set; }
 
         public CreatePrincipalMenuItem(string name, Admin admin) : base(name)
@@ -53,20 +55,106 @@ namespace ProjectManagementSystem
         // Executes the action for Option 3
         public override void Execute()
         {
-            System.Console.WriteLine("Init - CreatePrincipalMenuItem");
+            System.Console.WriteLine($"--- {this.Name} ---");
+            System.Console.WriteLine($"quit: 0 + Enter\n");
+            while (true)
+            {
+                Console.Write("Principal username: ");
+                string username = Console.ReadLine();
+                if (username == "0")
+                {
+                    break;
+                }
 
-            Console.Write("Enter name: ");
-            string name = Console.ReadLine();
+                if (username == "" || username == null)
+                {
+                    System.Console.WriteLine("\nEnter a value for the user\n");
+                    continue;
+                }
 
-            Console.Write("Enter username: ");
-            string username = Console.ReadLine();
+                Console.Write("Principal password: ");
+                string password = Console.ReadLine();
+                if (password == "0")
+                {
+                    break;
+                }
 
-            Console.Write("Enter password: ");
-            string password = Console.ReadLine();
+                if (password == "" || password == null)
+                {
+                    System.Console.WriteLine("\nEnter a value for the password\n");
+                    continue;
+                }
 
-            this.Admin.CreatePrincipal();
+                bool status = this.Admin.CreatePrincipal(username, password);
 
-            System.Console.WriteLine("End - CreatePrincipalMenuItem");
+                if (status)
+                {
+                    System.Console.WriteLine("\nPrincipal '{username}' successful\n");
+                    break;
+                }
+
+
+                continue;
+            }
+
+        }
+    }
+
+
+    public class ResetPasswordMenuItem : MenuItem
+    {
+
+        public Admin Admin { get; set; }
+
+        public ResetPasswordMenuItem(string name, Admin admin) : base(name)
+        {
+            Admin = admin;
+        }
+
+        // Executes the action for Option 3
+        public override void Execute()
+        {
+            System.Console.WriteLine($"--- {this.Name} ---");
+            System.Console.WriteLine($"quit: 0 + Enter\n");
+            while (true)
+            {
+                Console.Write("Role username: ");
+                string username = Console.ReadLine();
+                if (username == "0")
+                {
+                    break;
+                }
+
+                if (username == "" || username == null)
+                {
+                    System.Console.WriteLine("\nEnter a value for the user\n");
+                    continue;
+                }
+
+                Console.Write("Role new password: ");
+                string password = Console.ReadLine();
+                if (password == "0")
+                {
+                    break;
+                }
+
+                if (password == "" || password == null)
+                {
+                    System.Console.WriteLine("\nEnter a value for the password\n");
+                    continue;
+                }
+
+                bool status = this.Admin.ResetPassword(username, password);
+
+                if (status)
+                {
+                    System.Console.WriteLine($"\nRole '{username}' successful\n");
+                    break;
+                }
+
+
+                continue;
+            }
 
         }
     }

@@ -5,7 +5,7 @@ namespace ProjectManagementSystem.Domain.Models
 {
     public class Principal : Role
     {
-        public Principal(int id, string userName, string password, string roleType) : base(id, userName, password, roleType) { }
+        public Principal() { }
 
 
         //public List<Grade> ViewGrades()

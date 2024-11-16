@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem;
+using ProjectManagementSystem.Services;
 using ProjectManagementSystem.Domain.Models;
 
 /* IMPORTANT
@@ -61,14 +62,9 @@ internal class Program
             if (auth.Authenticate(inputUsername, inputPassword))
             {
                 Console.WriteLine("Login successful!");
-                UserModel? usernModel = database.GetUserByUsername(inputUsername);
+                string? userRole = database.GetUserRole(inputUsername);
 
-                if (usernModel == null)
-                {
-                    System.Console.WriteLine("User not found");
-                }
-
-                MenuFactory menuFactory = new MenuFactory(usernModel);
+                MenuFactory menuFactory = new MenuFactory(userRole);
                 MenuBuilder menu = menuFactory.Build();
                 menu.Show();
             }

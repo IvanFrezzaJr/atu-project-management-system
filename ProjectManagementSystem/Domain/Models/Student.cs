@@ -5,7 +5,7 @@ namespace ProjectManagementSystem.Domain.Models
 {
     public class Student : Role
     {
-        public Student(int id, string userName, string password, string roleType) : base(id, userName, password, roleType) { }
+        public Student() { }
 
 
         public void SubmitAssessment(string title)
@@ -19,7 +19,7 @@ namespace ProjectManagementSystem.Domain.Models
             //Assessments.Add(assessment);
 
             // Notifica os assinantes sobre a submissão
-            string message = $"Student {this.UserName} submitted: {title}";
+            string message = $"Student 'this.UserName' submitted: {title}";
 
             System.Console.WriteLine(message);
 
