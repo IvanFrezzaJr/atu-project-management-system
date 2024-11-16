@@ -135,12 +135,6 @@ namespace ProjectManagementSystem
             Console.Write("Enter password: ");
             string password = Console.ReadLine();
 
-            if (this.Admin == null)
-            {
-                System.Console.WriteLine("Error: Admin was not initialized.");
-                return;
-            }
-
             this.Admin.CreatePrincipal();
 
             System.Console.WriteLine("End - CreatePrincipalMenuItem");
@@ -302,6 +296,13 @@ namespace ProjectManagementSystem
     // Builder class for the principal menu
     class MenuPrincipal : MenuBuilder
     {
+        public Principal Principal { get; set; }
+
+        public MenuPrincipal(Principal principal)
+        {
+            this.Principal = principal;
+        }
+
         public override void Build()
         {
             MenuItem PrincipalOption1 = new Option1MenuItem("Add New Student to Class");
@@ -321,6 +322,13 @@ namespace ProjectManagementSystem
     // Builder class for the staff menu
     class MenuStaff : MenuBuilder
     {
+        public Staff Staff { get; set; }
+
+        public MenuStaff(Staff staff)
+        {
+            this.Staff = staff;
+        }
+
         public override void Build()
         {
             MenuItem StaffOption1 = new Option1MenuItem("Create New Classroom");
@@ -338,6 +346,12 @@ namespace ProjectManagementSystem
     // Builder class for the teacher menu
     class MenuTeacher : MenuBuilder
     {
+        public Teacher Teacher { get; set; }
+
+        public MenuTeacher(Teacher teacher)
+        {
+            this.Teacher = teacher;
+        }
         public override void Build()
         {
             MenuItem TeacherOption1 = new Option1MenuItem("Update Class Information");
@@ -355,6 +369,13 @@ namespace ProjectManagementSystem
     // Builder class for the student menu
     class MenuStudent : MenuBuilder
     {
+        public Student Student { get; set; }
+
+        public MenuStudent(Student student)
+        {
+            this.Student = student;
+        }
+
         public override void Build()
         {
             MenuItem StudentOption1 = new Option1MenuItem("Submit Assignments/Work");
@@ -391,21 +412,57 @@ namespace ProjectManagementSystem
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            else if (this.UserModel.RoleType == "principal")
-            {
-                return new MenuPrincipal();
-            }
-            else if (this.UserModel.RoleType == "staff")
-            {
-                return new MenuStaff();
-            }
+            //else if (this.UserModel.RoleType == "principal")
+            //{
+            //    Principal principal = new Principal(
+            //        this.UserModel.Id,
+            //        this.UserModel.UserName,
+            //        this.UserModel.Password,
+            //        this.UserModel.RoleType
+            //    );
+
+            //    MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
+            //    menuPrincipal.Build();
+            //    return menuPrincipal;
+            //}
+            //else if (this.UserModel.RoleType == "staff")
+            //{
+            //    Staff staff = new Staff(
+            //        this.UserModel.Id,
+            //        this.UserModel.UserName,
+            //        this.UserModel.Password,
+            //        this.UserModel.RoleType
+            //    );
+
+            //    MenuStaff menuStaff = new MenuStaff(staff);
+            //    menuStaff.Build();
+            //    return menuStaff;
+            //}
             else if (this.UserModel.RoleType == "teacher")
             {
-                return new MenuTeacher();
+                Teacher teacher = new Teacher(
+                    this.UserModel.Id,
+                    this.UserModel.UserName,
+                    this.UserModel.Password,
+                    this.UserModel.RoleType
+                );
+
+                MenuTeacher menuTeacher = new MenuTeacher(teacher);
+                menuTeacher.Build();
+                return menuTeacher;
             }
             else if (this.UserModel.RoleType == "student")
             {
-                return new MenuStudent();
+                Student student = new Student(
+                    this.UserModel.Id,
+                    this.UserModel.UserName,
+                    this.UserModel.Password,
+                    this.UserModel.RoleType
+                );
+
+                MenuStudent menuStudent = new MenuStudent(student);
+                menuStudent.Build();
+                return menuStudent;
             }
             else
             {
