@@ -63,9 +63,11 @@ internal class Program
                 Console.WriteLine("Login successful!");
                 UserModel? usernModel = database.GetUserByUsername(inputUsername);
 
-                /* TODO: load the domain Role and use it as a parameter in the menuFactory.
-                 * The Role class will contain the operations to be call in the menu.
-                 */
+                if (usernModel == null)
+                {
+                    System.Console.WriteLine("User not found");
+                }
+
                 MenuFactory menuFactory = new MenuFactory(usernModel);
                 MenuBuilder menu = menuFactory.Build();
                 menu.Show();

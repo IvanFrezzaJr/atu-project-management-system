@@ -18,7 +18,7 @@ namespace ProjectManagementSystem.Domain.Models
 
         public Role(int id, string userName, string password, string roleType)
         {
-            Id = Id;
+            Id = id;
             UserName = userName;
             Password = password;
             RoleType = roleType;

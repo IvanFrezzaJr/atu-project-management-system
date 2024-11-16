@@ -49,5 +49,11 @@ namespace ProjectManagementSystem.Domain.Models
                 System.Console.WriteLine($"[{log.CreatedAt}] - {log.Role.UserName}.{log.Action}: {log.Message}");
             }
         }
+
+
+        public void CreatePrincipal()
+        {
+            System.Console.WriteLine("Create principal with success!!");
+        }
     }
 }

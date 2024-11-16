@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem.Domain.Models;
+using System.Data.SQLite;
 
 
 /* how to create a menu
@@ -106,6 +107,44 @@ namespace ProjectManagementSystem
         public override void Execute()
         {
             System.Console.WriteLine("Option3MenuItem");
+        }
+    }
+
+
+    // Class representing the third menu option
+    public class CreatePrincipalMenuItem : MenuItem
+    {
+        public Admin Admin { get; set; }
+
+        public CreatePrincipalMenuItem(string name, Admin admin) : base(name) 
+        {
+            Admin = admin;
+        }
+
+        // Executes the action for Option 3
+        public override void Execute()
+        {
+            System.Console.WriteLine("Init - CreatePrincipalMenuItem");
+
+            Console.Write("Enter name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Enter username: ");
+            string username = Console.ReadLine();
+
+            Console.Write("Enter password: ");
+            string password = Console.ReadLine();
+
+            if (this.Admin == null)
+            {
+                System.Console.WriteLine("Error: Admin was not initialized.");
+                return;
+            }
+
+            this.Admin.CreatePrincipal();
+
+            System.Console.WriteLine("End - CreatePrincipalMenuItem");
+
         }
     }
 
@@ -229,7 +268,6 @@ namespace ProjectManagementSystem
 
         public MenuBuilder()
         {
-            this.Build();
         }
 
         // Shows the constructed menu
@@ -245,16 +283,16 @@ namespace ProjectManagementSystem
     // Builder class for the admin menu
     class MenuAdmin : MenuBuilder
     {
-        public Admin? Admin { get; set; }
+        public Admin _Admin { get; set; }
 
         public MenuAdmin(Admin admin)
         {
-            Admin = admin;
+            this._Admin = admin;
         }
 
         public override void Build()
         {
-            MenuItem ITOption1 = new Option1MenuItem("Create Principal User");
+            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", this._Admin);
             MenuItem ITOption2 = new Option2MenuItem("Perform Password Reset for Users");
             this.mainMenu.AddItem(ITOption1);
             this.mainMenu.AddItem(ITOption2);
@@ -330,40 +368,42 @@ namespace ProjectManagementSystem
     // Factory class to create different menus based on the role
     class MenuFactory
     {
-        private UserModel? userModel = null;
+        private UserModel UserModel { get; set; }
 
         public MenuFactory(UserModel userModel)
         {
-            this.userModel = userModel;
+            this.UserModel = userModel;
         }
 
         // Builds the appropriate menu based on the role
         public MenuBuilder Build()
         {
-            if (this.userModel.RoleType == "admin")
+            if (this.UserModel.RoleType == "admin")
             {
                 Admin admin = new Admin(
-                    this.userModel.Id, 
-                    this.userModel.UserName, 
-                    this.userModel.Password, 
-                    this.userModel.RoleType
+                    this.UserModel.Id, 
+                    this.UserModel.UserName, 
+                    this.UserModel.Password, 
+                    this.UserModel.RoleType
                 );
 
-                return new MenuAdmin(admin);
+                MenuAdmin menuAdmin = new MenuAdmin(admin);
+                menuAdmin.Build();
+                return menuAdmin;
             }
-            else if (this.userModel.RoleType == "principal")
+            else if (this.UserModel.RoleType == "principal")
             {
                 return new MenuPrincipal();
             }
-            else if (this.userModel.RoleType == "staff")
+            else if (this.UserModel.RoleType == "staff")
             {
                 return new MenuStaff();
             }
-            else if (this.userModel.RoleType == "teacher")
+            else if (this.UserModel.RoleType == "teacher")
             {
                 return new MenuTeacher();
             }
-            else if (this.userModel.RoleType == "student")
+            else if (this.UserModel.RoleType == "student")
             {
                 return new MenuStudent();
             }
