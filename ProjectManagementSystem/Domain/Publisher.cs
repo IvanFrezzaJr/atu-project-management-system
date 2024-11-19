@@ -1,10 +1,9 @@
-
 using ProjectManagementSystem.Domain.Interfaces;
 using ProjectManagementSystem.Domain.Models;
 using System;
 using System.Collections.Generic;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Domain
 {
 
     /// <summary>
@@ -24,9 +23,9 @@ namespace ProjectManagementSystem.Domain.Models
         public void AddSubscriber(ISubscriber subscriber)
         {
             // Add subscriber if not already present
-            if (!this._subscribers.Contains(subscriber))
+            if (!_subscribers.Contains(subscriber))
             {
-                this._subscribers.Add(subscriber);
+                _subscribers.Add(subscriber);
             }
         }
 
@@ -37,7 +36,7 @@ namespace ProjectManagementSystem.Domain.Models
         public void NotifyObservers(Alert alert)
         {
             // Notify each subscriber with the alert
-            foreach (var subscriber in this._subscribers)
+            foreach (var subscriber in _subscribers)
             {
                 subscriber.Update(alert);
             }

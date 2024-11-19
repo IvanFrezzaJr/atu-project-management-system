@@ -1,10 +1,19 @@
 using ProjectManagementSystem.Domain.Interfaces;
+
+using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.IO;
+using ProjectManagementSystem;
+
 
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Staff : Role
     {
+
+        private Database database = new Database();
+
         public Staff(){ }
 
 
@@ -14,5 +23,47 @@ namespace ProjectManagementSystem.Domain.Models
         //    this.NotifyObservers(alert);
         //    return Grades.ToList();
         //}
+
+
+        public bool CreateClassroom(string name)
+        {
+            bool exists = this.database.ClassroomExists(name);
+
+            if (exists)
+            {
+                System.Console.WriteLine("\nClassroom already exists\n");
+                return false;
+            }
+
+            this.database.InsertClassroom(name);
+            return true;
+        }
+
+
+        public bool AssignRoleToClassroom(string classroom, string role, string typeRole)
+        {
+            ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
+            if (classroomResult == null)
+            {
+                System.Console.WriteLine("\nClassroom not found\n");
+                return false;
+            }
+
+            RoleSchema roleResult = this.database.GetRoleByUsername(role);
+            if (roleResult == null)
+            {
+                System.Console.WriteLine("\nRole not found\n");
+                return false;
+            }
+
+            if (roleResult.RoleType != typeRole)
+            {
+                System.Console.WriteLine($"\nOperation denied. Only allowed to assign '{typeRole}' role.\n");
+                return false;
+            }
+
+            this.database.AddRoleToClassroom(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+            return true;
+        }
     }
 }

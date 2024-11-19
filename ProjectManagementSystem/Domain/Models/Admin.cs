@@ -1,5 +1,4 @@
 using ProjectManagementSystem.Domain.Interfaces;
-using ProjectManagementSystem.Services;
 
 using System;
 using System.Collections.Generic;
@@ -49,7 +48,7 @@ namespace ProjectManagementSystem.Domain.Models
         }
 
 
-        public bool CreatePrincipal(string username, string password)
+        public bool CreateRole(string username, string password, string roletype)
         {
             bool exists = this.database.RoleExists(username);
 
@@ -59,7 +58,7 @@ namespace ProjectManagementSystem.Domain.Models
                 return false;
             }
 
-            this.database.InsertRole(username, password, "principal");
+            this.database.InsertRole(username, password, roletype);
             return true;
         }
 

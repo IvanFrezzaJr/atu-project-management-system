@@ -71,7 +71,29 @@ namespace ProjectManagementSystem
         protected MenuItem(string name) : base(name) { }
 
         // Abstract method to execute the menu item
-        public abstract void Execute();
+        public virtual void Execute()
+        {
+            System.Console.WriteLine($"--- {this.Name} ---");
+            System.Console.WriteLine($"quit: 0 + Enter\n");
+        }
+
+        protected string? Input(string text, string errorMessage)
+        {
+            Console.Write($"{text}: ");
+            string name = Console.ReadLine();
+            if (name == "0")
+            {
+                return "0";
+            }
+
+            if (name == "" || name == null)
+            {
+                System.Console.WriteLine($"\n{errorMessage}\n");
+                return null;
+            }
+
+            return name;
+        }
     }
 
 
@@ -220,9 +242,15 @@ namespace ProjectManagementSystem
         public override void Build()
         {
             MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", this.Admin);
-            MenuItem ITOption2 = new ResetPasswordMenuItem("Perform Password Reset for Users", this.Admin);
+            MenuItem ITOption2 = new CreateStaffMenuItem("Create Staff User", this.Admin);
+            MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", this.Admin);
+            MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", this.Admin);
+            MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", this.Admin);
             this.mainMenu.AddItem(ITOption1);
             this.mainMenu.AddItem(ITOption2);
+            this.mainMenu.AddItem(ITOption3);
+            this.mainMenu.AddItem(ITOption4);
+            this.mainMenu.AddItem(ITOption5);
         }
     }
 
@@ -238,17 +266,13 @@ namespace ProjectManagementSystem
 
         public override void Build()
         {
-            MenuItem PrincipalOption1 = new Option1MenuItem("Add New Student to Class");
-            MenuItem PrincipalOption2 = new Option1MenuItem("Add Office Secretary to Class");
-            MenuItem PrincipalOption3 = new Option1MenuItem("Add Teacher to Class");
-            MenuItem PrincipalOption4 = new Option1MenuItem("Enable/Disable User Accounts");
-            MenuItem PrincipalOption5 = new Option1MenuItem("View Grades (Read-Only Access)");
+            MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", this.Principal);
+            MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", this.Principal);
+            MenuItem PrincipalOption3 = new Option1MenuItem("View Grades (Read-Only Access)");
 
             this.mainMenu.AddItem(PrincipalOption1);
             this.mainMenu.AddItem(PrincipalOption2);
             this.mainMenu.AddItem(PrincipalOption3);
-            this.mainMenu.AddItem(PrincipalOption4);
-            this.mainMenu.AddItem(PrincipalOption5);
         }
     }
 
@@ -264,15 +288,13 @@ namespace ProjectManagementSystem
 
         public override void Build()
         {
-            MenuItem StaffOption1 = new Option1MenuItem("Create New Classroom");
-            MenuItem StaffOption2 = new Option1MenuItem("Assign Teacher to Classroom");
-            MenuItem StaffOption3 = new Option1MenuItem("Assign Student to Classroom");
-            MenuItem StaffOption4 = new Option1MenuItem("Mark Student Attendance");
+            MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", this.Staff);
+            MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", this.Staff);
+            MenuItem StaffOption3 = new Option1MenuItem("Mark Student Attendance");
 
             this.mainMenu.AddItem(StaffOption1);
             this.mainMenu.AddItem(StaffOption2);
             this.mainMenu.AddItem(StaffOption3);
-            this.mainMenu.AddItem(StaffOption4);
         }
     }
 
@@ -287,12 +309,10 @@ namespace ProjectManagementSystem
         }
         public override void Build()
         {
-            MenuItem TeacherOption1 = new Option1MenuItem("Update Class Information");
             MenuItem TeacherOption2 = new Option1MenuItem("Add/Remove Content for Class");
             MenuItem TeacherOption3 = new Option1MenuItem("Set Student Grades");
             MenuItem TeacherOption4 = new Option1MenuItem("Mark Student Attendance");
 
-            this.mainMenu.AddItem(TeacherOption1);
             this.mainMenu.AddItem(TeacherOption2);
             this.mainMenu.AddItem(TeacherOption3);
             this.mainMenu.AddItem(TeacherOption4);
@@ -353,19 +373,14 @@ namespace ProjectManagementSystem
             //    menuPrincipal.Build();
             //    return menuPrincipal;
             //}
-            //else if (this.UserRole == "staff")
-            //{
-            //    Staff staff = new Staff(
-            //        this.Login.Id,
-            //        this.Login.UserName,
-            //        this.Login.Password,
-            //        this.UserRole
-            //    );
+            else if (this.UserRole == "staff")
+            {
+                Staff staff = new Staff();
 
-            //    MenuStaff menuStaff = new MenuStaff(staff);
-            //    menuStaff.Build();
-            //    return menuStaff;
-            //}
+                MenuStaff menuStaff = new MenuStaff(staff);
+                menuStaff.Build();
+                return menuStaff;
+            }
             else if (this.UserRole == "teacher")
             {
                 Teacher teacher = new Teacher();

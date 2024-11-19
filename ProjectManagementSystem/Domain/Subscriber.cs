@@ -1,10 +1,9 @@
-
 using ProjectManagementSystem.Domain.Interfaces;
 using ProjectManagementSystem.Domain.Models;
 using System;
 using System.Collections.Generic;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Domain
 {
     /// <summary>
     /// Abstract class representing a subscriber which receives alerts.
