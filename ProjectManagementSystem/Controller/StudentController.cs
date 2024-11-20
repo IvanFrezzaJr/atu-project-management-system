@@ -79,7 +79,51 @@ namespace ProjectManagementSystem.Controller
                 }
             }
         }
-
     }
 
+
+    public class ShowScoreMenuItem : MenuItem
+    {
+
+        public Student Student { get; set; }
+
+        public ShowScoreMenuItem(string name, Student student) : base(name)
+        {
+            Student = student;
+        }
+
+        // Executes the action for Option 3
+        public override void Execute()
+        {
+            base.Execute();
+
+            while (true)
+            {
+                string classroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+                if (classroom == "0")
+                    break;
+
+                if (classroom == null)
+                    continue;
+
+                this.ShowClassroomGrades(classroom);
+                break;
+            }
+
+        }
+
+        public void ShowClassroomGrades(string classroomName)
+        {
+            var submissions = this.Student.DisplayStudentSubmissions(classroomName, this.Student.UserName);
+
+            Console.WriteLine($"\nSubmissions for Classroom: {classroomName}\n");
+
+            foreach (var submission in submissions)
+            {
+                Console.WriteLine($"Assessment: {submission.AssessmentDescription}");
+                Console.WriteLine($"Score: {submission.ScoreStatus} / {submission.MaxScore}");
+                Console.WriteLine(new string('-', 30)); // Separator line
+            }
+        }
+    }
 }

@@ -599,6 +599,149 @@ namespace ProjectManagementSystem
             return assessments;
         }
 
+        public bool UpdateScore(int assessmentId, int studentId, float score)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+            {
+                connection.Open();
+
+                string updateQuery = @"
+        UPDATE Submission
+        SET Score = @Score
+        WHERE AssessmentId = @AssessmentId AND StudentId = @StudentId";
+
+                using (var command = new SQLiteCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@Score", score);
+                    command.Parameters.AddWithValue("@AssessmentId", assessmentId);
+                    command.Parameters.AddWithValue("@StudentId", studentId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    // Retorna true se ao menos uma linha foi afetada
+                    return rowsAffected > 0;
+                }
+            }
+        }
+
+        public List<dynamic> GetStudentSubmissions(string classroomName)
+        {
+            string query = @"
+                SELECT 
+                     r.Username AS StudentName,
+                     c.Name AS ClassroomName,
+                     a.Description AS AssessmentDescription,
+                     CASE
+                         WHEN s.File IS NULL THEN 'Pendent'
+                         ELSE (
+                             CASE 
+                                 WHEN s.Score IS NULL THEN '-'
+                                 ELSE CAST(s.Score AS TEXT)
+                             END
+                         )
+                     END AS ScoreStatus,
+                     a.MaxScore AS MaxScore
+                 FROM 
+                      Classroom c
+ 
+                 LEFT JOIN 
+                     Assessment a ON a.ClassroomId = c.Id
+                 LEFT JOIN 
+                     Submission s ON s.AssessmentId = a.Id 
+                 LEFT JOIN 
+                     Role r ON s.StudentId = r.Id AND r.RoleType = 'student'
+                 WHERE 
+                     c.Name = @ClassroomName;";
+
+            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+            {
+                connection.Open();
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomName", classroomName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var result = new List<dynamic>();
+
+                        while (reader.Read())
+                        {
+                            result.Add(new
+                            {
+                                StudentName = reader["StudentName"].ToString(),
+                                ClassroomName = reader["ClassroomName"].ToString(),
+                                AssessmentDescription = reader["AssessmentDescription"].ToString(),
+                                ScoreStatus = reader["ScoreStatus"].ToString(),
+                                MaxScore = float.Parse(reader["MaxScore"].ToString())
+                            });
+                        }
+
+                        return result;
+                    }
+                }
+            }
+        }
+
+        public List<dynamic> GetStudentSubmissions(string classroomName, string studentName)
+        {
+            string query = @"
+                SELECT 
+                     c.Name AS ClassroomName,
+                     a.Description AS AssessmentDescription,
+                     CASE
+                         WHEN s.File IS NULL THEN 'Pendent'
+                         ELSE (
+                             CASE 
+                                 WHEN s.Score IS NULL THEN '-'
+                                 ELSE CAST(s.Score AS TEXT)
+                             END
+                         )
+                     END AS ScoreStatus,
+                     a.MaxScore AS MaxScore
+                 FROM 
+                      Classroom c
+ 
+                 LEFT JOIN 
+                     Assessment a ON a.ClassroomId = c.Id
+                 LEFT JOIN 
+                     Submission s ON s.AssessmentId = a.Id 
+                 LEFT JOIN 
+                     Role r ON s.StudentId = r.Id AND r.RoleType = 'student'
+                 WHERE 
+                     c.Name = @ClassroomName
+                     AND r.UserName = @StudentName;";
+
+            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+            {
+                connection.Open();
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomName", classroomName);
+                    command.Parameters.AddWithValue("@StudentName", studentName);
+                    
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var result = new List<dynamic>();
+
+                        while (reader.Read())
+                        {
+                            result.Add(new
+                            {
+                                ClassroomName = reader["ClassroomName"].ToString(),
+                                AssessmentDescription = reader["AssessmentDescription"].ToString(),
+                                ScoreStatus = reader["ScoreStatus"].ToString(),
+                                MaxScore = float.Parse(reader["MaxScore"].ToString())
+                            });
+                        }
+
+                        return result;
+                    }
+                }
+            }
+        }
 
     }
 

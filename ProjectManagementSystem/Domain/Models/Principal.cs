@@ -59,5 +59,12 @@ namespace ProjectManagementSystem.Domain.Models
             this.database.ActivateRole(username, active);
             return active;
         }
+
+        public List<dynamic> DisplayStudentSubmissions(string classroomName)
+        {
+            return this.database.GetStudentSubmissions(classroomName);
+
+        }
+
     }
 }

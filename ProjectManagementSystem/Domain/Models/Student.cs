@@ -19,6 +19,13 @@ namespace ProjectManagementSystem.Domain.Models
                 return false;
             }
 
+            int? enrollmentId = this.database.GetEnrollmentId(classroomResult.Id, studentId);
+            if (enrollmentId == null)
+            {
+                System.Console.WriteLine($"\nStudent enrollment not found.\n");
+                return false;
+            }
+
             AssignmentSchema assignmentResult = this.database.GetAssignmentByName(assignment);
             if (assignmentResult == null)
             {
@@ -48,6 +55,12 @@ namespace ProjectManagementSystem.Domain.Models
 
             List<AssignmentSchema> assignmentResult = this.database.GetAssignmentsByClassroom(classroom);
             return assignmentResult;
+        }
+
+        public List<dynamic> DisplayStudentSubmissions(string classroomName, string studentName)
+        {
+            return this.database.GetStudentSubmissions(classroomName, studentName);
+
         }
     }
 }

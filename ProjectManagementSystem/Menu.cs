@@ -1,5 +1,6 @@
 ﻿using ProjectManagementSystem.Controller;
 using ProjectManagementSystem.Domain.Models;
+using System.Drawing;
 
 
 /* how to create a menu
@@ -194,7 +195,9 @@ namespace ProjectManagementSystem
                 try
                 {
                     Console.Write("\nInput a number: ");
-                    int option = int.Parse(Console.ReadLine());
+                    string optionString = Console.ReadLine();
+                    int option = int.Parse(optionString.Trim());
+                  
                     Console.Clear();
                     bool result = this.HandleChoice(option);
                     if (!result)
@@ -268,7 +271,7 @@ namespace ProjectManagementSystem
         {
             MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", this.Principal);
             MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", this.Principal);
-            MenuItem PrincipalOption3 = new Option1MenuItem("View Grades (Read-Only Access)");
+            MenuItem PrincipalOption3 = new ShowGradeByClassroomMenuItem("View Grades (Read-Only Access)", this.Principal);
 
             this.mainMenu.AddItem(PrincipalOption1);
             this.mainMenu.AddItem(PrincipalOption2);
@@ -310,12 +313,14 @@ namespace ProjectManagementSystem
         public override void Build()
         {
             MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", this.Teacher);
-            MenuItem TeacherOption2 = new Option1MenuItem("Set Student Grades");
+            MenuItem TeacherOption2 = new SetStudentGradeMenuItem("Set Student Grades", this.Teacher);
             MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Teacher);
+            MenuItem TeacherOption4 = new ShowClassroomGradeMenuItem("View Grades (Read-Only Access)", this.Teacher);
 
             this.mainMenu.AddItem(TeacherOption1);
             this.mainMenu.AddItem(TeacherOption2);
             this.mainMenu.AddItem(TeacherOption3);
+            this.mainMenu.AddItem(TeacherOption4);
         }
     }
 
@@ -332,7 +337,7 @@ namespace ProjectManagementSystem
         public override void Build()
         {
             MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", this.Student);
-            MenuItem StudentOption2 = new Option1MenuItem("View Grades (Read-Only Access)");
+            MenuItem StudentOption2 = new ShowScoreMenuItem("View Grades (Read-Only Access)", this.Student);
 
             this.mainMenu.AddItem(StudentOption1);
             this.mainMenu.AddItem(StudentOption2);
