@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
@@ -571,6 +572,36 @@ namespace ProjectManagementSystem
 
             return true;
 
+        }
+
+        public int? GetEnrollmentId(int classroomId, int roleId)
+        {
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT Id 
+                FROM Enrollment 
+                WHERE ClassroomId = @ClassroomId AND RoleId = @RoleId
+                LIMIT 1";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
+                    command.Parameters.AddWithValue("@RoleId", roleId);
+
+                    var result = command.ExecuteScalar();
+                    if (result != null && int.TryParse(result.ToString(), out int id))
+                    {
+                        return id;
+                    }
+
+                    return null;
+                }
+            }
         }
     }
 

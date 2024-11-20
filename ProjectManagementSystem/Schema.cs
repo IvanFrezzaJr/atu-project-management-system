@@ -21,4 +21,11 @@ namespace ProjectManagementSystem
         public string Name { get; set; }
 
     }
+
+
+    public class AttendanceSchema
+    {
+        DateTime Date { get; set; }
+        bool Present { get; set; }
+    }
 }

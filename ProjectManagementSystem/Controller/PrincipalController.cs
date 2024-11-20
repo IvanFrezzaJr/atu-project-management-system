@@ -2,7 +2,7 @@ using ProjectManagementSystem.Domain.Models;
 using System.Data.SQLite;
 using System;
 
-namespace ProjectManagementSystem
+namespace ProjectManagementSystem.Controller
 {
     // Class representing the third menu option
 

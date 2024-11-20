@@ -1,4 +1,5 @@
-﻿using ProjectManagementSystem.Domain.Models;
+﻿using ProjectManagementSystem.Controller;
+using ProjectManagementSystem.Domain.Models;
 using System.Data.SQLite;
 
 
@@ -290,7 +291,7 @@ namespace ProjectManagementSystem
         {
             MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", this.Staff);
             MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", this.Staff);
-            MenuItem StaffOption3 = new Option1MenuItem("Mark Student Attendance");
+            MenuItem StaffOption3 = new StaffMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Staff);
 
             this.mainMenu.AddItem(StaffOption1);
             this.mainMenu.AddItem(StaffOption2);
@@ -309,9 +310,9 @@ namespace ProjectManagementSystem
         }
         public override void Build()
         {
-            MenuItem TeacherOption2 = new Option1MenuItem("Add/Remove Content for Class");
+            MenuItem TeacherOption2 = new Option1MenuItem("Add/Remove Assignments for Class");
             MenuItem TeacherOption3 = new Option1MenuItem("Set Student Grades");
-            MenuItem TeacherOption4 = new Option1MenuItem("Mark Student Attendance");
+            MenuItem TeacherOption4 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Teacher);
 
             this.mainMenu.AddItem(TeacherOption2);
             this.mainMenu.AddItem(TeacherOption3);
@@ -360,19 +361,14 @@ namespace ProjectManagementSystem
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            //else if (this.UserRole == "principal")
-            //{
-            //    Principal principal = new Principal(
-            //        this.Login.Id,
-            //        this.Login.UserName,
-            //        this.Login.Password,
-            //        this.UserRole
-            //    );
+            else if (this.UserRole == "principal")
+            {
+                Principal principal = new Principal();
 
-            //    MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
-            //    menuPrincipal.Build();
-            //    return menuPrincipal;
-            //}
+                MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
+                menuPrincipal.Build();
+                return menuPrincipal;
+            }
             else if (this.UserRole == "staff")
             {
                 Staff staff = new Staff();
