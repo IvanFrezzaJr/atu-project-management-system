@@ -38,9 +38,6 @@ internal class Program
         //return;
 
 
-
-
-
         Database database = new Database();
         database.CreateDatabase();
 
