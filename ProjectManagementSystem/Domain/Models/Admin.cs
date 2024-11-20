@@ -1,11 +1,5 @@
 using ProjectManagementSystem.Domain.Interfaces;
 
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
-using ProjectManagementSystem;
-
 
 namespace ProjectManagementSystem.Domain.Models
 {

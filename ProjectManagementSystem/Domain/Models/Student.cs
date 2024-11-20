@@ -1,7 +1,3 @@
-using ProjectManagementSystem.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Data;
-
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Student : Role
@@ -43,6 +39,6 @@ namespace ProjectManagementSystem.Domain.Models
             return true;
         }
 
- 
+
     }
 }

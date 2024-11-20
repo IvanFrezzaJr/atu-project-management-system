@@ -1,6 +1,4 @@
 using ProjectManagementSystem.Domain.Models;
-using System.Data.SQLite;
-using System;
 
 namespace ProjectManagementSystem.Controller
 {

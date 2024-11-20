@@ -1,8 +1,5 @@
 ﻿using ProjectManagementSystem.Controller;
 using ProjectManagementSystem.Domain.Models;
-using System.Data.Entity.Core.Metadata.Edm;
-using System;
-using System.Data.SQLite;
 
 
 /* how to create a menu
@@ -359,7 +356,7 @@ namespace ProjectManagementSystem
             {
                 Admin admin = new Admin(
                     this.Role.Id,
-                    this.Role.Username,
+                    this.Role.UserName,
                     this.Role.Password,
                     this.Role.RoleType,
                     this.Role.Active
@@ -373,7 +370,7 @@ namespace ProjectManagementSystem
             {
                 Principal principal = new Principal(
                     this.Role.Id,
-                    this.Role.Username,
+                    this.Role.UserName,
                     this.Role.Password,
                     this.Role.RoleType,
                     this.Role.Active
@@ -387,7 +384,7 @@ namespace ProjectManagementSystem
             {
                 Staff staff = new Staff(
                     this.Role.Id,
-                    this.Role.Username,
+                    this.Role.UserName,
                     this.Role.Password,
                     this.Role.RoleType,
                     this.Role.Active
@@ -401,7 +398,7 @@ namespace ProjectManagementSystem
             {
                 Teacher teacher = new Teacher(
                     this.Role.Id,
-                    this.Role.Username,
+                    this.Role.UserName,
                     this.Role.Password,
                     this.Role.RoleType,
                     this.Role.Active
@@ -415,7 +412,7 @@ namespace ProjectManagementSystem
             {
                 Student student = new Student(
                     this.Role.Id,
-                    this.Role.Username,
+                    this.Role.UserName,
                     this.Role.Password,
                     this.Role.RoleType,
                     this.Role.Active

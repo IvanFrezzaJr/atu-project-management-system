@@ -1,5 +1,3 @@
-using ProjectManagementSystem.Domain.Models;
-
 namespace ProjectManagementSystem.Domain.Models
 {
 

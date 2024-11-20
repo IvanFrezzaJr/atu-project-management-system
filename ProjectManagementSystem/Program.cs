@@ -1,5 +1,4 @@
 ﻿using ProjectManagementSystem;
-using ProjectManagementSystem.Domain.Models;
 
 /* IMPORTANT
  * 

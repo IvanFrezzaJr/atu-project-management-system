@@ -1,9 +1,4 @@
 ﻿using ProjectManagementSystem.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectManagementSystem.Controller
 {
@@ -78,14 +73,6 @@ namespace ProjectManagementSystem.Controller
                     continue;
 
 
-                string role = this.Input("What is Student name?", "Enter a role name");
-                if (role == "0")
-                    break;
-
-                if (role == null)
-                    continue;
-
-
                 string description = this.Input("Task description", "Enter a task description");
                 if (description == "0")
                     break;
@@ -111,11 +98,8 @@ namespace ProjectManagementSystem.Controller
                 if (maxScore == 0)
                     break;
 
-                if (role == null)
-                    continue;
 
-
-                bool status = this.Teacher.AddAssignment(clasroom, role, description, maxScore);
+                bool status = this.Teacher.AddAssignment(clasroom, Teacher.UserName, description, maxScore);
                 if (status)
                 {
                     System.Console.WriteLine($"\nAssignment {description} added with successful\n");

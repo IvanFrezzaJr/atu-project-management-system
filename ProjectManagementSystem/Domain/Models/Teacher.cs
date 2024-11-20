@@ -1,6 +1,3 @@
-using ProjectManagementSystem.Domain.Interfaces;
-using System.Collections.Generic;
-
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Teacher : Role
@@ -8,7 +5,7 @@ namespace ProjectManagementSystem.Domain.Models
 
         private Database database = new Database();
 
-        public Teacher(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
+        public Teacher(int id, string userName, string password, string roleType, bool active) : base(id, userName, password, roleType, active) { }
 
         public bool MarkStudentAttendance(string classroom, string role, string typeRole)
         {

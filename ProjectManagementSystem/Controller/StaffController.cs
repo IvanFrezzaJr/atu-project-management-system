@@ -1,6 +1,4 @@
 ﻿using ProjectManagementSystem.Domain.Models;
-using System.Data.SQLite;
-using System;
 
 namespace ProjectManagementSystem.Controller
 {
@@ -22,7 +20,7 @@ namespace ProjectManagementSystem.Controller
             while (true)
             {
                 string name = this.Input("Classroom name", "Enter a name for a classroom");
-                
+
                 if (name == "0")
                     break;
 

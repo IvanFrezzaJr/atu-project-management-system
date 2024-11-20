@@ -1,12 +1,3 @@
-using ProjectManagementSystem.Domain.Interfaces;
-
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
-using ProjectManagementSystem;
-
-
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Principal : Role
@@ -64,7 +55,7 @@ namespace ProjectManagementSystem.Domain.Models
             }
 
             bool active = (role.Active) ? false : true;
-  
+
             this.database.ActivateRole(username, active);
             return active;
         }

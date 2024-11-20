@@ -1,9 +1,4 @@
-using System;
-using System.Data;
 using System.Data.SQLite;
-using System.Drawing;
-using System.IO;
-using ProjectManagementSystem.Domain.Models;
 
 namespace ProjectManagementSystem
 {
@@ -55,7 +50,7 @@ namespace ProjectManagementSystem
                         CREATE TABLE IF NOT EXISTS Assessment (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
                             ClassroomId INTEGER NOT NULL,
-                            RoleId INTEGER NOT NULL, -- teacher
+                            TeacherId INTEGER NOT NULL,
                             Description TEXT NOT NULL,
                             MaxScore FLOAT NOT NULL,
                             FOREIGN KEY (ClassroomId) REFERENCES Classroom(Id),
@@ -65,7 +60,7 @@ namespace ProjectManagementSystem
                         CREATE TABLE IF NOT EXISTS Submission (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
                             AssessmentId INTEGER NOT NULL,
-                            RoleId INTEGER NOT NULL, -- student
+                            StudentId INTEGER NOT NULL,
                             Score FLOAT,
                             File TEXT NOT NULL,
                             FOREIGN KEY (AssessmentId) REFERENCES Assessment(Id),
@@ -178,31 +173,6 @@ namespace ProjectManagementSystem
             }
         }
         // Method to retrieve a user by username
-        public string GetUserRole(string _userName)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-            {
-                connection.Open();
-                string query = "SELECT RoleType FROM Role WHERE Username = @Username";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Username", _userName);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read()) // If the user is found
-                        {
-                            return reader.GetString(0);
-                        }
-                        else
-                        {
-                            return null; // Returns null if the user is not found
-                        }
-                    }
-                }
-            }
-        }
 
         public RoleSchema GetUserByName(string _userName)
         {
@@ -229,7 +199,7 @@ namespace ProjectManagementSystem
                             return new RoleSchema
                             {
                                 Id = reader.GetInt32(0),
-                                Username = reader.GetString(1),
+                                UserName = reader.GetString(1),
                                 Password = reader.GetString(2),
                                 RoleType = reader.GetString(3),
                                 Active = reader.IsDBNull(4) ? false : reader.GetInt32(4) == 1
@@ -266,7 +236,7 @@ namespace ProjectManagementSystem
                             return new RoleSchema
                             {
                                 Id = reader.GetInt32(0),
-                                Username = reader.GetString(1),
+                                UserName = reader.GetString(1),
                                 Password = reader.GetString(2),
                                 RoleType = reader.GetString(3),
                                 Active = reader.GetInt32(4) == 1
@@ -422,13 +392,13 @@ namespace ProjectManagementSystem
                 connection.Open();
 
                 string insertQuery = @"
-            INSERT INTO Assessment (ClassroomId, RoleId, Description, MaxScore) 
-            VALUES (@ClassroomId, @RoleId, @Description, @MaxScore)";
+            INSERT INTO Assessment (ClassroomId, TeacherId, Description, MaxScore) 
+            VALUES (@ClassroomId, @TeacherId, @Description, @MaxScore)";
 
                 using (var command = new SQLiteCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@ClassroomId", classroomId);
-                    command.Parameters.AddWithValue("@RoleId", teacherId);
+                    command.Parameters.AddWithValue("@TeacherId", teacherId);
                     command.Parameters.AddWithValue("@Description", description);
                     command.Parameters.AddWithValue("@MaxScore", maxScore);
 
@@ -438,39 +408,7 @@ namespace ProjectManagementSystem
 
             return true;
         }
-        public List<(int Id, string Description, float MaxScore)> GetAssessmentsByClassroom(int classroomId)
-        {
-            var assessments = new List<(int Id, string Description, float MaxScore)>();
-
-            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-            {
-                connection.Open();
-
-                string query = @"
-            SELECT Id, Description, MaxScore 
-            FROM Assessment 
-            WHERE ClassroomId = @ClassroomId";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int id = reader.GetInt32(0);
-                            string description = reader.GetString(1);
-                            float maxScore = reader.GetFloat(2);
-                            assessments.Add((id, description, maxScore));
-                        }
-                    }
-                }
-            }
-
-            return assessments;
-        }
-
+  
         public bool AddSubmission(int assessmentId, int studentId, string filePath)
         {
             using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
@@ -478,13 +416,13 @@ namespace ProjectManagementSystem
                 connection.Open();
 
                 string insertQuery = @"
-            INSERT INTO Submission (AssessmentId, RoleId, Score, File) 
-            VALUES (@AssessmentId, @RoleId, @Score, @File)";
+            INSERT INTO Submission (AssessmentId, StudentId, Score, File) 
+            VALUES (@AssessmentId, @StudentId, @Score, @File)";
 
                 using (var command = new SQLiteCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@AssessmentId", assessmentId);
-                    command.Parameters.AddWithValue("@RoleId", studentId);
+                    command.Parameters.AddWithValue("@StudentId", studentId);
                     command.Parameters.AddWithValue("@Score", null);
                     command.Parameters.AddWithValue("@File", filePath);
 
@@ -494,40 +432,7 @@ namespace ProjectManagementSystem
 
             return true;
         }
-        public List<(int Id, int StudentId, float? Score, string FilePath)> GetSubmissionsByAssessment(int assessmentId)
-        {
-            var submissions = new List<(int Id, int StudentId, float? Score, string FilePath)>();
-
-            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-            {
-                connection.Open();
-
-                string query = @"
-            SELECT Id, RoleId, Score, File 
-            FROM Submission 
-            WHERE AssessmentId = @AssessmentId";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@AssessmentId", assessmentId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int id = reader.GetInt32(0);
-                            int studentId = reader.GetInt32(1);
-                            float? score = reader.IsDBNull(2) ? null : reader.GetFloat(2);
-                            string filePath = reader.GetString(3);
-
-                            submissions.Add((id, studentId, score, filePath));
-                        }
-                    }
-                }
-            }
-
-            return submissions;
-        }
+   
         public void AddAttendance(int enrollmentId, DateTime date, bool present)
         {
             try
@@ -550,40 +455,6 @@ namespace ProjectManagementSystem
             {
                 throw new Exception($"Error adding attendance: {ex.Message}", ex);
             }
-        }
-        public List<(DateTime Date, bool Present)> GetAttendanceByEnrollment(int enrollmentId)
-        {
-            var attendanceRecords = new List<(DateTime, bool)>();
-
-            try
-            {
-                using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-                {
-                    connection.Open();
-                    string query = "SELECT Date, Present FROM Attendance WHERE EnrollmentId = @EnrollmentId";
-
-                    using (var command = new SQLiteCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@EnrollmentId", enrollmentId);
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var date = DateTime.Parse(reader["Date"].ToString());
-                                var present = Convert.ToBoolean(reader["Present"]);
-                                attendanceRecords.Add((date, present));
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving attendance: {ex.Message}", ex);
-            }
-
-            return attendanceRecords;
         }
 
         public bool ActivateRole(string username, bool active)
@@ -645,46 +516,6 @@ namespace ProjectManagementSystem
             }
         }
 
-        public List<AssignmentSchema> GetAssignmentByClassroomId(int classroomId)
-        {
-            var assignments = new List<AssignmentSchema>();
-
-            string connectionString = "Data Source=database.db;Version=3;";
-
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = @"
-                SELECT Id, ClassroomId, Description, MaxScore
-                FROM Assessment
-                WHERE e.ClassroomId = @ClassroomId";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var assignment = new AssignmentSchema
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                ClassroomId = reader.GetInt32(reader.GetOrdinal("ClassroomId")),
-                                Description = reader.GetString(reader.GetOrdinal("Description")),
-                                MaxScore = reader.GetFloat(reader.GetOrdinal("MaxScore"))
-                            };
-
-                            assignments.Add(assignment);
-                        }
-                    }
-                }
-            }
-
-            return assignments;
-        }
-
         public AssignmentSchema GetAssignmentByClassroomName(string classroomName, string description)
         {
             string connectionString = "Data Source=database.db;Version=3;";
@@ -716,8 +547,9 @@ namespace ProjectManagementSystem
                                 MaxScore = reader.GetFloat(reader.GetOrdinal("MaxScore"))
                             };
 
-                           
-                        } else
+
+                        }
+                        else
                         {
                             return null;
                         }

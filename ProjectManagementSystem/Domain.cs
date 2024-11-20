@@ -1,7 +1,7 @@
 
 
 ///* how to subscribe a object
- 
+
 //    // Create instances of students and an admin
 //    Student ivan = new Student("Ivan");
 //    Student jose = new Student("Jose");
