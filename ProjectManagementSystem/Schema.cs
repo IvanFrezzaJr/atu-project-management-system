@@ -26,9 +26,9 @@
     public class AssignmentSchema
     {
         public int Id { get; set; }
-        public int ClassroomId { get; set; }
+        public string Classroom { get; set; }
         public string Description { get; set; }
-        public float MaxScore { get; set; }
+        public float? MaxScore { get; set; }
     }
 
 }

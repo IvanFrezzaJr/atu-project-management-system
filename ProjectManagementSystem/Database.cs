@@ -1,4 +1,5 @@
 using System.Data.SQLite;
+using System.Xml.Linq;
 
 namespace ProjectManagementSystem
 {
@@ -54,7 +55,7 @@ namespace ProjectManagementSystem
                             Description TEXT NOT NULL,
                             MaxScore FLOAT NOT NULL,
                             FOREIGN KEY (ClassroomId) REFERENCES Classroom(Id),
-                            FOREIGN KEY (RoleId) REFERENCES Role(Id)
+                            FOREIGN KEY (TeacherId) REFERENCES Role(Id)
                         );
 
                         CREATE TABLE IF NOT EXISTS Submission (
@@ -64,7 +65,7 @@ namespace ProjectManagementSystem
                             Score FLOAT,
                             File TEXT NOT NULL,
                             FOREIGN KEY (AssessmentId) REFERENCES Assessment(Id),
-                            FOREIGN KEY (RoleId) REFERENCES Role(Id)
+                            FOREIGN KEY (StudentId) REFERENCES Role(Id)
                         );
 
                         CREATE TABLE Attendance (
@@ -516,7 +517,7 @@ namespace ProjectManagementSystem
             }
         }
 
-        public AssignmentSchema GetAssignmentByClassroomName(string classroomName, string description)
+        public AssignmentSchema GetAssignmentByName(string assignment)
         {
             string connectionString = "Data Source=database.db;Version=3;";
 
@@ -525,38 +526,79 @@ namespace ProjectManagementSystem
                 connection.Open();
 
                 string query = @"
-                SELECT a.Id, a.Name, a.Description, a.MaxScore
+                SELECT a.Id, a.Description, a.MaxScore
                 FROM Assessment a
-                JOIN Classroom e ON e.Id = a.ClassroomId
-                WHERE e.Name = @ClassroomName
-                AND a.Description = @Description";
+                WHERE a.Description = @Assignment";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@ClassroomName", classroomName);
+                    command.Parameters.AddWithValue("@Assignment", assignment);
 
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            return new AssignmentSchema
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                ClassroomId = reader.GetInt32(reader.GetOrdinal("ClassroomId")),
-                                Description = reader.GetString(reader.GetOrdinal("Description")),
-                                MaxScore = reader.GetFloat(reader.GetOrdinal("MaxScore"))
+                            return new AssignmentSchema{
+                                Id= reader.GetInt32(0), 
+                                Description= reader.GetString(1),
+                                MaxScore= (float)reader.GetDouble(2)
                             };
-
-
                         }
+
                         else
                         {
-                            return null;
+                            return null; // Returns null if the user is not found
                         }
+
                     }
                 }
             }
         }
+
+        public List<AssignmentSchema> GetAssignmentsByClassroom(string classroomName)
+        {
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            List<AssignmentSchema> assessments = new List<AssignmentSchema>();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT a.Id, c.Name, a.Description, a.MaxScore
+                FROM Assessment a
+                JOIN Classroom c ON c.Id = a.ClassroomId
+                WHERE c.Name = @Classroom";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Classroom", classroomName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string classroom = reader.GetString(1);
+                            string description = reader.GetString(2);
+                            float maxScore = (float)reader.GetDouble(3);
+
+                            assessments.Add(new AssignmentSchema
+                            {
+                                Id =id,
+                                Classroom = classroom,
+                                Description = description,
+                                MaxScore = maxScore
+                            });
+
+                        }
+                    }
+                }
+            }
+            return assessments;
+        }
+
 
     }
 

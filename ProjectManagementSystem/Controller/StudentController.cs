@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem.Domain.Models;
+using System.Collections.Generic;
 
 namespace ProjectManagementSystem.Controller
 {
@@ -28,20 +29,15 @@ namespace ProjectManagementSystem.Controller
                     continue;
 
 
-                string role = this.Input("What is Student name?", "Enter a role name");
-                if (role == "0")
+                List<AssignmentSchema> assignmentResult = this.Student.GetAssignmantAvailable(clasroom);
+                DisplayAssignmentsMenu(assignmentResult);
+                string assignment = this.Input("Which assignment do you what submit (Enter description)?", "Enter a assignment description");
+                if (assignment == "0")
                     break;
 
-                if (role == null)
+                if (assignment == null)
                     continue;
 
-
-                string description = this.Input("Task description", "Enter a task description");
-                if (description == "0")
-                    break;
-
-                if (description == null)
-                    continue;
 
                 string filePath = this.Input("Task filePath", "Enter a task filePath");
                 if (filePath == "0")
@@ -51,16 +47,39 @@ namespace ProjectManagementSystem.Controller
                     continue;
 
 
-                bool status = this.Student.AddSubmission(this.Student.Id, clasroom, description, filePath);
+                bool status = this.Student.AddSubmission(this.Student.Id, clasroom, assignment, filePath);
                 if (status)
                 {
-                    System.Console.WriteLine($"\nAssignment {description} added with successful\n");
+                    System.Console.WriteLine($"\nAssignment added with successful\n");
                     break;
                 }
                 continue;
             }
 
         }
+
+        public static void DisplayAssignmentsMenu(List<AssignmentSchema> assignments)
+        {
+            Console.WriteLine("Assignments Menu:");
+            Console.WriteLine("=================");
+
+            if (assignments.Count == 0)
+            {
+                Console.WriteLine("- No assignments found.");
+            }
+            else
+            {
+                foreach (var assignment in assignments)
+                {
+                    Console.WriteLine($"- ID: {assignment.Id}");
+                    Console.WriteLine($"  Classroom: {assignment.Classroom}");
+                    Console.WriteLine($"  Description: {assignment.Description}");
+                    Console.WriteLine($"  Max Score: {assignment.MaxScore}");
+                    Console.WriteLine("-------------------------------\n");
+                }
+            }
+        }
+
     }
 
 }

@@ -1,3 +1,5 @@
+using System.ComponentModel.Design;
+
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Student : Role
@@ -8,7 +10,7 @@ namespace ProjectManagementSystem.Domain.Models
         public Student(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
 
 
-        public bool AddSubmission(int studentId, string classroom, string description, string filePath)
+        public bool AddSubmission(int studentId, string classroom, string assignment, string filePath)
         {
             ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
             if (classroomResult == null)
@@ -17,7 +19,7 @@ namespace ProjectManagementSystem.Domain.Models
                 return false;
             }
 
-            AssignmentSchema assignmentResult = this.database.GetAssignmentByClassroomName(classroom, description);
+            AssignmentSchema assignmentResult = this.database.GetAssignmentByName(assignment);
             if (assignmentResult == null)
             {
                 System.Console.WriteLine("\nAssignment not found\n");
@@ -40,5 +42,12 @@ namespace ProjectManagementSystem.Domain.Models
         }
 
 
+        public List<AssignmentSchema> GetAssignmantAvailable(string classroom)
+        {
+            var assessments = new List<AssignmentSchema>();
+
+            List<AssignmentSchema> assignmentResult = this.database.GetAssignmentsByClassroom(classroom);
+            return assignmentResult;
+        }
     }
 }
