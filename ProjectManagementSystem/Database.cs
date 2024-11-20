@@ -204,6 +204,47 @@ namespace ProjectManagementSystem
             }
         }
 
+        public RoleSchema GetUserByName(string _userName)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+            {
+                connection.Open();
+                string query = @"SELECT
+                        Id,
+                        Username,
+                        Password,
+                        RoleType,
+                        Active
+                    FROM Role 
+                    WHERE Username = @Username";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", _userName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read()) // If the user is found
+                        {
+                            return new RoleSchema
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Password = reader.GetString(2),
+                                RoleType = reader.GetString(3),
+                                Active = reader.IsDBNull(4) ? false : reader.GetInt32(4) == 1
+                            };
+                        }
+                        else
+                        {
+                            return null; // Returns null if the user is not found
+                        }
+                    }
+                }
+            }
+        }
+
+
         // Função que retorna os dados de um usuário específico com base no nome de usuário
         public RoleSchema GetRoleByUsername(string _userName)
         {
@@ -430,7 +471,7 @@ namespace ProjectManagementSystem
             return assessments;
         }
 
-        public bool AddSubmission(int assessmentId, int studentId, float? score, string filePath)
+        public bool AddSubmission(int assessmentId, int studentId, string filePath)
         {
             using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
             {
@@ -444,7 +485,7 @@ namespace ProjectManagementSystem
                 {
                     command.Parameters.AddWithValue("@AssessmentId", assessmentId);
                     command.Parameters.AddWithValue("@RoleId", studentId);
-                    command.Parameters.AddWithValue("@Score", score.HasValue ? score.Value : DBNull.Value);
+                    command.Parameters.AddWithValue("@Score", null);
                     command.Parameters.AddWithValue("@File", filePath);
 
                     command.ExecuteNonQuery();
@@ -603,6 +644,88 @@ namespace ProjectManagementSystem
                 }
             }
         }
+
+        public List<AssignmentSchema> GetAssignmentByClassroomId(int classroomId)
+        {
+            var assignments = new List<AssignmentSchema>();
+
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT Id, ClassroomId, Description, MaxScore
+                FROM Assessment
+                WHERE e.ClassroomId = @ClassroomId";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var assignment = new AssignmentSchema
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                ClassroomId = reader.GetInt32(reader.GetOrdinal("ClassroomId")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                MaxScore = reader.GetFloat(reader.GetOrdinal("MaxScore"))
+                            };
+
+                            assignments.Add(assignment);
+                        }
+                    }
+                }
+            }
+
+            return assignments;
+        }
+
+        public AssignmentSchema GetAssignmentByClassroomName(string classroomName, string description)
+        {
+            string connectionString = "Data Source=database.db;Version=3;";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT a.Id, a.Name, a.Description, a.MaxScore
+                FROM Assessment a
+                JOIN Classroom e ON e.Id = a.ClassroomId
+                WHERE e.Name = @ClassroomName
+                AND a.Description = @Description";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomName", classroomName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new AssignmentSchema
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                ClassroomId = reader.GetInt32(reader.GetOrdinal("ClassroomId")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                MaxScore = reader.GetFloat(reader.GetOrdinal("MaxScore"))
+                            };
+
+                           
+                        } else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

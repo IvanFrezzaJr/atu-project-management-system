@@ -61,7 +61,7 @@ internal class Program
             if (auth.Authenticate(inputUsername, inputPassword))
             {
                 Console.WriteLine("Login successful!");
-                string? userRole = database.GetUserRole(inputUsername);
+                RoleSchema userRole = database.GetUserByName(inputUsername);
 
                 MenuFactory menuFactory = new MenuFactory(userRole);
                 MenuBuilder menu = menuFactory.Build();

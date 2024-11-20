@@ -14,7 +14,7 @@ namespace ProjectManagementSystem.Domain.Models
 
         private Database database = new Database();
 
-        public Staff(){ }
+        public Staff(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
 
 
         //public List<Grade> ViewGrades()

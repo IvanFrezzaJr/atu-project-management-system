@@ -9,8 +9,20 @@ namespace ProjectManagementSystem.Domain.Models
     /// </summary>
     public class Role : Publisher
     {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string RoleType { get; set; }
+        public bool Active { get; set; }
 
-
-        public Role(){}
-    }
-}
+        public Role(int id, string Username, string Password, string RoleType, bool Active) {
+            Id = id;
+            Username = Username;
+            Password = Password;
+            RoleType = RoleType;
+            Active = Active;
+        }
+    }               
+}                    
+                     
+                     

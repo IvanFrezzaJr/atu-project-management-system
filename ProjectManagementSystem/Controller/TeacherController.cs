@@ -53,4 +53,78 @@ namespace ProjectManagementSystem.Controller
         }
     }
 
+    public class AddAssignmentMenuItem : MenuItem
+    {
+
+        public Teacher Teacher { get; set; }
+
+        public AddAssignmentMenuItem(string name, Teacher teacher) : base(name)
+        {
+            Teacher = teacher;
+        }
+
+        // Executes the action for Option 3
+        public override void Execute()
+        {
+            base.Execute();
+
+            while (true)
+            {
+                string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+                if (clasroom == "0")
+                    break;
+
+                if (clasroom == null)
+                    continue;
+
+
+                string role = this.Input("What is Student name?", "Enter a role name");
+                if (role == "0")
+                    break;
+
+                if (role == null)
+                    continue;
+
+
+                string description = this.Input("Task description", "Enter a task description");
+                if (description == "0")
+                    break;
+
+                if (description == null)
+                    continue;
+
+                float maxScore = 0;
+                try
+                {
+                    maxScore = float.Parse(this.Input("Max Score", "Enter a max score"));
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: The value is not a valid number");
+                    continue;
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("Error: The value entered is too large or too small for a float.");
+                    continue;
+                }
+                if (maxScore == 0)
+                    break;
+
+                if (role == null)
+                    continue;
+
+
+                bool status = this.Teacher.AddAssignment(clasroom, role, description, maxScore);
+                if (status)
+                {
+                    System.Console.WriteLine($"\nAssignment {description} added with successful\n");
+                    break;
+                }
+                continue;
+            }
+
+        }
+    }
+
 }

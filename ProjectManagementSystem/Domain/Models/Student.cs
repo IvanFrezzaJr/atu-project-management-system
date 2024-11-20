@@ -1,38 +1,48 @@
 using ProjectManagementSystem.Domain.Interfaces;
 using System.Collections.Generic;
+using System.Data;
 
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Student : Role
     {
-        public Student() { }
+
+        private Database database = new Database();
+
+        public Student(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
 
 
-        public void SubmitAssessment(string title)
+        public bool AddSubmission(int studentId, string classroom, string description, string filePath)
         {
-            //var assessment = new Assessment
-            //{
-            //    Title = title,
-            //    SubmissionDate = DateTime.Now,
-            //    StudentId = this.Id
-            //};
-            //Assessments.Add(assessment);
+            ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
+            if (classroomResult == null)
+            {
+                System.Console.WriteLine("\nClassroom not found\n");
+                return false;
+            }
 
-            // Notifica os assinantes sobre a submissão
-            string message = $"Student 'this.UserName' submitted: {title}";
+            AssignmentSchema assignmentResult = this.database.GetAssignmentByClassroomName(classroom, description);
+            if (assignmentResult == null)
+            {
+                System.Console.WriteLine("\nAssignment not found\n");
+                return false;
+            }
 
-            System.Console.WriteLine(message);
+            this.database.AddSubmission(assignmentResult.Id, studentId, filePath);
 
-            // Create an alert and notify observers
-            Alert alert = new Alert(this, "Submit", message);
-            this.NotifyObservers(alert);
+
+
+            // TODO: AUDIT LOGS
+            //// Notifica os assinantes sobre a submissão
+            //string message = $"Student '{this.Name}' submitted: {title}";
+
+            //// Create an alert and notify observers
+            //Alert alert = new Alert(this, "Submit", message);
+            //this.NotifyObservers(alert);
+
+            return true;
         }
 
-        //public List<Grade> ViewGrades()
-        //{
-        //    Alert alert = new Alert(this, "Submit", $"Student {Name} viewed grades.");
-        //    this.NotifyObservers(alert);
-        //    return Grades.ToList();
-        //}
+ 
     }
 }

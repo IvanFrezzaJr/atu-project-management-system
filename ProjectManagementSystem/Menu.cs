@@ -1,5 +1,7 @@
 ﻿using ProjectManagementSystem.Controller;
 using ProjectManagementSystem.Domain.Models;
+using System.Data.Entity.Core.Metadata.Edm;
+using System;
 using System.Data.SQLite;
 
 
@@ -310,13 +312,13 @@ namespace ProjectManagementSystem
         }
         public override void Build()
         {
-            MenuItem TeacherOption2 = new Option1MenuItem("Add/Remove Assignments for Class");
-            MenuItem TeacherOption3 = new Option1MenuItem("Set Student Grades");
-            MenuItem TeacherOption4 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Teacher);
+            MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", this.Teacher);
+            MenuItem TeacherOption2 = new Option1MenuItem("Set Student Grades");
+            MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Teacher);
 
+            this.mainMenu.AddItem(TeacherOption1);
             this.mainMenu.AddItem(TeacherOption2);
             this.mainMenu.AddItem(TeacherOption3);
-            this.mainMenu.AddItem(TeacherOption4);
         }
     }
 
@@ -332,7 +334,7 @@ namespace ProjectManagementSystem
 
         public override void Build()
         {
-            MenuItem StudentOption1 = new Option1MenuItem("Submit Assignments/Work");
+            MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", this.Student);
             MenuItem StudentOption2 = new Option1MenuItem("View Grades (Read-Only Access)");
 
             this.mainMenu.AddItem(StudentOption1);
@@ -343,51 +345,81 @@ namespace ProjectManagementSystem
     // Factory class to create different menus based on the role
     class MenuFactory
     {
-        private string UserRole { get; set; }
+        private RoleSchema Role { get; set; }
 
-        public MenuFactory(string userRole)
+        public MenuFactory(RoleSchema role)
         {
-            this.UserRole = userRole;
+            this.Role = role;
         }
 
         // Builds the appropriate menu based on the role
         public MenuBuilder Build()
         {
-            if (this.UserRole == "admin")
+            if (this.Role.RoleType == "admin")
             {
-                Admin admin = new Admin();
+                Admin admin = new Admin(
+                    this.Role.Id,
+                    this.Role.Username,
+                    this.Role.Password,
+                    this.Role.RoleType,
+                    this.Role.Active
+                    );
 
                 MenuAdmin menuAdmin = new MenuAdmin(admin);
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            else if (this.UserRole == "principal")
+            else if (this.Role.RoleType == "principal")
             {
-                Principal principal = new Principal();
+                Principal principal = new Principal(
+                    this.Role.Id,
+                    this.Role.Username,
+                    this.Role.Password,
+                    this.Role.RoleType,
+                    this.Role.Active
+                    );
 
                 MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
                 menuPrincipal.Build();
                 return menuPrincipal;
             }
-            else if (this.UserRole == "staff")
+            else if (this.Role.RoleType == "staff")
             {
-                Staff staff = new Staff();
+                Staff staff = new Staff(
+                    this.Role.Id,
+                    this.Role.Username,
+                    this.Role.Password,
+                    this.Role.RoleType,
+                    this.Role.Active
+                    );
 
                 MenuStaff menuStaff = new MenuStaff(staff);
                 menuStaff.Build();
                 return menuStaff;
             }
-            else if (this.UserRole == "teacher")
+            else if (this.Role.RoleType == "teacher")
             {
-                Teacher teacher = new Teacher();
+                Teacher teacher = new Teacher(
+                    this.Role.Id,
+                    this.Role.Username,
+                    this.Role.Password,
+                    this.Role.RoleType,
+                    this.Role.Active
+                    );
 
                 MenuTeacher menuTeacher = new MenuTeacher(teacher);
                 menuTeacher.Build();
                 return menuTeacher;
             }
-            else if (this.UserRole == "student")
+            else if (this.Role.RoleType == "student")
             {
-                Student student = new Student();
+                Student student = new Student(
+                    this.Role.Id,
+                    this.Role.Username,
+                    this.Role.Password,
+                    this.Role.RoleType,
+                    this.Role.Active
+                    );
 
                 MenuStudent menuStudent = new MenuStudent(student);
                 menuStudent.Build();

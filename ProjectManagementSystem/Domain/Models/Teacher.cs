@@ -8,15 +8,7 @@ namespace ProjectManagementSystem.Domain.Models
 
         private Database database = new Database();
 
-        public Teacher() { }
-
-
-        //public List<Grade> ViewGrades()
-        //{
-        //    Alert alert = new Alert(this, "Submit", $"Teacher {Name} viewed grades.");
-        //    this.NotifyObservers(alert);
-        //    return Grades.ToList();
-        //}
+        public Teacher(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
 
         public bool MarkStudentAttendance(string classroom, string role, string typeRole)
         {
@@ -50,5 +42,26 @@ namespace ProjectManagementSystem.Domain.Models
             this.database.AddAttendance((int)enrollmentId, DateTime.Now, true);
             return true;
         }
+
+        public bool AddAssignment(string classroom, string role, string description, float maxScore)
+        {
+            ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
+            if (classroomResult == null)
+            {
+                System.Console.WriteLine("\nClassroom not found\n");
+                return false;
+            }
+
+            RoleSchema roleResult = this.database.GetRoleByUsername(role);
+            if (roleResult == null)
+            {
+                System.Console.WriteLine("\nRole not found\n");
+                return false;
+            }
+
+            this.database.AddAssessment(classroomResult.Id, roleResult.Id, description, maxScore);
+            return true;
+        }
+
     }
 }

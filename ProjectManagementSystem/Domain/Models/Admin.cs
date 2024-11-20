@@ -21,7 +21,7 @@ namespace ProjectManagementSystem.Domain.Models
 
         private Database database = new Database();
 
-        public Admin()
+        public Admin(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active)
         {
         }
 
