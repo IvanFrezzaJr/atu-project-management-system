@@ -1,4 +1,5 @@
 using System.ComponentModel.Design;
+using System.Reflection;
 
 namespace ProjectManagementSystem.Domain.Models
 {
@@ -15,35 +16,48 @@ namespace ProjectManagementSystem.Domain.Models
             ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
             if (classroomResult == null)
             {
-                System.Console.WriteLine("\nClassroom not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom not found"
+                }, true);
                 return false;
             }
 
             int? enrollmentId = this.database.GetEnrollmentId(classroomResult.Id, studentId);
             if (enrollmentId == null)
             {
-                System.Console.WriteLine($"\nStudent enrollment not found.\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Student enrollment not found"
+                }, true);
                 return false;
             }
 
             AssignmentSchema assignmentResult = this.database.GetAssignmentByName(assignment);
             if (assignmentResult == null)
             {
-                System.Console.WriteLine("\nAssignment not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Assignment not found"
+                }, true);
                 return false;
             }
 
             this.database.AddSubmission(assignmentResult.Id, studentId, filePath);
 
+            this.NotifyObservers(new Alert
+            {
+                Role = this.GetType().Name,
+                Action = MethodBase.GetCurrentMethod().Name,
+                Message = $"Submission added by {studentId} to {assignmentResult.Id}"
+            }, true);
 
-
-            // TODO: AUDIT LOGS
-            //// Notifica os assinantes sobre a submissão
-            //string message = $"Student '{this.Name}' submitted: {title}";
-
-            //// Create an alert and notify observers
-            //Alert alert = new Alert(this, "Submit", message);
-            //this.NotifyObservers(alert);
 
             return true;
         }
