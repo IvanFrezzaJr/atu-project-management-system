@@ -1,75 +1,29 @@
 ﻿using ProjectManagementSystem.Controller;
-using ProjectManagementSystem.Domain.Interfaces;
 using ProjectManagementSystem.Domain.Models;
+using ProjectManagementSystem.Interfaces;
 using System.Drawing;
 
 
-/* how to create a menu
-
-    MenuItem option1 = new Option1MenuItem("Option 1");
-    MenuItem option2 = new Option2MenuItem("Option 2");
-    MenuItem option3 = new Option3MenuItem("Option 3");
-
-    //create menus and submenus
-    Menu mainMenu = new Menu("Main menu");
-    mainMenu.AddItem(option1);
-    mainMenu.AddItem(option2);
-
-    // example of submenu
-    Menu submenu = new Menu("Submenu example");
-    submenu.AddItem(option1);
-    submenu.AddItem(option2);
-
-    // add submenu to main menu
-    mainMenu.AddSubMenu(submenu);
-    mainMenu.AddItem(option3);
-
-    // show main menu
-    mainMenu.Show();
-
- */
-
-/* how to instantiate a menu
- * 
-    MenuStudent menuStudent = new MenuStudent();
-    menuStudent.Show();
-
- */
-
 namespace ProjectManagementSystem
 {
-    interface IMenuItem
-    {
-        // Abstract method to execute the menu item
-        abstract void Execute();
-    }
-
-    interface IMenu
-    {
-        // Method to display the menu options
-        void Show();
-
-        // Method to add a menu item to the menu
-        void AddItem(MenuItem item);
-
-        // Method to add a submenu to the menu
-        void AddSubMenu(Menu submenu);
-    }
 
     // Abstract class for a base menu with a name
-    public abstract class BaseMenu
+    public abstract class BaseMenuName
     {
+        // Property to store the name of the menu
         public string Name { get; set; }
 
-        protected BaseMenu(string name)
+        // Constructor to initialize the menu name
+        protected BaseMenuName(string name)
         {
             this.Name = name;
         }
     }
 
-    // Abstract class for a menu item, which extends from BaseMenu and implements IMenuItem
-    public abstract class MenuItem : BaseMenu, IMenuItem
+    // Abstract class for a menu item, which extends from BaseMenuName and implements IMenuItem
+    public abstract class MenuItem : BaseMenuName, IMenuItem
     {
+        // Constructor to initialize the menu item name
         protected MenuItem(string name) : base(name) { }
 
         // Abstract method to execute the menu item
@@ -79,6 +33,7 @@ namespace ProjectManagementSystem
             System.Console.WriteLine($"quit: 0 + Enter\n");
         }
 
+        // Helper method to handle user input with error handling
         protected string? Input(string text, string errorMessage)
         {
             Console.Write($"{text}: ");
@@ -98,20 +53,22 @@ namespace ProjectManagementSystem
         }
     }
 
-
     // Class representing a menu, which contains menu items and submenus
-    public class Menu : BaseMenu, IMenu
+    public class Menu : BaseMenuName, IMenu
     {
+        // Lists to hold menu items and submenus
         List<MenuItem> _items = new List<MenuItem>();
         List<Menu> _submenus = new List<Menu>();
-        List<BaseMenu> _current = new List<BaseMenu>();
+        List<BaseMenuName> _current = new List<BaseMenuName>();
         Menu? parent = null;
 
+        // Constructor to initialize menu with a name
         public Menu(string name) : base(name) { }
 
         // Updates the current list of menu items and submenus
         private void UpdateCurrent()
         {
+            // Ensures that the current list includes both items and submenus, excluding duplicates
             this._current = this._current
                .Concat(this._items.Except(this._current))
                .Concat(this._submenus.Except(this._current))
@@ -140,6 +97,7 @@ namespace ProjectManagementSystem
 
             int index = 0;
 
+            // Loop through current menu items and display them with an index
             for (int i = 0; i < this._current.Count; i++)
             {
                 index++;
@@ -160,16 +118,19 @@ namespace ProjectManagementSystem
         // Handles the user's choice and executes the corresponding action
         public bool HandleChoice(int option)
         {
+            // If user selects option 0, exit the loop
             if (option == 0)
             {
                 return false;
             }
             else
             {
+                // If the selected option is valid, execute the corresponding menu item or show submenu
                 if (option >= 1 && option <= this._current.Count)
                 {
                     var item = this._current[option - 1];
 
+                    // Execute the menu item or show submenu if it's a menu
                     if (item is MenuItem menuItem)
                     {
                         menuItem.Execute();
@@ -192,27 +153,30 @@ namespace ProjectManagementSystem
         {
             while (true)
             {
-                this.DisplayOptions();
+                this.DisplayOptions();  // Display current menu options
                 try
                 {
+                    // Prompt the user to input a number
                     Console.Write("\nInput a number: ");
                     string optionString = Console.ReadLine();
                     int option = int.Parse(optionString.Trim());
-                  
-                    Console.Clear();
-                    bool result = this.HandleChoice(option);
+
+                    Console.Clear();  // Clear the console for a fresh display
+                    bool result = this.HandleChoice(option);  // Handle the choice
                     if (!result)
                     {
-                        break;
+                        break;  // Exit the loop if the user selects "Exit" or "Go Back"
                     }
                 }
                 catch (FormatException)
                 {
+                    // Handle invalid input format
                     Console.WriteLine("Invalid input! Please enter an integer.");
                 }
             }
         }
     }
+
 
     // Abstract builder class to create a menu
     public abstract class MenuBuilder
@@ -348,6 +312,7 @@ namespace ProjectManagementSystem
         }
     }
 
+
     // Factory class to create different menus based on the role
     class MenuFactory
     {
@@ -403,7 +368,7 @@ namespace ProjectManagementSystem
                     this.Role.Active
                     );
 
-                this.AttachLogger (staff);    
+                this.AttachLogger(staff);
 
                 MenuStaff menuStaff = new MenuStaff(staff);
                 menuStaff.Build();

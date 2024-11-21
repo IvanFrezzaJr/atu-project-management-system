@@ -164,6 +164,8 @@ namespace ProjectManagementSystem
                 }
             }
         }
+
+        // Method to check if classroom exists
         public bool ClassroomExists(string name)
         {
             using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
@@ -222,7 +224,7 @@ namespace ProjectManagementSystem
         }
 
 
-        // Função que retorna os dados de um usuário específico com base no nome de usuário
+        // Function that returns data for a specific user based on username
         public RoleSchema GetRoleByUsername(string _userName)
         {
 

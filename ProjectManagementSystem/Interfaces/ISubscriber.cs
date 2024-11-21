@@ -1,6 +1,6 @@
 using ProjectManagementSystem.Domain.Models;
 
-namespace ProjectManagementSystem.Domain.Interfaces
+namespace ProjectManagementSystem.Interfaces
 {
     /// <summary>
     /// Defines the contract for a subscriber, which can update on an alert.
