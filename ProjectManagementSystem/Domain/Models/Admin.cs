@@ -6,7 +6,7 @@ namespace ProjectManagementSystem.Domain.Models
     /// <summary>
     /// Represents an admin subscriber, who can receive and log alerts.
     /// </summary>
-    public class Admin : Role, ISubscriber
+    public class Admin : Role
     {
 
         private string _role = string.Empty;
@@ -15,30 +15,20 @@ namespace ProjectManagementSystem.Domain.Models
 
         private Database database = new Database();
 
+        private Logger logger = new Logger();
+
         public Admin(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active)
         {
         }
 
 
         /// <summary>
-        /// Updates the admin with the alert, logging it for future reference.
-        /// </summary>
-        /// <param name="alert">The alert to log.</param>
-        public void Update(Alert alert)
-        {
-            this._logs.Add(alert);
-        }
-
-
-        /// <summary>
         /// Prints the logs of all alerts received by the admin.
         /// </summary>
-        public void PrintLogs()
+        public List<Alert> PrintLogs()
         {
-            foreach (var log in this._logs)
-            {
-                System.Console.WriteLine($"[{log.CreatedAt}] - 'log.Role.UserName'.{log.Action}: {log.Message}");
-            }
+            return this.database.GetAllLogs();
+           
         }
 
 

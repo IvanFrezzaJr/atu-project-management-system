@@ -17,7 +17,7 @@ namespace ProjectManagementSystem.Domain.Interfaces
         /// Notifies all subscribers about an alert.
         /// </summary>
         /// <param name="alert">The alert to notify subscribers with.</param>
-        void NotifyObservers(Alert alert);
+        void NotifyObservers(Alert alert, bool print);
     }
 
 

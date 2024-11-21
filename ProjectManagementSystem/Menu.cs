@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem.Controller;
+using ProjectManagementSystem.Domain.Interfaces;
 using ProjectManagementSystem.Domain.Models;
 using System.Drawing;
 
@@ -249,11 +250,14 @@ namespace ProjectManagementSystem
             MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", this.Admin);
             MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", this.Admin);
             MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", this.Admin);
+            MenuItem ITOption6 = new ShowLogsMenuItem("Show logs", this.Admin);
+
             this.mainMenu.AddItem(ITOption1);
             this.mainMenu.AddItem(ITOption2);
             this.mainMenu.AddItem(ITOption3);
             this.mainMenu.AddItem(ITOption4);
             this.mainMenu.AddItem(ITOption5);
+            this.mainMenu.AddItem(ITOption6);
         }
     }
 
@@ -367,6 +371,8 @@ namespace ProjectManagementSystem
                     this.Role.Active
                     );
 
+                this.AttachLogger(admin);
+
                 MenuAdmin menuAdmin = new MenuAdmin(admin);
                 menuAdmin.Build();
                 return menuAdmin;
@@ -380,6 +386,8 @@ namespace ProjectManagementSystem
                     this.Role.RoleType,
                     this.Role.Active
                     );
+
+                this.AttachLogger(principal); 
 
                 MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
                 menuPrincipal.Build();
@@ -395,6 +403,8 @@ namespace ProjectManagementSystem
                     this.Role.Active
                     );
 
+                this.AttachLogger (staff);    
+
                 MenuStaff menuStaff = new MenuStaff(staff);
                 menuStaff.Build();
                 return menuStaff;
@@ -408,6 +418,8 @@ namespace ProjectManagementSystem
                     this.Role.RoleType,
                     this.Role.Active
                     );
+
+                this.AttachLogger(teacher);
 
                 MenuTeacher menuTeacher = new MenuTeacher(teacher);
                 menuTeacher.Build();
@@ -423,6 +435,8 @@ namespace ProjectManagementSystem
                     this.Role.Active
                     );
 
+                this.AttachLogger(student);
+
                 MenuStudent menuStudent = new MenuStudent(student);
                 menuStudent.Build();
                 return menuStudent;
@@ -432,5 +446,12 @@ namespace ProjectManagementSystem
                 throw new ArgumentException("Role type not found");
             }
         }
+    
+        public void AttachLogger(IPublisher publisher)
+        {
+            Logger logger = new Logger();
+            publisher.AddSubscriber(logger);
+        }
+
     }
 }

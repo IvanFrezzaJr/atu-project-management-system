@@ -11,7 +11,7 @@ namespace ProjectManagementSystem.Domain.Interfaces
         /// Updates the subscriber with the given alert.
         /// </summary>
         /// <param name="alert">The alert to update the subscriber with.</param>
-        void Update(Alert alert);
+        void Update(Alert alert, bool print);
     }
 
 }

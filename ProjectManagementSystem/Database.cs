@@ -76,6 +76,12 @@ namespace ProjectManagementSystem
                             FOREIGN KEY (EnrollmentId) REFERENCES Enrollment(Id) ON DELETE CASCADE
                         );
 
+                        CREATE TABLE Logs (
+                            Date TEXT NOT NULL,
+                            Role TEXT NOT NULL,
+                            Action TEXT NOT NULL,
+                            Message TEXT NOT NULL
+                        );
                     ";
 
                     using (var command = new SQLiteCommand(createTableQuery, connection))
@@ -743,6 +749,62 @@ namespace ProjectManagementSystem
             }
         }
 
-    }
+        public void InsertLog(Alert alert)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+                {
+                    connection.Open();
+                    string query = "INSERT INTO Logs (Date, Role, Action, Message) VALUES (@Date, @Role, @Action, @Message)";
 
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Date", alert.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                        command.Parameters.AddWithValue("@Role", alert.Role);
+                        command.Parameters.AddWithValue("@Action", alert.Action);
+                        command.Parameters.AddWithValue("@Message", alert.Message);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding attendance: {ex.Message}", ex);
+            }
+        }
+
+        public List<Alert> GetAllLogs()
+        {
+            var logs = new List<Alert>();
+
+            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
+            {
+                connection.Open();
+
+                string query = "SELECT Date, Role, Action, Message FROM Logs";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var log = new Alert
+                            {
+                                CreatedAt = DateTime.Parse(reader["Date"].ToString()),
+                                Role = reader["Role"].ToString(),
+                                Action = reader["Action"].ToString(),
+                                Message = reader["Message"].ToString()
+                            };
+
+                            logs.Add(log);
+                        }
+                    }
+                }
+            }
+
+            return logs;
+        }
+    }
 }

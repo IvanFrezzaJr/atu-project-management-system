@@ -31,12 +31,12 @@ namespace ProjectManagementSystem.Domain
         /// Notifies all subscribers about the alert.
         /// </summary>
         /// <param name="alert">The alert to notify the subscribers about.</param>
-        public void NotifyObservers(Alert alert)
+        public void NotifyObservers(Alert alert, bool print=false)
         {
             // Notify each subscriber with the alert
             foreach (var subscriber in _subscribers)
             {
-                subscriber.Update(alert);
+                subscriber.Update(alert, print);
             }
         }
     }

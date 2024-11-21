@@ -2,42 +2,6 @@ using ProjectManagementSystem.Domain.Models;
 
 namespace ProjectManagementSystem.Controller
 {
-    // Class representing the first menu option
-    public class Option1MenuItem : MenuItem
-    {
-        public Option1MenuItem(string name) : base(name) { }
-
-        // Executes the action for Option 1
-        public override void Execute()
-        {
-            System.Console.WriteLine("Option1MenuItem");
-        }
-    }
-
-    // Class representing the second menu option
-    public class Option2MenuItem : MenuItem
-    {
-        public Option2MenuItem(string name) : base(name) { }
-
-        // Executes the action for Option 2
-        public override void Execute()
-        {
-            System.Console.WriteLine("Option2MenuItem");
-        }
-    }
-
-    // Class representing the third menu option
-    public class Option3MenuItem : MenuItem
-    {
-        public Option3MenuItem(string name) : base(name) { }
-
-        // Executes the action for Option 3
-        public override void Execute()
-        {
-            System.Console.WriteLine("Option3MenuItem");
-        }
-    }
-
     public class CreatePrincipalMenuItem : MenuItem
     {
 
@@ -325,4 +289,31 @@ namespace ProjectManagementSystem.Controller
         }
     }
 
+    public class ShowLogsMenuItem : MenuItem
+    {
+
+        public Admin Admin { get; set; }
+
+        public ShowLogsMenuItem(string name, Admin admin) : base(name)
+        {
+            Admin = admin;
+        }
+
+        // Executes the action for Option 3
+        public override void Execute()
+        {
+            base.Execute();
+
+
+            var logs = this.Admin.PrintLogs();
+
+            Console.WriteLine($"\nSystem logs:\n");
+
+            foreach (var log in logs)
+            {
+                System.Console.WriteLine($"[{log.CreatedAt}] - '{log.Role}'.{log.Action}: {log.Message}");
+            }
+
+        }
+    }
 }

@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Xml.Linq;
+
 namespace ProjectManagementSystem.Domain.Models
 {
     public class Staff : Role
@@ -8,25 +11,31 @@ namespace ProjectManagementSystem.Domain.Models
         public Staff(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
 
 
-        //public List<Grade> ViewGrades()
-        //{
-        //    Alert alert = new Alert(this, "Submit", $"Staff {Name} viewed grades.");
-        //    this.NotifyObservers(alert);
-        //    return Grades.ToList();
-        //}
-
-
         public bool CreateClassroom(string name)
         {
             bool exists = this.database.ClassroomExists(name);
 
             if (exists)
             {
-                System.Console.WriteLine("\nClassroom already exists\n");
+         
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom already exists"
+                }, true);
                 return false;
             }
 
             this.database.InsertClassroom(name);
+
+ 
+            this.NotifyObservers(new Alert
+            {
+                Role = this.GetType().Name,
+                Action = MethodBase.GetCurrentMethod().Name,
+                Message = $"Classroom {name} added successfully"
+            }, false);
             return true;
         }
 

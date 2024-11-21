@@ -12,6 +12,6 @@ namespace ProjectManagementSystem.Domain
         /// Abstract method that must be implemented by derived classes to update the subscriber with the alert.
         /// </summary>
         /// <param name="alert">The alert to update the subscriber with.</param>
-        public abstract void Update(Alert alert);
+        public abstract void Update(Alert alert, bool print);
     }
 }
