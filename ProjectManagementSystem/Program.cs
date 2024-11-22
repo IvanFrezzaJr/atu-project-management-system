@@ -3,7 +3,8 @@
 /* IMPORTANT
  * 
  * RUN `dotnet add package Microsoft.Data.Sqlite` INTO ProjectManagementSystem folder
- * 
+ *  dotnet add package Moq
+ *  
  */
 
 /// <summary>
