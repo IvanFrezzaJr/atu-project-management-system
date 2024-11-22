@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Reflection;
 
 namespace ProjectManagementSystem.Domain.Models
 {
@@ -15,31 +16,57 @@ namespace ProjectManagementSystem.Domain.Models
             ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
             if (classroomResult == null)
             {
-                System.Console.WriteLine("\nClassroom not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom not found"
+                }, true);
                 return false;
             }
 
             RoleSchema roleResult = this.database.GetRoleByUsername(role);
             if (roleResult == null)
             {
-                System.Console.WriteLine("\nRole not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Role not found"
+                }, true);
                 return false;
             }
 
             if (roleResult.RoleType != typeRole)
             {
-                System.Console.WriteLine($"\nOperation denied. Only allowed to assign '{typeRole}' role.\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = $"Operation denied. Only allowed to assign '{typeRole}' role."
+                }, true);
                 return false;
             }
 
             int? enrollmentId = this.database.GetEnrollmentId(classroomResult.Id, roleResult.Id);
             if (enrollmentId == null)
             {
-                System.Console.WriteLine($"\nStudent enrollment not found.\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Student enrollment not found"
+                }, true);
                 return false;
             }
 
             this.database.AddAttendance((int)enrollmentId, DateTime.Now, true);
+            this.NotifyObservers(new Alert
+            {
+                Role = this.GetType().Name,
+                Action = MethodBase.GetCurrentMethod().Name,
+                Message = $"Added attendance to {roleResult.UserName} in {classroomResult.Name}"
+            }, false);
             return true;
         }
 
@@ -48,18 +75,34 @@ namespace ProjectManagementSystem.Domain.Models
             ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
             if (classroomResult == null)
             {
-                System.Console.WriteLine("\nClassroom not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom not found"
+                }, true);
                 return false;
             }
 
             RoleSchema roleResult = this.database.GetRoleByUsername(role);
             if (roleResult == null)
             {
-                System.Console.WriteLine("\nRole not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Role not found"
+                }, true);
                 return false;
             }
 
             this.database.AddAssessment(classroomResult.Id, roleResult.Id, description, maxScore);
+            this.NotifyObservers(new Alert
+            {
+                Role = this.GetType().Name,
+                Action = MethodBase.GetCurrentMethod().Name,
+                Message = $"Added assessment {description} to {classroomResult.Id} with {maxScore}"
+            }, true);
             return true;
         }
 
@@ -69,38 +112,69 @@ namespace ProjectManagementSystem.Domain.Models
             ClassroomSchema classroomResult = this.database.GetClassroomByName(classroom);
             if (classroomResult == null)
             {
-                System.Console.WriteLine("\nClassroom not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom not found"
+                }, true);
                 return false;
             }
 
             AssignmentSchema assignmentResult = this.database.GetAssignmentByName(assignment);
             if (assignmentResult == null)
             {
-                System.Console.WriteLine("\nAssignment not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Assignment not found"
+                }, true);
                 return false;
             }
 
             RoleSchema studentResult = this.database.GetRoleByUsername(student);
             if (studentResult == null)
             {
-                System.Console.WriteLine("\nRole not found\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Role not found"
+                }, true);
                 return false;
             }
 
             if (studentResult.RoleType != typeRole)
             {
-                System.Console.WriteLine($"\nOperation denied. Only allowed to assign '{typeRole}' role.\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = $"Operation denied. Only allowed to assign '{typeRole}' role."
+                }, true);
                 return false;
             }
 
             int? enrollmentId = this.database.GetEnrollmentId(classroomResult.Id, studentResult.Id);
             if (enrollmentId == null)
             {
-                System.Console.WriteLine($"\nStudent enrollment not found.\n");
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Student enrollment not found."
+                }, true);
                 return false;
             }
 
             this.database.UpdateScore(assignmentResult.Id, studentResult.Id, score);
+            this.NotifyObservers(new Alert
+            {
+                Role = this.GetType().Name,
+                Action = MethodBase.GetCurrentMethod().Name,
+                Message = $"Update score {score} to student {studentResult.UserName}"
+            }, true);
             return true;
         }
 
