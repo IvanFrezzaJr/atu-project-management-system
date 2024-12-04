@@ -1,7 +1,6 @@
-﻿using ProjectManagementSystem.Interfaces;
+﻿using ProjectManagementSystem.Core.Interfaces;
 
-
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
     /// <summary>
     /// Represents an admin subscriber, who can receive and log alerts.

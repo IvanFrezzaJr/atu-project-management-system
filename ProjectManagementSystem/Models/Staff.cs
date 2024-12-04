@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
     /// <summary>
     /// Represents a Staff member, inheriting from the Role class.

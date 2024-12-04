@@ -1,4 +1,6 @@
-namespace ProjectManagementSystem.Domain.Models
+using ProjectManagementSystem.Core;
+
+namespace ProjectManagementSystem.Models
 {
 
     /// <summary>

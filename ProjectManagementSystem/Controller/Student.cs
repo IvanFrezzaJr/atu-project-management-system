@@ -1,4 +1,5 @@
-﻿using ProjectManagementSystem.Domain.Models;
+﻿using ProjectManagementSystem.Core;
+using ProjectManagementSystem.Models;
 using System.Collections.Generic;
 
 namespace ProjectManagementSystem.Controller

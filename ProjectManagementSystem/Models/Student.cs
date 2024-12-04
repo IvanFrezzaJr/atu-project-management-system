@@ -1,7 +1,7 @@
 using System.ComponentModel.Design;
 using System.Reflection;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
     public class Student : Role
     {

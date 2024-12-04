@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
     public class Principal : Role
     {

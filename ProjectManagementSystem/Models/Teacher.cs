@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Reflection;
 
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
     public class Teacher : Role
     {

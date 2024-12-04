@@ -1,7 +1,6 @@
-using ProjectManagementSystem.Domain.Models;
-using ProjectManagementSystem.Interfaces;
+using ProjectManagementSystem.Core.Interfaces;
 
-namespace ProjectManagementSystem.Domain
+namespace ProjectManagementSystem.Core
 {
 
     /// <summary>
@@ -31,7 +30,7 @@ namespace ProjectManagementSystem.Domain
         /// Notifies all subscribers about the alert.
         /// </summary>
         /// <param name="alert">The alert to notify the subscribers about.</param>
-        public void NotifyObservers(Alert alert, bool print=false)
+        public void NotifyObservers(Alert alert, bool print = false)
         {
             // Notify each subscriber with the alert
             foreach (var subscriber in _subscribers)

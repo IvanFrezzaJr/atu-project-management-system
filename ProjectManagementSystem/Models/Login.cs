@@ -1,4 +1,4 @@
-namespace ProjectManagementSystem.Domain.Models
+namespace ProjectManagementSystem.Models
 {
 
 

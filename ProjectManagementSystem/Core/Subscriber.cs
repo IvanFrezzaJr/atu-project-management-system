@@ -1,7 +1,6 @@
-using ProjectManagementSystem.Domain.Models;
-using ProjectManagementSystem.Interfaces;
+using ProjectManagementSystem.Core.Interfaces;
 
-namespace ProjectManagementSystem.Domain
+namespace ProjectManagementSystem.Core
 {
     /// <summary>
     /// Abstract class representing a subscriber which receives alerts.

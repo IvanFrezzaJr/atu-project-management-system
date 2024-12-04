@@ -1,6 +1,4 @@
-﻿using ProjectManagementSystem.Domain.Models;
-
-namespace ProjectManagementSystem.Interfaces
+﻿namespace ProjectManagementSystem.Core.Interfaces
 {
     /// <summary>
     /// Interface representing a menu with options and submenus.

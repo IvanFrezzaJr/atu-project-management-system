@@ -1,6 +1,6 @@
-using ProjectManagementSystem.Domain.Models;
+using ProjectManagementSystem;
 
-namespace ProjectManagementSystem.Interfaces
+namespace ProjectManagementSystem.Core.Interfaces
 {
     /// <summary>
     /// Defines the contract for a publisher, which can add subscribers and notify them.

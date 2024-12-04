@@ -1,10 +1,10 @@
 ﻿using ProjectManagementSystem.Controller;
-using ProjectManagementSystem.Domain.Models;
-using ProjectManagementSystem.Interfaces;
+using ProjectManagementSystem.Core.Interfaces;
+using ProjectManagementSystem.Models;
 using System.Drawing;
 
 
-namespace ProjectManagementSystem
+namespace ProjectManagementSystem.Core
 {
 
     // Abstract class for a base menu with a name
@@ -16,7 +16,7 @@ namespace ProjectManagementSystem
         // Constructor to initialize the menu name
         protected BaseMenuName(string name)
         {
-            this.Name = name;
+            Name = name;
         }
     }
 
@@ -29,8 +29,8 @@ namespace ProjectManagementSystem
         // Abstract method to execute the menu item
         public virtual void Execute()
         {
-            System.Console.WriteLine($"--- {this.Name} ---");
-            System.Console.WriteLine($"quit: 0 + Enter\n");
+            Console.WriteLine($"--- {Name} ---");
+            Console.WriteLine($"quit: 0 + Enter\n");
         }
 
         // Helper method to handle user input with error handling
@@ -45,7 +45,7 @@ namespace ProjectManagementSystem
 
             if (name == "" || name == null)
             {
-                System.Console.WriteLine($"\n{errorMessage}\n");
+                Console.WriteLine($"\n{errorMessage}\n");
                 return null;
             }
 
@@ -69,49 +69,49 @@ namespace ProjectManagementSystem
         private void UpdateCurrent()
         {
             // Ensures that the current list includes both items and submenus, excluding duplicates
-            this._current = this._current
-               .Concat(this._items.Except(this._current))
-               .Concat(this._submenus.Except(this._current))
+            _current = _current
+               .Concat(_items.Except(_current))
+               .Concat(_submenus.Except(_current))
                .ToList();
         }
 
         // Adds a menu item to the current menu
         public void AddItem(MenuItem item)
         {
-            this._items.Add(item);
-            this.UpdateCurrent();
+            _items.Add(item);
+            UpdateCurrent();
         }
 
         // Adds a submenu to the current menu
         public void AddSubMenu(Menu submenu)
         {
             submenu.parent = this;
-            this._submenus.Add(submenu);
-            this.UpdateCurrent();
+            _submenus.Add(submenu);
+            UpdateCurrent();
         }
 
         // Displays the available options in the current menu
         public void DisplayOptions()
         {
-            System.Console.WriteLine($"\n--- {this.Name} menu ---\n");
+            Console.WriteLine($"\n--- {Name} menu ---\n");
 
             int index = 0;
 
             // Loop through current menu items and display them with an index
-            for (int i = 0; i < this._current.Count; i++)
+            for (int i = 0; i < _current.Count; i++)
             {
                 index++;
-                System.Console.WriteLine($"{index}. {this._current[i].Name}");
+                Console.WriteLine($"{index}. {_current[i].Name}");
             }
 
             // Show the back option or exit option based on the presence of a parent menu
-            if (this.parent is not null)
+            if (parent is not null)
             {
-                System.Console.WriteLine("0. Go Back");
+                Console.WriteLine("0. Go Back");
             }
             else
             {
-                System.Console.WriteLine("0. Exit");
+                Console.WriteLine("0. Exit");
             }
         }
 
@@ -126,9 +126,9 @@ namespace ProjectManagementSystem
             else
             {
                 // If the selected option is valid, execute the corresponding menu item or show submenu
-                if (option >= 1 && option <= this._current.Count)
+                if (option >= 1 && option <= _current.Count)
                 {
-                    var item = this._current[option - 1];
+                    var item = _current[option - 1];
 
                     // Execute the menu item or show submenu if it's a menu
                     if (item is MenuItem menuItem)
@@ -153,7 +153,7 @@ namespace ProjectManagementSystem
         {
             while (true)
             {
-                this.DisplayOptions();  // Display current menu options
+                DisplayOptions();  // Display current menu options
                 try
                 {
                     // Prompt the user to input a number
@@ -162,7 +162,7 @@ namespace ProjectManagementSystem
                     int option = int.Parse(optionString.Trim());
 
                     Console.Clear();  // Clear the console for a fresh display
-                    bool result = this.HandleChoice(option);  // Handle the choice
+                    bool result = HandleChoice(option);  // Handle the choice
                     if (!result)
                     {
                         break;  // Exit the loop if the user selects "Exit" or "Go Back"
@@ -190,7 +190,7 @@ namespace ProjectManagementSystem
         // Shows the constructed menu
         public void Show()
         {
-            this.mainMenu.Show();
+            mainMenu.Show();
         }
 
         // Abstract method to build the menu
@@ -204,24 +204,24 @@ namespace ProjectManagementSystem
 
         public MenuAdmin(Admin admin)
         {
-            this.Admin = admin;
+            Admin = admin;
         }
 
         public override void Build()
         {
-            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", this.Admin);
-            MenuItem ITOption2 = new CreateStaffMenuItem("Create Staff User", this.Admin);
-            MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", this.Admin);
-            MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", this.Admin);
-            MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", this.Admin);
-            MenuItem ITOption6 = new ShowLogsMenuItem("Show logs", this.Admin);
+            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", Admin);
+            MenuItem ITOption2 = new CreateStaffMenuItem("Create Staff User", Admin);
+            MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", Admin);
+            MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", Admin);
+            MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", Admin);
+            MenuItem ITOption6 = new ShowLogsMenuItem("Show logs", Admin);
 
-            this.mainMenu.AddItem(ITOption1);
-            this.mainMenu.AddItem(ITOption2);
-            this.mainMenu.AddItem(ITOption3);
-            this.mainMenu.AddItem(ITOption4);
-            this.mainMenu.AddItem(ITOption5);
-            this.mainMenu.AddItem(ITOption6);
+            mainMenu.AddItem(ITOption1);
+            mainMenu.AddItem(ITOption2);
+            mainMenu.AddItem(ITOption3);
+            mainMenu.AddItem(ITOption4);
+            mainMenu.AddItem(ITOption5);
+            mainMenu.AddItem(ITOption6);
         }
     }
 
@@ -232,18 +232,18 @@ namespace ProjectManagementSystem
 
         public MenuPrincipal(Principal principal)
         {
-            this.Principal = principal;
+            Principal = principal;
         }
 
         public override void Build()
         {
-            MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", this.Principal);
-            MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", this.Principal);
-            MenuItem PrincipalOption3 = new ShowGradeByClassroomMenuItem("View Grades (Read-Only Access)", this.Principal);
+            MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", Principal);
+            MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", Principal);
+            MenuItem PrincipalOption3 = new ShowGradeByClassroomMenuItem("View Grades (Read-Only Access)", Principal);
 
-            this.mainMenu.AddItem(PrincipalOption1);
-            this.mainMenu.AddItem(PrincipalOption2);
-            this.mainMenu.AddItem(PrincipalOption3);
+            mainMenu.AddItem(PrincipalOption1);
+            mainMenu.AddItem(PrincipalOption2);
+            mainMenu.AddItem(PrincipalOption3);
         }
     }
 
@@ -254,18 +254,18 @@ namespace ProjectManagementSystem
 
         public MenuStaff(Staff staff)
         {
-            this.Staff = staff;
+            Staff = staff;
         }
 
         public override void Build()
         {
-            MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", this.Staff);
-            MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", this.Staff);
-            MenuItem StaffOption3 = new StaffMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Staff);
+            MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", Staff);
+            MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", Staff);
+            MenuItem StaffOption3 = new StaffMarkStudentAttendanceMenuItem("Mark Student Attendance", Staff);
 
-            this.mainMenu.AddItem(StaffOption1);
-            this.mainMenu.AddItem(StaffOption2);
-            this.mainMenu.AddItem(StaffOption3);
+            mainMenu.AddItem(StaffOption1);
+            mainMenu.AddItem(StaffOption2);
+            mainMenu.AddItem(StaffOption3);
         }
     }
 
@@ -276,19 +276,19 @@ namespace ProjectManagementSystem
 
         public MenuTeacher(Teacher teacher)
         {
-            this.Teacher = teacher;
+            Teacher = teacher;
         }
         public override void Build()
         {
-            MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", this.Teacher);
-            MenuItem TeacherOption2 = new SetStudentGradeMenuItem("Set Student Grades", this.Teacher);
-            MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", this.Teacher);
-            MenuItem TeacherOption4 = new ShowClassroomGradeMenuItem("View Grades (Read-Only Access)", this.Teacher);
+            MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", Teacher);
+            MenuItem TeacherOption2 = new SetStudentGradeMenuItem("Set Student Grades", Teacher);
+            MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", Teacher);
+            MenuItem TeacherOption4 = new ShowClassroomGradeMenuItem("View Grades (Read-Only Access)", Teacher);
 
-            this.mainMenu.AddItem(TeacherOption1);
-            this.mainMenu.AddItem(TeacherOption2);
-            this.mainMenu.AddItem(TeacherOption3);
-            this.mainMenu.AddItem(TeacherOption4);
+            mainMenu.AddItem(TeacherOption1);
+            mainMenu.AddItem(TeacherOption2);
+            mainMenu.AddItem(TeacherOption3);
+            mainMenu.AddItem(TeacherOption4);
         }
     }
 
@@ -299,16 +299,16 @@ namespace ProjectManagementSystem
 
         public MenuStudent(Student student)
         {
-            this.Student = student;
+            Student = student;
         }
 
         public override void Build()
         {
-            MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", this.Student);
-            MenuItem StudentOption2 = new ShowScoreMenuItem("View Grades (Read-Only Access)", this.Student);
+            MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", Student);
+            MenuItem StudentOption2 = new ShowScoreMenuItem("View Grades (Read-Only Access)", Student);
 
-            this.mainMenu.AddItem(StudentOption1);
-            this.mainMenu.AddItem(StudentOption2);
+            mainMenu.AddItem(StudentOption1);
+            mainMenu.AddItem(StudentOption2);
         }
     }
 
@@ -320,20 +320,20 @@ namespace ProjectManagementSystem
 
         public MenuFactory(RoleSchema role)
         {
-            this.Role = role;
+            Role = role;
         }
 
         // Builds the appropriate menu based on the role
         public MenuBuilder Build()
         {
-            if (this.Role.RoleType == "admin")
+            if (Role.RoleType == "admin")
             {
                 Admin admin = new Admin(
-                    this.Role.Id,
-                    this.Role.UserName,
-                    this.Role.Password,
-                    this.Role.RoleType,
-                    this.Role.Active
+                    Role.Id,
+                    Role.UserName,
+                    Role.Password,
+                    Role.RoleType,
+                    Role.Active
                     );
 
                 this.AttachLogger(admin);
@@ -342,30 +342,30 @@ namespace ProjectManagementSystem
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            else if (this.Role.RoleType == "principal")
+            else if (Role.RoleType == "principal")
             {
                 Principal principal = new Principal(
-                    this.Role.Id,
-                    this.Role.UserName,
-                    this.Role.Password,
-                    this.Role.RoleType,
-                    this.Role.Active
+                    Role.Id,
+                    Role.UserName,
+                    Role.Password,
+                    Role.RoleType,
+                    Role.Active
                     );
 
-                this.AttachLogger(principal); 
+                this.AttachLogger(principal);
 
                 MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
                 menuPrincipal.Build();
                 return menuPrincipal;
             }
-            else if (this.Role.RoleType == "staff")
+            else if (Role.RoleType == "staff")
             {
                 Staff staff = new Staff(
-                    this.Role.Id,
-                    this.Role.UserName,
-                    this.Role.Password,
-                    this.Role.RoleType,
-                    this.Role.Active
+                    Role.Id,
+                    Role.UserName,
+                    Role.Password,
+                    Role.RoleType,
+                    Role.Active
                     );
 
                 this.AttachLogger(staff);
@@ -374,14 +374,14 @@ namespace ProjectManagementSystem
                 menuStaff.Build();
                 return menuStaff;
             }
-            else if (this.Role.RoleType == "teacher")
+            else if (Role.RoleType == "teacher")
             {
                 Teacher teacher = new Teacher(
-                    this.Role.Id,
-                    this.Role.UserName,
-                    this.Role.Password,
-                    this.Role.RoleType,
-                    this.Role.Active
+                    Role.Id,
+                    Role.UserName,
+                    Role.Password,
+                    Role.RoleType,
+                    Role.Active
                     );
 
                 this.AttachLogger(teacher);
@@ -390,14 +390,14 @@ namespace ProjectManagementSystem
                 menuTeacher.Build();
                 return menuTeacher;
             }
-            else if (this.Role.RoleType == "student")
+            else if (Role.RoleType == "student")
             {
                 Student student = new Student(
-                    this.Role.Id,
-                    this.Role.UserName,
-                    this.Role.Password,
-                    this.Role.RoleType,
-                    this.Role.Active
+                    Role.Id,
+                    Role.UserName,
+                    Role.Password,
+                    Role.RoleType,
+                    Role.Active
                     );
 
                 this.AttachLogger(student);
@@ -411,7 +411,7 @@ namespace ProjectManagementSystem
                 throw new ArgumentException("Role type not found");
             }
         }
-    
+
         public void AttachLogger(IPublisher publisher)
         {
             Logger logger = new Logger();
