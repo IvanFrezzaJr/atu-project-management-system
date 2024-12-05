@@ -9,7 +9,7 @@ namespace ProjectManagementSystem.Models
     public class Staff : Role
     {
         // Instance of the database to handle data operations.
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
         /// <summary>
         /// Initializes a new instance of the Staff class.
@@ -19,8 +19,7 @@ namespace ProjectManagementSystem.Models
         /// <param name="password">The password of the staff member.</param>
         /// <param name="roleType">The role type of the staff member.</param>
         /// <param name="active">Indicates whether the staff member is active.</param>
-        public Staff(int id, string username, string password, string roleType, bool active)
-            : base(id, username, password, roleType, active) { }
+        public Staff(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
         /// <summary>
         /// Creates a new classroom if it does not already exist.

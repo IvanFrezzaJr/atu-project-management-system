@@ -7,7 +7,7 @@ namespace ProjectManagementSystem.Models
     /// </summary>
     public class Logger : ISubscriber
     {
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
 
         /// <summary>

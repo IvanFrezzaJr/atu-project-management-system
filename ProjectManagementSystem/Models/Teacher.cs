@@ -7,9 +7,9 @@ namespace ProjectManagementSystem.Models
     public class Teacher : Role
     {
 
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
-        public Teacher(int id, string userName, string password, string roleType, bool active) : base(id, userName, password, roleType, active) { }
+        public Teacher(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
         public bool MarkStudentAttendance(string classroom, string role, string typeRole)
         {

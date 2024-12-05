@@ -5,9 +5,9 @@ namespace ProjectManagementSystem.Models
     public class Principal : Role
     {
 
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
-        public Principal(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
+        public Principal(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
 
         public bool AssignRoleToClassroom(string classroom, string role, string typeRole)

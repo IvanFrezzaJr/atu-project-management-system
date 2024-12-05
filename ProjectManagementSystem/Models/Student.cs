@@ -6,9 +6,9 @@ namespace ProjectManagementSystem.Models
     public class Student : Role
     {
 
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
-        public Student(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active) { }
+        public Student(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
 
         public bool AddSubmission(int studentId, string classroom, string assignment, string filePath)

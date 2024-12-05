@@ -316,9 +316,9 @@ namespace ProjectManagementSystem.Core
     // Factory class to create different menus based on the role
     class MenuFactory
     {
-        private RoleSchema Role { get; set; }
+        private Role Role { get; set; }
 
-        public MenuFactory(RoleSchema role)
+        public MenuFactory(Role role)
         {
             Role = role;
         }
@@ -332,8 +332,8 @@ namespace ProjectManagementSystem.Core
                     Role.Id,
                     Role.UserName,
                     Role.Password,
-                    Role.RoleType,
-                    Role.Active
+                    Role.Active,
+                    Role.RoleType
                     );
 
                 this.AttachLogger(admin);
@@ -348,8 +348,8 @@ namespace ProjectManagementSystem.Core
                     Role.Id,
                     Role.UserName,
                     Role.Password,
-                    Role.RoleType,
-                    Role.Active
+                    Role.Active,
+                    Role.RoleType
                     );
 
                 this.AttachLogger(principal);
@@ -364,8 +364,8 @@ namespace ProjectManagementSystem.Core
                     Role.Id,
                     Role.UserName,
                     Role.Password,
-                    Role.RoleType,
-                    Role.Active
+                    Role.Active,
+                    Role.RoleType
                     );
 
                 this.AttachLogger(staff);
@@ -380,8 +380,8 @@ namespace ProjectManagementSystem.Core
                     Role.Id,
                     Role.UserName,
                     Role.Password,
-                    Role.RoleType,
-                    Role.Active
+                    Role.Active,
+                    Role.RoleType
                     );
 
                 this.AttachLogger(teacher);
@@ -396,8 +396,8 @@ namespace ProjectManagementSystem.Core
                     Role.Id,
                     Role.UserName,
                     Role.Password,
-                    Role.RoleType,
-                    Role.Active
+                    Role.Active,
+                    Role.RoleType
                     );
 
                 this.AttachLogger(student);

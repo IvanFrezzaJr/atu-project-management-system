@@ -13,13 +13,11 @@ namespace ProjectManagementSystem.Models
 
         private List<Alert> _logs = new List<Alert>();
 
-        private Database database = new Database();
+        private Database_ database = new Database_();
 
         private Logger logger = new Logger();
 
-        public Admin(int id, string username, string password, string roleType, bool active) : base(id, username, password, roleType, active)
-        {
-        }
+        public Admin(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
 
         /// <summary>

@@ -4,7 +4,7 @@ using System.Xml.Linq;
 namespace ProjectManagementSystem
 {
 
-    public class Database
+    public class Database_
     {
         private string _dbFile = "database.db"; // Path to the SQLite database file
 
@@ -681,7 +681,7 @@ namespace ProjectManagementSystem
                                 ClassroomName = reader["ClassroomName"].ToString(),
                                 AssessmentDescription = reader["AssessmentDescription"].ToString(),
                                 ScoreStatus = reader["ScoreStatus"].ToString(),
-                                MaxScore = float.Parse(reader["MaxScore"].ToString())
+                                MaxScore = reader["MaxScore"] == DBNull.Value ? 0 : float.Parse(reader["MaxScore"].ToString())
                             });
                         }
 
@@ -741,7 +741,7 @@ namespace ProjectManagementSystem
                                 ClassroomName = reader["ClassroomName"].ToString(),
                                 AssessmentDescription = reader["AssessmentDescription"].ToString(),
                                 ScoreStatus = reader["ScoreStatus"].ToString(),
-                                MaxScore = float.Parse(reader["MaxScore"].ToString())
+                                MaxScore = reader["MaxScore"] == DBNull.Value ? 0 : float.Parse(reader["MaxScore"].ToString())
                             });
                         }
 
