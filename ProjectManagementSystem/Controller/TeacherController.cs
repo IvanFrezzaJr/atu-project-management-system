@@ -35,16 +35,18 @@ namespace ProjectManagementSystem.Controllers
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
+                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
+                    ValidateObjectInstance(classroomResult);
+
                     // get teacher name and make validation
                     string userName = _teacherView.GetInput("What is Student name?");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
 
-                    // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
                     ValidateObjectInstance(roleResult, $"'User {userName}' not found");
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
+                    // get enrollment
                     int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomResult.Id, roleResult.Id);
                     if (enrollmentId == null)
                     {
@@ -52,6 +54,7 @@ namespace ProjectManagementSystem.Controllers
                         break;
                     }
 
+                    // add attendance
                     _classroomRepository.AddAttendance((int)enrollmentId, DateTime.Now, true);
                     _teacherView.DisplayMessage($"Added attendance to {roleResult.UserName} in {classroomResult.Name}");
                     break;
@@ -188,7 +191,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateObjectInstance(classroomInstance);
 
                     // list assessment in the classroom
-                    List<AssignmentSchema> assignmentResult = this._classroomRepository.GetAssignmentsByClassroom(classroom);
+                    List<Assessment> assignmentResult = this._classroomRepository.GetAssignmentsByClassroom(classroom);
                     _teacherView.ShowAssignmentsMenu(assignmentResult);
 
                     // get classroom name and make validation
@@ -196,7 +199,7 @@ namespace ProjectManagementSystem.Controllers
                     if (assessment == "<EXIT>") break;
                     ValidateStringInput(assessment);
 
-                    AssignmentSchema assessmentInstance = this._classroomRepository.GetAssignmentByName(assessment);
+                    Assessment assessmentInstance = this._classroomRepository.GetAssignmentByName(assessment);
                     ValidateObjectInstance(assessmentInstance);
 
                     // get teacher name and make validation

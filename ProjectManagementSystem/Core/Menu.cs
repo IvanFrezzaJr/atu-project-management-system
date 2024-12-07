@@ -295,19 +295,19 @@ namespace ProjectManagementSystem.Core
     }
 
     // Builder class for the student menu
-    class MenuStudent : MenuBuilder
+    class MenuStudentBuilder : MenuBuilder
     {
-        public Student Student { get; set; }
+        public StudentController _studentController;
 
-        public MenuStudent(Student student)
+        public MenuStudentBuilder(StudentController studentController)
         {
-            Student = student;
+            _studentController = studentController;
         }
 
         public override void Build()
         {
-            MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", Student);
-            MenuItem StudentOption2 = new ShowScoreMenuItem("View Grades (Read-Only Access)", Student);
+            MenuItem StudentOption1 = new AddSubmissionMenuItem("Submit Assignments", _studentController);
+            MenuItem StudentOption2 = new ShowScoreMenuItem("View Grades (Read-Only Access)", _studentController);
 
             mainMenu.AddItem(StudentOption1);
             mainMenu.AddItem(StudentOption2);
@@ -377,17 +377,12 @@ namespace ProjectManagementSystem.Core
             }
             else if (Role.RoleType == "student")
             {
-                Student student = new Student(
-                    Role.Id,
-                    Role.UserName,
-                    Role.Password,
-                    Role.Active,
-                    Role.RoleType
-                    );
+                var studentView = new StudentView();
+                var roleRepository = new RoleRepository(config);
+                var classroomRepository = new ClassroomRepository(config);
+                var studentController = new StudentController(studentView, roleRepository, classroomRepository);
 
-                this.AttachLogger(student);
-
-                MenuStudent menuStudent = new MenuStudent(student);
+                MenuStudentBuilder menuStudent = new MenuStudentBuilder(studentController);
                 menuStudent.Build();
                 return menuStudent;
             }

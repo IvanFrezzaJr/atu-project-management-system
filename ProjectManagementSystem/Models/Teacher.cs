@@ -117,14 +117,14 @@ namespace ProjectManagementSystem.Models
         //        return false;
         //    }
 
-        //    AssignmentSchema assignmentResult = this.database.GetAssignmentByName(assignment);
+        //    Assessment assignmentResult = this.database.GetAssignmentByName(assignment);
         //    if (assignmentResult == null)
         //    {
         //        this.NotifyObservers(new Alert
         //        {
         //            Role = this.GetType().Name,
         //            Action = MethodBase.GetCurrentMethod().Name,
-        //            Message = "Assignment not found"
+        //            Message = "Assessment not found"
         //        }, true);
         //        return false;
         //    }
@@ -181,11 +181,11 @@ namespace ProjectManagementSystem.Models
 
         //}
 
-        //public List<AssignmentSchema> GetAssignmantAvailable(string classroom)
+        //public List<Assessment> GetAssignmantAvailable(string classroom)
         //{
-        //    var assessments = new List<AssignmentSchema>();
+        //    var assessments = new List<Assessment>();
 
-        //    List<AssignmentSchema> assignmentResult = this.database.GetAssignmentsByClassroom(classroom);
+        //    List<Assessment> assignmentResult = this.database.GetAssignmentsByClassroom(classroom);
         //    return assignmentResult;
         //}
 

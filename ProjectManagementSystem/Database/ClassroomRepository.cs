@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
-
+using ProjectManagementSystem.Models;
+    
 namespace ProjectManagementSystem.Database
 {
     public class ClassroomRepository
@@ -180,7 +181,7 @@ namespace ProjectManagementSystem.Database
             return true;
         }
 
-        public AssignmentSchema GetAssignmentByName(string assignment)
+        public Assessment GetAssignmentByName(string assignment)
         {
             using (var connection = _config.CreateConnection())
             {
@@ -189,17 +190,17 @@ namespace ProjectManagementSystem.Database
                 string query = @"
                 SELECT a.Id, a.Description, a.MaxScore
                 FROM Assessment a
-                WHERE a.Description = @Assignment";
+                WHERE a.Description = @Assessment";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Assignment", assignment);
+                    command.Parameters.AddWithValue("@Assessment", assignment);
 
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            return new AssignmentSchema
+                            return new Assessment
                             {
                                 Id = reader.GetInt32(0),
                                 Description = reader.GetString(1),
@@ -242,9 +243,9 @@ namespace ProjectManagementSystem.Database
             }
         }
 
-        public List<AssignmentSchema> GetAssignmentsByClassroom(string classroomName)
+        public List<Assessment> GetAssignmentsByClassroom(string classroomName)
         {
-            List<AssignmentSchema> assessments = new List<AssignmentSchema>();
+            List<Assessment> assessments = new List<Assessment>();
 
             using (var connection = _config.CreateConnection())
             {
@@ -269,7 +270,7 @@ namespace ProjectManagementSystem.Database
                             string description = reader.GetString(2);
                             float maxScore = (float)reader.GetDouble(3);
 
-                            assessments.Add(new AssignmentSchema
+                            assessments.Add(new Assessment
                             {
                                 Id = id,
                                 Classroom = classroom,
@@ -282,6 +283,31 @@ namespace ProjectManagementSystem.Database
                 }
             }
             return assessments;
+        }
+
+
+        public bool AddSubmission(int assessmentId, int studentId, string filePath)
+        {
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string insertQuery = @"
+            INSERT INTO Submission (AssessmentId, StudentId, Score, File) 
+            VALUES (@AssessmentId, @StudentId, @Score, @File)";
+
+                using (var command = new SQLiteCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@AssessmentId", assessmentId);
+                    command.Parameters.AddWithValue("@StudentId", studentId);
+                    command.Parameters.AddWithValue("@Score", null);
+                    command.Parameters.AddWithValue("@File", filePath);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            return true;
         }
 
 

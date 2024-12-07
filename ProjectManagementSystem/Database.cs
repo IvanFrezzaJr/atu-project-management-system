@@ -104,31 +104,6 @@ namespace ProjectManagementSystem
      
         
   
-        public bool AddSubmission(int assessmentId, int studentId, string filePath)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-            {
-                connection.Open();
-
-                string insertQuery = @"
-            INSERT INTO Submission (AssessmentId, StudentId, Score, File) 
-            VALUES (@AssessmentId, @StudentId, @Score, @File)";
-
-                using (var command = new SQLiteCommand(insertQuery, connection))
-                {
-                    command.Parameters.AddWithValue("@AssessmentId", assessmentId);
-                    command.Parameters.AddWithValue("@StudentId", studentId);
-                    command.Parameters.AddWithValue("@Score", null);
-                    command.Parameters.AddWithValue("@File", filePath);
-
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            return true;
-        }
-   
-          
 
         public void InsertLog(Alert alert)
         {
