@@ -53,6 +53,7 @@ namespace ProjectManagementSystem.Controller
                 throw new ApplicationException(message);
             }
         }
+   
         protected void ValidateObjectInstance(object obj, string message = null, Action<string> successCallback = null)
         {
             if (obj == null)
@@ -107,9 +108,20 @@ namespace ProjectManagementSystem.Controller
             }
         }
 
+        protected void ValidateFloatInput(float value)
+        {
+            // Check for overflow (float.MinValue and float.MaxValue are inherent bounds)
+            if (value < float.MinValue || value > float.MaxValue)
+                throw new OverflowException($"Value is out of range for a float: {value}");
 
+            // If the value is infinity (positive or negative), it's an invalid float
+            if (float.IsInfinity(value))
+                throw new OverflowException("Value is infinite, which is not allowed.");
+
+            // Check if the value is zero or negative
+            if (value <= 0)
+                throw new ArgumentException("Value must be a positive number.");
+        }
     }
-
-
 
 }

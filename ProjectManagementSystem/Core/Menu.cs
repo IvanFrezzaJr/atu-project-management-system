@@ -272,20 +272,20 @@ namespace ProjectManagementSystem.Core
     }
 
     // Builder class for the teacher menu
-    class MenuTeacher : MenuBuilder
+    class MenuTeacherBuilder : MenuBuilder
     {
-        public Teacher Teacher { get; set; }
+        public TeacherController _teacherController;
 
-        public MenuTeacher(Teacher teacher)
+        public MenuTeacherBuilder(TeacherController teacherController)
         {
-            Teacher = teacher;
+            _teacherController = teacherController;
         }
         public override void Build()
         {
-            MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", Teacher);
-            MenuItem TeacherOption2 = new SetStudentGradeMenuItem("Set Student Grades", Teacher);
-            MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", Teacher);
-            MenuItem TeacherOption4 = new ShowClassroomGradeMenuItem("View Grades (Read-Only Access)", Teacher);
+            MenuItem TeacherOption1 = new AddAssignmentMenuItem("Add Assignments for Class", _teacherController);
+            MenuItem TeacherOption2 = new SetStudentGradeMenuItem("Set Student Grades", _teacherController);
+            MenuItem TeacherOption3 = new TeacherMarkStudentAttendanceMenuItem("Mark Student Attendance", _teacherController);
+            MenuItem TeacherOption4 = new ShowClassroomGradeMenuItem("View Grades (Read-Only Access)", _teacherController);
 
             mainMenu.AddItem(TeacherOption1);
             mainMenu.AddItem(TeacherOption2);
@@ -366,17 +366,12 @@ namespace ProjectManagementSystem.Core
             }
             else if (Role.RoleType == "teacher")
             {
-                Teacher teacher = new Teacher(
-                    Role.Id,
-                    Role.UserName,
-                    Role.Password,
-                    Role.Active,
-                    Role.RoleType
-                    );
+                var teacherView = new TeacherView();
+                var roleRepository = new RoleRepository(config);
+                var classroomRepository = new ClassroomRepository(config);
+                var teacherController = new TeacherController(teacherView, roleRepository, classroomRepository);
 
-                this.AttachLogger(teacher);
-
-                MenuTeacher menuTeacher = new MenuTeacher(teacher);
+                MenuTeacherBuilder menuTeacher = new MenuTeacherBuilder(teacherController);
                 menuTeacher.Build();
                 return menuTeacher;
             }
