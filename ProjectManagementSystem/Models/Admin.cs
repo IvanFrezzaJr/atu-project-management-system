@@ -22,36 +22,5 @@ namespace ProjectManagementSystem.Models
             : this(0, userName, password, active, "admin") 
         {
         }
-
-        ///// <summary>
-        ///// Prints the logs of all alerts received by the admin.
-        ///// </summary>
-        //public List<Alert> PrintLogs()
-        //{
-        //    return this.database.GetAllLogs();
-           
-        //}
-
-
-        //public bool CreateRole(string username, string password, string roletype)
-        //{
-        //    bool exists = this.database.RoleExists(username);
-
-        //    if (exists)
-        //    {
-        //        System.Console.WriteLine("\nUser already exists\n");
-        //        return false;
-        //    }
-
-        //    this.database.InsertRole(username, password, roletype);
-        //    return true;
-        //}
-
-
-        //public bool ResetPassword(string username, string password)
-        //{
-        //    //this.database.UpdateRolePassword(username, password);
-        //    return true;
-        //}
     }
 }

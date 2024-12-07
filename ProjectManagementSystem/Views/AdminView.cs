@@ -1,7 +1,7 @@
 ﻿namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
-    public class AdminInterface : BaseView
+    public class AdminView : BaseView
     {
         // Method to prompt the user for a username
         public string GetValue(string question)
@@ -10,15 +10,10 @@
             return Console.ReadLine();
         }
 
-        public bool ShowResult(string value)
-        { 
-            if (value == "" || value == null)
-            {
-                Console.WriteLine("\nPlease, enter a valid value\n");
-                return false;
-            }
-
-            return true;
+        public string GetPasswordInput(string question)
+        {
+            Console.Write(question);
+            return Helpers.ReadPassword();
         }
 
         public bool ShowUserExistsResult(bool isCreated)

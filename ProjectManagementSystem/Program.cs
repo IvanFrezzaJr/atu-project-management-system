@@ -37,7 +37,7 @@ internal class Program
         var config = new DatabaseConfig();
         config.CreateDatabase();
 
-        var userInterface = new UserInterface();
+        var userInterface = new LoginView();
         var authRepository = new AuthRepository(config);
         var authenticationController = new AuthenticationController(userInterface, authRepository);
 

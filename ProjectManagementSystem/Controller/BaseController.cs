@@ -1,4 +1,6 @@
 ﻿using ProjectManagementSystem.Core;
+using ProjectManagementSystem.Views;
+using System.Data.SQLite;
 using System.Reflection;
 
 namespace ProjectManagementSystem.Controller
@@ -122,6 +124,7 @@ namespace ProjectManagementSystem.Controller
             if (value <= 0)
                 throw new ArgumentException("Value must be a positive number.");
         }
+
     }
 
 }

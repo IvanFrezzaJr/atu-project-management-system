@@ -1,19 +1,20 @@
-﻿using ProjectManagementSystem.Database;
+﻿using ProjectManagementSystem;
+using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Views;
 
 namespace ProjectManagementSystem.Controllers
 {
     public class AuthenticationController
     {
-        private readonly UserInterface _userInterface;
+        private readonly LoginView _loginView;
         private readonly AuthRepository _authRepository;
 
         public string UserName { get; set; }
         public bool IsAutheticated { get; set; }
 
-        public AuthenticationController(UserInterface userInterface, AuthRepository authRepository)
+        public AuthenticationController(LoginView loginView, AuthRepository authRepository)
         {
-            _userInterface = userInterface;
+            _loginView = loginView;
             _authRepository = authRepository;
         }
 
@@ -25,13 +26,13 @@ namespace ProjectManagementSystem.Controllers
 
             while (true)
             {
-                this.UserName = _userInterface.GetUsername();
-                password = _userInterface.GetPassword();
+                this.UserName = _loginView.GetUsername();
+                password = _loginView.GetPassword();
 
                 // Directly use the repository to validate credentials
                 IsAutheticated = _authRepository.ValidateCredentials(this.UserName, password);
 
-                _userInterface.ShowAuthenticationResult(IsAutheticated);
+                _loginView.ShowAuthenticationResult(IsAutheticated);
 
 
                 if (IsAutheticated)
@@ -41,7 +42,7 @@ namespace ProjectManagementSystem.Controllers
 
 
                 count++;
-                _userInterface.ShowAuthenticationAttempts(count, maxAttempts);
+                _loginView.ShowAuthenticationAttempts(count, maxAttempts);
                 if (count == 3)
                 {
                     Environment.Exit(0);

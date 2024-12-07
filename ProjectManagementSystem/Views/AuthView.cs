@@ -1,7 +1,9 @@
-﻿namespace ProjectManagementSystem.Views
+﻿using ProjectManagementSystem;
+
+namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
-    public class UserInterface : BaseView
+    public class LoginView : BaseView
     {
         // Method to prompt the user for a username
         public string GetUsername()
@@ -14,37 +16,9 @@
         public string GetPassword()
         {
             Console.Write("Enter password: ");
-            return ReadPassword();
+            return Helpers.ReadPassword();
         }
 
-        // Helper method to read the password securely (without showing characters)
-        private string ReadPassword()
-        {
-            string password = "";
-            while (true)
-            {
-                ConsoleKeyInfo key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Enter)
-                {
-                    break;
-                }
-                else if (key.Key == ConsoleKey.Backspace)
-                {
-                    if (password.Length > 0)
-                    {
-                        password = password.Substring(0, password.Length - 1);
-                        Console.Write("\b \b");
-                    }
-                }
-                else
-                {
-                    password += key.KeyChar;
-                    Console.Write("*");
-                }
-            }
-            Console.WriteLine();
-            return password;
-        }
 
         // Method to display authentication result
         public void ShowAuthenticationResult(bool isAuthenticated)

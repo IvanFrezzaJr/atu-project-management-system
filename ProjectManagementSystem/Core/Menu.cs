@@ -332,7 +332,7 @@ namespace ProjectManagementSystem.Core
 
             if (Role.RoleType == "admin")
             {
-                var adminInterface = new AdminInterface();
+                var adminInterface = new AdminView();
                 var roleRepository = new RoleRepository(config);
                 var logRepository = new LogRepository(config);
                 var adminController = new AdminController(adminInterface, roleRepository, logRepository);

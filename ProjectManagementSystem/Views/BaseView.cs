@@ -32,7 +32,7 @@
 
         public string GetInput(string prompt)
         {
-            Console.WriteLine(prompt);
+            Console.Write(prompt + " > ");
             string text =  Console.ReadLine();
 
             if (CheckExit(text)){
