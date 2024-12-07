@@ -2,23 +2,42 @@
 {
     public class BaseView
     {
-        public string? Input(string text, string errorMessage)
+        const int MaxWidth = 40;
+
+
+        private string GettextCenter(string text)
         {
-            Console.Write($"{text}: ");
-            string name = Console.ReadLine();
-            if (name == "0")
-            {
-                return "0";
-            }
-
-            if (name == "" || name == null)
-            {
-                Console.WriteLine($"\n{errorMessage}\n");
-                return null;
-            }
-
-            return name;
+            int totalPadding = MaxWidth - text.Length;
+            int padLeft = totalPadding / 2; // Espaços à esquerda
+            int padRight = totalPadding - padLeft; // Espaços à direita
+            return text.PadLeft(padLeft + text.Length).PadRight(MaxWidth);
         }
+
+        public void ShowTitle(string title)
+        {
+            Console.WriteLine("");
+            Console.WriteLine(new string('=', MaxWidth));
+            Console.WriteLine($"{GettextCenter(title)}");
+            Console.WriteLine(new string('=', MaxWidth));
+        }
+
+        //public string? Input(string text, string errorMessage)
+        //{
+        //    Console.Write($"{text}: ");
+        //    string name = Console.ReadLine();
+        //    if (name == "0")
+        //    {
+        //        return "0";
+        //    }
+
+        //    if (name == "" || name == null)
+        //    {
+        //        Console.WriteLine($"\n{errorMessage}\n");
+        //        return null;
+        //    }
+
+        //    return name;
+        //}
 
         public bool CheckExit(string input)
         {
@@ -32,7 +51,8 @@
 
         public string GetInput(string prompt)
         {
-            Console.Write(prompt + " > ");
+            Console.WriteLine(prompt);
+            Console.Write("> ");
             string text =  Console.ReadLine();
 
             if (CheckExit(text)){

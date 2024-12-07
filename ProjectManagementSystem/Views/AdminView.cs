@@ -1,4 +1,7 @@
-﻿namespace ProjectManagementSystem.Views
+﻿using ProjectManagementSystem.Models;
+using System.Data.Entity.Core.Metadata.Edm;
+
+namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
     public class AdminView : BaseView
@@ -31,12 +34,18 @@
 
         public void ShowLogs(List<Alert> logs)
         {
-            Console.WriteLine($"\nSystem logs:\n");
-
             foreach (var log in logs)
             {
                 Console.WriteLine($"[{log.CreatedAt}] - '{log.Role}'.{log.Action}: {log.Message}");
             }
+        }
+
+        public void DisplayUserInfo(Role role)
+        {
+            Console.WriteLine($"UserName: {role.UserName}");
+            Console.WriteLine($"Password: ****** (secure)");
+            Console.WriteLine($"Role: {role.RoleType}");
+            Console.WriteLine($"Active: {role.Active}\n");
         }
 
 

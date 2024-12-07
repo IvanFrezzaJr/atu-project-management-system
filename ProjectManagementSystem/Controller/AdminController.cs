@@ -2,6 +2,8 @@
 using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
 using ProjectManagementSystem.Views;
+using System;
+using System.Data;
 using System.Data.SQLite;
 using System.Reflection;
 
@@ -32,6 +34,7 @@ namespace ProjectManagementSystem.Controllers
         {
             List<Alert> allLogs = this._logRepository.GetAllLogs();
 
+            _adminView.ShowTitle($"Show logs");
             this._adminView.ShowLogs(allLogs);
         }
 
@@ -62,20 +65,19 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
-                    // get teacher name and make validation
-                    string title = CapitalizeFirstLetter(typeRole);
-                    string userName = _adminView.GetInput($"What is the {title} name?");
+                    _adminView.ShowTitle($"{typeRole} registration");
+                    // get role name and make validation
+                    string userName = _adminView.GetInput($"Enter user's name:");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
 
                     // check user already exists
                     ValidateRoleExists(userName);
 
-
                     // check username is valid
-                    string password = _adminView.GetPasswordInput($"{title} password: ");
-                    if (userName == "<EXIT>") break;
-                    ValidateStringInput(userName);
+                    string password = _adminView.GetPasswordInput($"Enter user's password:");
+                    if (password == "<EXIT>") break;
+                    ValidateStringInput(password);
 
                     // insert Role in the database
                     Role role = new Role(
@@ -85,10 +87,18 @@ namespace ProjectManagementSystem.Controllers
                         typeRole
                     );
 
-
+                    // persist role into the database
                     this._roleRepository.AddRole(role);
-                    _adminView.DisplayMessage($"User {userName} was created by {Session.LoggedUser.UserName}");
 
+                    _adminView.ShowTitle($"Registration Successful!");
+                    _adminView.DisplayUserInfo(role);
+                    this.NotifyObservers(new Alert
+                    {
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"{Session.LoggedUser.UserName} inserted the {role.UserName} user successful."
+                    }, false);
+                    // Mostra o erro e solicita novamente
                     break;
                 }
                 catch (Exception ex) when (
@@ -112,40 +122,71 @@ namespace ProjectManagementSystem.Controllers
             }
         }
 
-        public bool ResetPassword()
+        public void ResetPassword()
         {
             while (true)
             {
-                string username = _adminView.GetValue("Enter role username: ");
-                bool exists = this._roleRepository.RoleExists(username);
-                bool result = this._adminView.ShowUserExistsResult(exists);
-                if (exists)
+                try { 
+                    _adminView.ShowTitle($"Perform password reset");
+                    string userName = _adminView.GetValue("Enter role username: ");
+                    if (userName == "<EXIT>") break;
+                    ValidateStringInput(userName);
+
+                    // check user already exists
+                    ValidateRoleNotExists(userName);
+
+                    string password = _adminView.GetPasswordInput($"Enter user's password:");
+                    if (password == "<EXIT>") break;
+                    ValidateStringInput(password);
+
+                    // reset password
+                    this._roleRepository.UpdateRolePassword(userName, password);
+                    _adminView.ShowTitle($"Password was reseted successful!");
+
+                    // Notify observers that the classroom already exists.
+                    this.NotifyObservers(new Alert
+                    {
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"{Session.LoggedUser.UserName} updated the {userName} password successful."
+                    }, false);
+
+                    break;
+
+                }
+                catch (Exception ex) when(
+                    ex is SQLiteException ||
+                    ex is ArgumentException ||
+                    ex is AccessViolationException ||
+                    ex is ArgumentNullException ||
+                    ex is ApplicationException)
                 {
-                    return false;
+                    this.NotifyObservers(new Alert
+                    {
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = ex.Message
+                    }, false);
+                    // Mostra o erro e solicita novamente
+                    _adminView.DisplayError(ex.Message);
                 }
 
-                string password = _adminView.GetValue($"Enter role password: ");
-
- 
-                this._roleRepository.UpdateRolePassword(username, password);
-     
-
-                // Notify observers that the classroom already exists.
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = $"{Session.LoggedUser.UserName} updated the {username} password successful."
-                }, true);
-
-                return true;
+                continue;
             }
         }
-
 
         private void ValidateRoleExists(string userName)
         {
             if (this._roleRepository.RoleExists(userName))
+            {
+                throw new ApplicationException("Role already exists");
+            }
+        }
+
+
+        private void ValidateRoleNotExists(string userName)
+        {
+            if (!this._roleRepository.RoleExists(userName))
             {
                 throw new ApplicationException("Role already exists");
             }

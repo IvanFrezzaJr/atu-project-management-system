@@ -31,8 +31,8 @@ namespace ProjectManagementSystem.Core
         // Abstract method to execute the menu item
         public virtual void Execute()
         {
-            Console.WriteLine($"--- {Name} ---");
-            Console.WriteLine($"quit: 0 + Enter\n");
+            //Console.WriteLine($">>{Name}");
+            Console.WriteLine($"[Help] Press '0' to quit\n");
         }
 
         // Helper method to handle user input with error handling
