@@ -1,22 +1,25 @@
-﻿using ProjectManagementSystem.Core;
+﻿using ProjectManagementSystem.Controllers;
 using ProjectManagementSystem.Models;
 
-namespace ProjectManagementSystem.Controller
+
+namespace ProjectManagementSystem.Core
 {
     // Class representing the third menu option
     public class CreateClassroomMenuItem : MenuItem
     {
 
-        public Staff Staff { get; set; }
+        public StaffController _staffController;
 
-        public CreateClassroomMenuItem(string name, Staff staff) : base(name)
+        public CreateClassroomMenuItem(string name, StaffController staffController) : base(name)
         {
-            Staff = staff;
+            _staffController = staffController;
         }
 
         public override void Execute()
         {
             base.Execute();
+
+            this._staffController.CreateClassroom();
 
             //while (true)
             //{
@@ -43,18 +46,19 @@ namespace ProjectManagementSystem.Controller
 
     public class AssignStudentToClassroomMenuItem : MenuItem
     {
+        public StaffController _staffController;
 
-        public Staff Staff { get; set; }
-
-        public AssignStudentToClassroomMenuItem(string name, Staff staff) : base(name)
+        public AssignStudentToClassroomMenuItem(string name, StaffController staffController) : base(name)
         {
-            Staff = staff;
+            _staffController = staffController;
         }
 
         // Executes the action for Option 3
         public override void Execute()
         {
             base.Execute();
+
+            this._staffController.AssignRoleToClassroom();
 
             //while (true)
             //{
@@ -90,17 +94,19 @@ namespace ProjectManagementSystem.Controller
     public class StaffMarkStudentAttendanceMenuItem : MenuItem
     {
 
-        public Staff Staff { get; set; }
+        public StaffController _staffController;
 
-        public StaffMarkStudentAttendanceMenuItem(string name, Staff staff) : base(name)
+        public StaffMarkStudentAttendanceMenuItem(string name, StaffController staffController) : base(name)
         {
-            Staff = staff;
+            _staffController = staffController;
         }
 
         // Executes the action for Option 3
         public override void Execute()
         {
             base.Execute();
+
+            _staffController.MarkStudentAttendance();
 
             //while (true)
             //{

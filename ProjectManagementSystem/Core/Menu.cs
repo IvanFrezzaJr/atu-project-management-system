@@ -251,20 +251,20 @@ namespace ProjectManagementSystem.Core
     }
 
     // Builder class for the staff menu
-    class MenuStaff : MenuBuilder
+    class MenuStaffBuilder : MenuBuilder
     {
-        public Staff Staff { get; set; }
+        public StaffController _staffController;
 
-        public MenuStaff(Staff staff)
+        public MenuStaffBuilder(StaffController staffController)
         {
-            Staff = staff;
+            _staffController = staffController;
         }
 
         public override void Build()
         {
-            MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", Staff);
-            MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", Staff);
-            MenuItem StaffOption3 = new StaffMarkStudentAttendanceMenuItem("Mark Student Attendance", Staff);
+            MenuItem StaffOption1 = new CreateClassroomMenuItem("Create New Classroom", _staffController);
+            MenuItem StaffOption2 = new AssignStudentToClassroomMenuItem("Assign Student to Classroom", _staffController);
+            MenuItem StaffOption3 = new StaffMarkStudentAttendanceMenuItem("Mark Student Attendance", _staffController);
 
             mainMenu.AddItem(StaffOption1);
             mainMenu.AddItem(StaffOption2);
@@ -356,17 +356,12 @@ namespace ProjectManagementSystem.Core
             }
             else if (Role.RoleType == "staff")
             {
-                Staff staff = new Staff(
-                    Role.Id,
-                    Role.UserName,
-                    Role.Password,
-                    Role.Active,
-                    Role.RoleType
-                    );
+                var staffView = new StaffView();
+                var roleRepository = new RoleRepository(config);
+                var classroomRepository = new ClassroomRepository(config);
+                var staffController = new StaffController(staffView, roleRepository, classroomRepository);
 
-                this.AttachLogger(staff);
-
-                MenuStaff menuStaff = new MenuStaff(staff);
+                MenuStaffBuilder menuStaff = new MenuStaffBuilder(staffController);
                 menuStaff.Build();
                 return menuStaff;
             }

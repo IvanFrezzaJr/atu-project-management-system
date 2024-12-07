@@ -54,7 +54,8 @@ namespace ProjectManagementSystem.Controllers
                     ValidatePermission(roleResult.RoleType);
 
                     ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
-                    
+                    ValidateObjectInstance(classroomResult, $"'{classroom}' classroom not found");
+
                     bool status = this._classroomRepository.AddRoleToClassroom(classroomResult.Id, roleResult.Id, roleResult.RoleType);
                     ValidateCondition(
                         status,

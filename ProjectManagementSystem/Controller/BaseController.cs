@@ -47,6 +47,19 @@ namespace ProjectManagementSystem.Controller
             }
         }
 
+        protected void ValidateCondition(bool condition, string message)
+        {
+            if (condition == true)
+            {
+                this.NotifyObservers(new Alert
+                {
+                    Role = this.GetType().Name,
+                    Action = MethodBase.GetCurrentMethod().Name,
+                    Message = "Classroom already exists"
+                }, false);
+                throw new ApplicationException(message);
+            }
+        }
         protected void ValidateObjectInstance(object obj, string message = null, Action<string> successCallback = null)
         {
             if (obj == null)

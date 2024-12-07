@@ -25,21 +25,7 @@ namespace ProjectManagementSystem
         }
 
         // Method to check if classroom exists
-        public bool ClassroomExists(string name)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-            {
-                connection.Open();
-                string query = "SELECT COUNT(1) FROM Classroom WHERE Name = @Name";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", name);
-                    long count = (long)command.ExecuteScalar();
-                    return count > 0; // Returns true if the user exists
-                }
-            }
-        }
+       
         // Method to retrieve a user by username
 
         public RoleSchema GetUserByName(string _userName)
@@ -165,61 +151,7 @@ namespace ProjectManagementSystem
             return true;
         }
    
-        public void AddAttendance(int enrollmentId, DateTime date, bool present)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection($"Data Source={_dbFile};Version=3;"))
-                {
-                    connection.Open();
-                    string query = "INSERT INTO Attendance (EnrollmentId, Date, Present) VALUES (@EnrollmentId, @Date, @Present)";
-
-                    using (var command = new SQLiteCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@EnrollmentId", enrollmentId);
-                        command.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-                        command.Parameters.AddWithValue("@Present", present ? 1 : 0);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error adding attendance: {ex.Message}", ex);
-            }
-        }
-
-     
-        public int? GetEnrollmentId(int classroomId, int roleId)
-        {
-            string connectionString = "Data Source=database.db;Version=3;";
-
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = @"
-                SELECT Id 
-                FROM Enrollment 
-                WHERE ClassroomId = @ClassroomId AND RoleId = @RoleId
-                LIMIT 1";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
-                    command.Parameters.AddWithValue("@RoleId", roleId);
-
-                    var result = command.ExecuteScalar();
-                    if (result != null && int.TryParse(result.ToString(), out int id))
-                    {
-                        return id;
-                    }
-
-                    return null;
-                }
-            }
-        }
-
+          
         public AssignmentSchema GetAssignmentByName(string assignment)
         {
             string connectionString = "Data Source=database.db;Version=3;";
