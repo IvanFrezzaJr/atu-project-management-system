@@ -1,6 +1,3 @@
-using System.ComponentModel.Design;
-using System.Reflection;
-
 namespace ProjectManagementSystem.Models
 {
     public class Student : Role

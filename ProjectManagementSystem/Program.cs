@@ -2,8 +2,8 @@
 using ProjectManagementSystem.Controllers;
 using ProjectManagementSystem.Core;
 using ProjectManagementSystem.Database;
-using ProjectManagementSystem.Views;
 using ProjectManagementSystem.Models;
+using ProjectManagementSystem.Views;
 
 /* IMPORTANT
  * 

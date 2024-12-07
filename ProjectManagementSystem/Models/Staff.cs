@@ -1,6 +1,3 @@
-using System.Reflection;
-using System.Xml.Linq;
-
 namespace ProjectManagementSystem.Models
 {
     /// <summary>
@@ -13,6 +10,11 @@ namespace ProjectManagementSystem.Models
 
         public Staff(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
+        // Overload: Construtor with Id default value
+        public Staff(string userName, string password, bool active, string roleType)
+            : this(0, userName, password, active, "staff")
+        {
+        }
         //public bool CreateClassroom(string name)
         //{
         //    // Check if the classroom already exists in the database.

@@ -1,12 +1,8 @@
-﻿using ProjectManagementSystem.Database;
-using ProjectManagementSystem.Views;
-using ProjectManagementSystem.Core;
+﻿using ProjectManagementSystem.Controller;
+using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
+using ProjectManagementSystem.Views;
 using System.Reflection;
-using ProjectManagementSystem.Controller;
-using System;
-using System.Collections.Generic;
-using System.Data;
 
 namespace ProjectManagementSystem.Controllers
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectManagementSystem.Models;
-using ProjectManagementSystem.Core;
-using ProjectManagementSystem.Views;
+﻿using ProjectManagementSystem.Core;
 using System.Reflection;
 
 namespace ProjectManagementSystem.Controller

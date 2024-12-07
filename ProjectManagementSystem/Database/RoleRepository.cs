@@ -1,10 +1,5 @@
-﻿using System.Data.SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectManagementSystem.Models;
+﻿using ProjectManagementSystem.Models;
+using System.Data.SQLite;
 
 namespace ProjectManagementSystem.Database
 {

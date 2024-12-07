@@ -1,5 +1,4 @@
 ﻿using ProjectManagementSystem.Controllers;
-using ProjectManagementSystem.Models;
 
 
 namespace ProjectManagementSystem.Core

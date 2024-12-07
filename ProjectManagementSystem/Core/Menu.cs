@@ -4,7 +4,6 @@ using ProjectManagementSystem.Core.Interfaces;
 using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
 using ProjectManagementSystem.Views;
-using System.Drawing;
 
 
 namespace ProjectManagementSystem.Core

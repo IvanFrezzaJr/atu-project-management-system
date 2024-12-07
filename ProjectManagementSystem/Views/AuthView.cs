@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectManagementSystem.Views
+﻿namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
     public class UserInterface : BaseView

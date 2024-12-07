@@ -1,7 +1,3 @@
-using System;
-using System.Data;
-using System.Reflection;
-
 namespace ProjectManagementSystem.Models
 {
     public class Teacher : Role

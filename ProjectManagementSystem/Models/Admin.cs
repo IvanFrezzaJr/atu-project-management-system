@@ -1,6 +1,3 @@
-using ProjectManagementSystem;
-
-
 namespace ProjectManagementSystem.Models
 {
     /// <summary>
