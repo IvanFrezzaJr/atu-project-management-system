@@ -18,25 +18,25 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string name = this.Input("Classroom name", "Enter a name for a classroom");
+            //while (true)
+            //{
+            //    string name = this.Input("Classroom name", "Enter a name for a classroom");
 
-                if (name == "0")
-                    break;
+            //    if (name == "0")
+            //        break;
 
-                if (name == null)
-                    continue;
+            //    if (name == null)
+            //        continue;
 
 
-                bool status = this.Staff.CreateClassroom(name);
-                if (status)
-                {
-                    System.Console.WriteLine($"\nClassroom '{name}' created successful\n");
-                    break;
-                }
-                continue;
-            }
+            //    bool status = this.Staff.CreateClassroom(name);
+            //    if (status)
+            //    {
+            //        System.Console.WriteLine($"\nClassroom '{name}' created successful\n");
+            //        break;
+            //    }
+            //    continue;
+            //}
 
         }
     }
@@ -56,33 +56,33 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (clasroom == "0")
-                    break;
+            //while (true)
+            //{
+            //    string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //    if (clasroom == "0")
+            //        break;
 
-                if (clasroom == null)
-                    continue;
-
-
-                string role = this.Input("What is Student name?", "Enter a role name");
-                if (role == "0")
-                    break;
-
-                if (role == null)
-                    continue;
+            //    if (clasroom == null)
+            //        continue;
 
 
+            //    string role = this.Input("What is Student name?", "Enter a role name");
+            //    if (role == "0")
+            //        break;
 
-                bool status = this.Staff.AssignRoleToClassroom(clasroom, role, "student");
-                if (status)
-                {
-                    System.Console.WriteLine($"\n'{role}' assigned succesful to '{clasroom}' classroom\n");
-                    break;
-                }
-                continue;
-            }
+            //    if (role == null)
+            //        continue;
+
+
+
+            //    bool status = this.Staff.AssignRoleToClassroom(clasroom, role, "student");
+            //    if (status)
+            //    {
+            //        System.Console.WriteLine($"\n'{role}' assigned succesful to '{clasroom}' classroom\n");
+            //        break;
+            //    }
+            //    continue;
+            //}
 
         }
     }
@@ -102,33 +102,33 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (clasroom == "0")
-                    break;
+            //while (true)
+            //{
+            //    string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //    if (clasroom == "0")
+            //        break;
 
-                if (clasroom == null)
-                    continue;
-
-
-                string role = this.Input("What is Student name?", "Enter a role name");
-                if (role == "0")
-                    break;
-
-                if (role == null)
-                    continue;
+            //    if (clasroom == null)
+            //        continue;
 
 
+            //    string role = this.Input("What is Student name?", "Enter a role name");
+            //    if (role == "0")
+            //        break;
 
-                bool status = this.Staff.MarkStudentAttendance(clasroom, role, "student");
-                if (status)
-                {
-                    System.Console.WriteLine($"\nMarked attendance to '{role}' in '{clasroom}' classroom\n");
-                    break;
-                }
-                continue;
-            }
+            //    if (role == null)
+            //        continue;
+
+
+
+            //    bool status = this.Staff.MarkStudentAttendance(clasroom, role, "student");
+            //    if (status)
+            //    {
+            //        System.Console.WriteLine($"\nMarked attendance to '{role}' in '{clasroom}' classroom\n");
+            //        break;
+            //    }
+            //    continue;
+            //}
 
         }
     }

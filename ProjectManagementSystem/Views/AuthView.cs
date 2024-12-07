@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
-    public class UserInterface
+    public class UserInterface : BaseView
     {
         // Method to prompt the user for a username
         public string GetUsername()

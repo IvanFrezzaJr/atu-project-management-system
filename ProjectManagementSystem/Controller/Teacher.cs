@@ -18,33 +18,33 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (clasroom == "0")
-                    break;
+            //while (true)
+            //{
+            //    string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //    if (clasroom == "0")
+            //        break;
 
-                if (clasroom == null)
-                    continue;
-
-
-                string role = this.Input("What is Student name?", "Enter a role name");
-                if (role == "0")
-                    break;
-
-                if (role == null)
-                    continue;
+            //    if (clasroom == null)
+            //        continue;
 
 
+            //    string role = this.Input("What is Student name?", "Enter a role name");
+            //    if (role == "0")
+            //        break;
 
-                bool status = this.Teacher.MarkStudentAttendance(clasroom, role, "student");
-                if (status)
-                {
-                    System.Console.WriteLine($"\nMarked attendance to '{role}' in '{clasroom}' classroom\n");
-                    break;
-                }
-                continue;
-            }
+            //    if (role == null)
+            //        continue;
+
+
+
+            //    bool status = this.Teacher.MarkStudentAttendance(clasroom, role, "student");
+            //    if (status)
+            //    {
+            //        System.Console.WriteLine($"\nMarked attendance to '{role}' in '{clasroom}' classroom\n");
+            //        break;
+            //    }
+            //    continue;
+            //}
 
         }
     }
@@ -64,54 +64,54 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (clasroom == "0")
-                    break;
+            //    while (true)
+            //    {
+            //        string clasroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //        if (clasroom == "0")
+            //            break;
 
-                if (clasroom == null)
-                    continue;
-
-
-                string description = this.Input("Task description", "Enter a task description");
-                if (description == "0")
-                    break;
-
-                if (description == null)
-                    continue;
-
-                float maxScore = 0;
-                try
-                {
-                    maxScore = float.Parse(this.Input("Max Score", "Enter a max score"));
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Error: The value is not a valid number");
-                    continue;
-                }
-                catch (OverflowException)
-                {
-                    Console.WriteLine("Error: The value entered is too large or too small for a float.");
-                    continue;
-                }
-                if (maxScore == 0)
-                    break;
+            //        if (clasroom == null)
+            //            continue;
 
 
-                bool status = this.Teacher.AddAssignment(clasroom, Teacher.UserName, description, maxScore);
-                if (status)
-                {
-                    System.Console.WriteLine($"\nAssignment {description} added with successful\n");
-                    break;
-                }
-                continue;
-            }
+            //        string description = this.Input("Task description", "Enter a task description");
+            //        if (description == "0")
+            //            break;
 
+            //        if (description == null)
+            //            continue;
+
+            //        float maxScore = 0;
+            //        try
+            //        {
+            //            maxScore = float.Parse(this.Input("Max Score", "Enter a max score"));
+            //        }
+            //        catch (FormatException)
+            //        {
+            //            Console.WriteLine("Error: The value is not a valid number");
+            //            continue;
+            //        }
+            //        catch (OverflowException)
+            //        {
+            //            Console.WriteLine("Error: The value entered is too large or too small for a float.");
+            //            continue;
+            //        }
+            //        if (maxScore == 0)
+            //            break;
+
+
+            //        bool status = this.Teacher.AddAssignment(clasroom, Teacher.UserName, description, maxScore);
+            //        if (status)
+            //        {
+            //            System.Console.WriteLine($"\nAssignment {description} added with successful\n");
+            //            break;
+            //        }
+            //        continue;
+            //    }
+
+            //}
         }
     }
-
     public class SetStudentGradeMenuItem : MenuItem
     {
 
@@ -127,60 +127,60 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string classroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (classroom == "0")
-                    break;
+            //while (true)
+            //{
+            //    string classroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //    if (classroom == "0")
+            //        break;
 
-                if (classroom == null)
-                    continue;
-
-
-                List<AssignmentSchema> assignmentResult = this.Teacher.GetAssignmantAvailable(classroom);
-                DisplayAssignmentsMenu(assignmentResult);
-                string assignment = this.Input("What is Assignment description?", "Enter a Assignment name");
-                if (assignment == "0")
-                    break;
-
-                if (assignment == null)
-                    continue;
+            //    if (classroom == null)
+            //        continue;
 
 
-                string role = this.Input("What is Student name?", "Enter a Student name");
-                if (role == "0")
-                    break;
+            //    List<AssignmentSchema> assignmentResult = this.Teacher.GetAssignmantAvailable(classroom);
+            //    DisplayAssignmentsMenu(assignmentResult);
+            //    string assignment = this.Input("What is Assignment description?", "Enter a Assignment name");
+            //    if (assignment == "0")
+            //        break;
 
-                if (role == null)
-                    continue;
+            //    if (assignment == null)
+            //        continue;
 
 
-                float score = 0;
-                try
-                {
-                    score = float.Parse(this.Input("Max Score", "Enter a max score"));
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Error: The value is not a valid number");
-                    continue;
-                }
-                catch (OverflowException)
-                {
-                    Console.WriteLine("Error: The value entered is too large or too small for a float.");
-                    continue;
-                }
-                if (score == 0)
-                    break;
+            //    string role = this.Input("What is Student name?", "Enter a Student name");
+            //    if (role == "0")
+            //        break;
 
-                bool status = this.Teacher.SetStudentGrade(classroom, assignment, role, "student", score);
-                if (status)
-                {
-                    System.Console.WriteLine($"\nSet score to '{role}' in '{classroom}' classroom\n");
-                    break;
-                }
-                continue;
-            }
+            //    if (role == null)
+            //        continue;
+
+
+            //    float score = 0;
+            //    try
+            //    {
+            //        score = float.Parse(this.Input("Max Score", "Enter a max score"));
+            //    }
+            //    catch (FormatException)
+            //    {
+            //        Console.WriteLine("Error: The value is not a valid number");
+            //        continue;
+            //    }
+            //    catch (OverflowException)
+            //    {
+            //        Console.WriteLine("Error: The value entered is too large or too small for a float.");
+            //        continue;
+            //    }
+            //    if (score == 0)
+            //        break;
+
+            //    bool status = this.Teacher.SetStudentGrade(classroom, assignment, role, "student", score);
+            //    if (status)
+            //    {
+            //        System.Console.WriteLine($"\nSet score to '{role}' in '{classroom}' classroom\n");
+            //        break;
+            //    }
+            //    continue;
+            //}
 
         }
 
@@ -223,35 +223,35 @@ namespace ProjectManagementSystem.Controller
         {
             base.Execute();
 
-            while (true)
-            {
-                string classroom = this.Input("What is the Classroom name?", "Enter a classroom name");
-                if (classroom == "0")
-                    break;
+            //while (true)
+            //{
+            //    string classroom = this.Input("What is the Classroom name?", "Enter a classroom name");
+            //    if (classroom == "0")
+            //        break;
 
-                if (classroom == null)
-                    continue;
+            //    if (classroom == null)
+            //        continue;
 
-                this.ShowClassroomGrades(classroom);
-                break;
-            }
+            //    this.ShowClassroomGrades(classroom);
+            //    break;
+            //}
 
         }
-        public void ShowClassroomGrades(string classroomName)
-        {
-            var submissions = this.Teacher.DisplayStudentSubmissions(classroomName);
+        //public void ShowClassroomGrades(string classroomName)
+        //{
+        //    var submissions = this.Teacher.DisplayStudentSubmissions(classroomName);
 
-            Console.WriteLine($"\nSubmissions for Classroom: {classroomName}\n");
+        //    Console.WriteLine($"\nSubmissions for Classroom: {classroomName}\n");
 
-            foreach (var submission in submissions)
-            {
-                Console.WriteLine($"Student: {submission.StudentName}");
-                Console.WriteLine($"Assessment: {submission.AssessmentDescription}");
-                Console.WriteLine($"Score: {submission.ScoreStatus} / {submission.MaxScore}");
-                Console.WriteLine(new string('-', 30)); // Separator line
-            }
-        }
+        //    foreach (var submission in submissions)
+        //    {
+        //        Console.WriteLine($"Student: {submission.StudentName}");
+        //        Console.WriteLine($"Assessment: {submission.AssessmentDescription}");
+        //        Console.WriteLine($"Score: {submission.ScoreStatus} / {submission.MaxScore}");
+        //        Console.WriteLine(new string('-', 30)); // Separator line
+        //    }
+        //}
     }
+ }
 
 
-}

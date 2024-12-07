@@ -20,35 +20,41 @@ namespace ProjectManagementSystem.Models
         public Admin(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
 
-        /// <summary>
-        /// Prints the logs of all alerts received by the admin.
-        /// </summary>
-        public List<Alert> PrintLogs()
+        // Overload: Construtor with Id default value
+        public Admin(string userName, string password, bool active, string roleType)
+            : this(0, userName, password, active, "admin") 
         {
-            return this.database.GetAllLogs();
+        }
+
+        ///// <summary>
+        ///// Prints the logs of all alerts received by the admin.
+        ///// </summary>
+        //public List<Alert> PrintLogs()
+        //{
+        //    return this.database.GetAllLogs();
            
-        }
+        //}
 
 
-        public bool CreateRole(string username, string password, string roletype)
-        {
-            bool exists = this.database.RoleExists(username);
+        //public bool CreateRole(string username, string password, string roletype)
+        //{
+        //    bool exists = this.database.RoleExists(username);
 
-            if (exists)
-            {
-                System.Console.WriteLine("\nUser already exists\n");
-                return false;
-            }
+        //    if (exists)
+        //    {
+        //        System.Console.WriteLine("\nUser already exists\n");
+        //        return false;
+        //    }
 
-            this.database.InsertRole(username, password, roletype);
-            return true;
-        }
+        //    this.database.InsertRole(username, password, roletype);
+        //    return true;
+        //}
 
 
-        public bool ResetPassword(string username, string password)
-        {
-            this.database.UpdateRolePassword(username, password);
-            return true;
-        }
+        //public bool ResetPassword(string username, string password)
+        //{
+        //    //this.database.UpdateRolePassword(username, password);
+        //    return true;
+        //}
     }
 }

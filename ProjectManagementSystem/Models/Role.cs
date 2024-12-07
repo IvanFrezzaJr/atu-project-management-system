@@ -30,6 +30,12 @@ namespace ProjectManagementSystem.Models
         {
             this.RoleType = RoleType;
         }
+
+        // Overload: Construtor with Id default value
+        public Role(string userName, string password, bool active, string roleType)
+            : this(0, userName, password, active, roleType)
+        {
+        }
     }
 }
 

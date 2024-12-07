@@ -1,6 +1,9 @@
 ﻿using ProjectManagementSystem.Controller;
+using ProjectManagementSystem.Controllers;
 using ProjectManagementSystem.Core.Interfaces;
+using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
+using ProjectManagementSystem.Views;
 using System.Drawing;
 
 
@@ -198,23 +201,23 @@ namespace ProjectManagementSystem.Core
     }
 
     // Builder class for the admin menu
-    class MenuAdmin : MenuBuilder
+    class MenuAdminBuilder : MenuBuilder
     {
-        public Admin Admin { get; set; }
+        private readonly AdminController _adminController;
 
-        public MenuAdmin(Admin admin)
+        public MenuAdminBuilder(AdminController adminController)
         {
-            Admin = admin;
+            _adminController = adminController;
         }
 
         public override void Build()
         {
-            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", Admin);
-            MenuItem ITOption2 = new CreateStaffMenuItem("Create Staff User", Admin);
-            MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", Admin);
-            MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", Admin);
-            MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", Admin);
-            MenuItem ITOption6 = new ShowLogsMenuItem("Show logs", Admin);
+            MenuItem ITOption1 = new CreatePrincipalMenuItem("Create Principal User", _adminController);
+            MenuItem ITOption2 = new CreateStaffMenuItem("Create Staff User", _adminController);
+            MenuItem ITOption3 = new CreateTeacherMenuItem("Create Teacher User", _adminController);
+            MenuItem ITOption4 = new CreateStudentMenuItem("Create Student User", _adminController);
+            MenuItem ITOption5 = new ResetPasswordMenuItem("Perform Password Reset for Users", _adminController);
+            MenuItem ITOption6 = new ShowLogsMenuItem("Show logs", _adminController);
 
             mainMenu.AddItem(ITOption1);
             mainMenu.AddItem(ITOption2);
@@ -226,20 +229,20 @@ namespace ProjectManagementSystem.Core
     }
 
     // Builder class for the principal menu
-    class MenuPrincipal : MenuBuilder
+    class MenuPrincipalBuilder : MenuBuilder
     {
-        public Principal Principal { get; set; }
+        private readonly PrincipalController _principalController;
 
-        public MenuPrincipal(Principal principal)
+        public MenuPrincipalBuilder(PrincipalController principalController)
         {
-            Principal = principal;
+            _principalController = principalController;
         }
 
         public override void Build()
         {
-            MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", Principal);
-            MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", Principal);
-            MenuItem PrincipalOption3 = new ShowGradeByClassroomMenuItem("View Grades (Read-Only Access)", Principal);
+            MenuItem PrincipalOption1 = new AssignTeacherToClassroomMenuItem("Assign Teacher to Classroom", _principalController);
+            MenuItem PrincipalOption2 = new ActiveRoleMenuItem("Enable/Disable User Accounts", _principalController);
+            MenuItem PrincipalOption3 = new ShowGradeByClassroomMenuItem("View Grades (Read-Only Access)", _principalController);
 
             mainMenu.AddItem(PrincipalOption1);
             mainMenu.AddItem(PrincipalOption2);
@@ -326,37 +329,30 @@ namespace ProjectManagementSystem.Core
         // Builds the appropriate menu based on the role
         public MenuBuilder Build()
         {
+            var config = new DatabaseConfig();
+
             if (Role.RoleType == "admin")
             {
-                Admin admin = new Admin(
-                    Role.Id,
-                    Role.UserName,
-                    Role.Password,
-                    Role.Active,
-                    Role.RoleType
-                    );
+                var adminInterface = new AdminInterface();
+                var roleRepository = new RoleRepository(config);
+                var logRepository = new LogRepository(config);
+                var adminController = new AdminController(adminInterface, roleRepository, logRepository);
 
-                this.AttachLogger(admin);
-
-                MenuAdmin menuAdmin = new MenuAdmin(admin);
+                MenuAdminBuilder menuAdmin = new MenuAdminBuilder(adminController);
                 menuAdmin.Build();
                 return menuAdmin;
             }
             else if (Role.RoleType == "principal")
             {
-                Principal principal = new Principal(
-                    Role.Id,
-                    Role.UserName,
-                    Role.Password,
-                    Role.Active,
-                    Role.RoleType
-                    );
+                var principalView = new PrincipalView();
+                var roleRepository = new RoleRepository(config);
+                var classroomRepository = new ClassroomRepository(config);
+                var principalController = new PrincipalController(principalView, roleRepository, classroomRepository);
 
-                this.AttachLogger(principal);
-
-                MenuPrincipal menuPrincipal = new MenuPrincipal(principal);
+                MenuPrincipalBuilder menuPrincipal = new MenuPrincipalBuilder(principalController);
                 menuPrincipal.Build();
                 return menuPrincipal;
+
             }
             else if (Role.RoleType == "staff")
             {

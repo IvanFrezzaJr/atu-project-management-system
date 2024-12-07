@@ -1,6 +1,6 @@
 using System.Data.SQLite;
 
-namespace ProjectManagementSystem
+namespace ProjectManagementSystem._to_be_deleted
 {
     // Class responsible for handling user authentication
     public class Authentication
