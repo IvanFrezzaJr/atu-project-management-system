@@ -5,17 +5,11 @@ namespace ProjectManagementSystem.Views
     // Class responsible for handling user input/output
     public class LoginView : BaseView
     {
-        // Method to prompt the user for a username
-        public string GetUsername()
-        {
-            Console.Write("Enter username: ");
-            return Console.ReadLine();
-        }
 
         // Method to prompt the user for a password (securely)
-        public string GetPassword()
+        public string GetPasswordInput(string question)
         {
-            Console.Write("Enter password: ");
+            Console.Write(question);
             return Helpers.ReadPassword();
         }
 
@@ -25,12 +19,14 @@ namespace ProjectManagementSystem.Views
         {
             if (isAuthenticated)
             {
-                Console.WriteLine("Authentication successful!");
+
+                DisplayTitle("Authentication successful!\n");
             }
             else
             {
-                Console.WriteLine("Authentication failed! Invalid username or password.");
+                Console.WriteLine("[WARNING] Authentication failed! Invalid username or password.\n");
             }
+            
         }
 
         public void ShowAuthenticationAttempts(int attempts, int maxAttempts = 3)

@@ -22,12 +22,12 @@ namespace ProjectManagementSystem.Controllers
         {
             int count = 0;
             int maxAttempts = 3;
-            string password = string.Empty;
 
             while (true)
             {
-                this.UserName = _loginView.GetUsername();
-                password = _loginView.GetPassword();
+                _loginView.DisplayTitle("LOGIN SYSTEM");
+                UserName = _loginView.GetInput("Enter username:");
+                string password = _loginView.GetPasswordInput($"Enter password:");
 
                 // Directly use the repository to validate credentials
                 IsAutheticated = _authRepository.ValidateCredentials(this.UserName, password);

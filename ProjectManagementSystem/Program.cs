@@ -37,17 +37,16 @@ internal class Program
         var config = new DatabaseConfig();
         config.CreateDatabase();
 
-        var userInterface = new LoginView();
+        var userView = new LoginView();
         var authRepository = new AuthRepository(config);
-        var authenticationController = new AuthenticationController(userInterface, authRepository);
+        var authenticationController = new AuthenticationController(userView, authRepository);
 
         // Start the authentication process
         authenticationController.AuthenticateUser();
-        string currentUserName = authenticationController.UserName;
 
         // Retrieve the role details of the authenticated user from the database.
         var roleRepository = new RoleRepository(config);
-        Role userRole = roleRepository.GetRoleByUserName(currentUserName);
+        Role userRole = roleRepository.GetRoleByUserName(authenticationController.UserName);
 
         // set session
         Session.LoggedUser = userRole;
