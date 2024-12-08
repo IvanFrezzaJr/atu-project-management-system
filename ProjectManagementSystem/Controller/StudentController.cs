@@ -45,7 +45,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateStringInput(assessment);
 
                     Assessment assessmentInstance = this._classroomRepository.GetAssignmentByName(assessment);
-                    ValidateObjectInstance(assessmentInstance);
+                    ValidateObjectInstance(assessmentInstance, "Assessment not found");
 
                     // get filepath
                     string filePath = _studentView.GetInput("What is the filepath?");
@@ -93,7 +93,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateStringInput(classroom);
 
                     Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
-                    ValidateObjectInstance(classroomInstance);
+                    ValidateObjectInstance(classroomInstance, "Classroom not found");
 
                     int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomInstance.Id, Session.LoggedUser.Id);
                     if (enrollmentId == null)

@@ -1,42 +1,35 @@
 ﻿using ProjectManagementSystem.Models;
+using System.Data;
 
 namespace ProjectManagementSystem.Views
 {
     // Class responsible for handling user input/output
     public class TeacherView : BaseView
     {
-        public void ShowSubmissionsResult(List<dynamic> submissions)
+       
+
+        public void DisplayAssessmentResult(List<Assessment> assessments)
         {
-            foreach (var submission in submissions)
-            {
-                Console.WriteLine($"Student: {submission.StudentName}");
-                Console.WriteLine($"Assessment: {submission.AssessmentDescription}");
-                Console.WriteLine($"Score: {submission.ScoreStatus} / {submission.MaxScore}");
-                Console.WriteLine(new string('-', 30)); // Separator line
-            }
-        }
+            Console.WriteLine(new string('=', 50));
+            Console.WriteLine(
+                $"|{GettextCenter("Id", 5)}" +
+                $"|{GettextCenter("Classroom", 10)}" +
+                $"|{GettextCenter("Assessment", 20)}" +
+                $"|{GettextCenter("MaxScore", 10)}|");
 
-
-        public void ShowAssignmentsMenu(List<Assessment> assignments)
-        {
-            Console.WriteLine("Assignments Menu:");
-            Console.WriteLine("=================");
-
-            if (assignments.Count == 0)
+            foreach (var assessment in assessments)
             {
-                Console.WriteLine("- No assignments found.");
+                Console.WriteLine(
+                    $"|{GettextCenter(assessment.Id.ToString(), 5)}" +
+                    $"|{GettextCenter(assessment.Classroom, 10)}" +
+                    $"|{GettextCenter(assessment.Description, 20)}" +
+                    $"|{GettextCenter(assessment.MaxScore.ToString(), 10)}|");
             }
-            else
-            {
-                foreach (var assignment in assignments)
-                {
-                    Console.WriteLine($"- ID: {assignment.Id}");
-                    Console.WriteLine($"  Classroom: {assignment.Classroom}");
-                    Console.WriteLine($"  Description: {assignment.Description}");
-                    Console.WriteLine($"  Max Score: {assignment.MaxScore}");
-                    Console.WriteLine("-------------------------------\n");
-                }
-            }
+            string total = $"Total: {assessments.Count.ToString()}";
+            Console.WriteLine(new string('=', 50));
+            Console.WriteLine($"|{GettextCenter(total, 50)}|");
+            Console.WriteLine(new string('=', 50));
+            Console.WriteLine("");
         }
 
     }

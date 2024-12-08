@@ -89,7 +89,7 @@ namespace ProjectManagementSystem.Database
             return true;
         }
 
-        public int? GetEnrollmentId(int classroomId, int roleId)
+        public int GetEnrollmentId(int classroomId, int roleId)
         {
             using (var connection = _config.CreateConnection())
             {
@@ -112,7 +112,7 @@ namespace ProjectManagementSystem.Database
                         return id;
                     }
 
-                    return null;
+                    return 0;
                 }
             }
         }
@@ -322,6 +322,54 @@ namespace ProjectManagementSystem.Database
                 }
             }
         }
+
+
+        public Submission GetSubmissionById(int submissionId)
+        {
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT
+                  Id,
+                  AssessmentId,
+                  StudentId,
+                  Score,
+                  File
+                FROM Submission
+                WHERE Id = @SubmissionId";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@SubmissionId", submissionId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Submission
+                            {
+                                Id = reader.GetInt32(0),
+                                AssessmentId = reader.GetInt32(0),
+                                StudentId = reader.GetInt32(0),
+                                Score = (float)reader.GetDouble(2),
+                                File = reader.GetString(1),  
+                            };
+                        }
+
+                        else
+                        {
+                            return null; // Returns null if the user is not found
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+
 
         public bool UpdateScore(int assessmentId, int studentId, float score)
         {

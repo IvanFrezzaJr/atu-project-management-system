@@ -56,7 +56,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidateObjectInstance(roleResult);
+                    ValidateObjectInstance(roleResult, "Role not found");
 
                     // Check permissions
                     List<string> roleList = new List<string> { "teacher"};
@@ -64,7 +64,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // get classrom and validate it
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
-                    ValidateObjectInstance(classroomResult);
+                    ValidateObjectInstance(classroomResult, "Classroom not found");
                     ValidateEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
 
                     // add role to classroom
@@ -96,7 +96,7 @@ namespace ProjectManagementSystem.Controllers
                         Message = ex.Message
                     }, true);
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError(ex.Message);
+                    _principalView.DisplayError($"[ERROR] {ex.Message}");
                 }
 
                 continue;
@@ -118,7 +118,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // get role from database
                     Role role = this._roleRepository.GetRoleByUserName(userName);
-                    ValidateObjectInstance(role);
+                    ValidateObjectInstance(role, "Role not found");
 
                     // toggle role 
                     bool active = (role.Active) ? false : true;
@@ -140,7 +140,7 @@ namespace ProjectManagementSystem.Controllers
                         Message = ex.Message
                     }, true);
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError(ex.Message);
+                    _principalView.DisplayError($"[ERROR] {ex.Message}");
                 }
                 continue;
             }
@@ -164,7 +164,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateStringInput(classroomName);
 
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move Classroom to Classroom
-                    ValidateObjectInstance(classroomResult);
+                    ValidateObjectInstance(classroomResult, "Classroom not found");
 
                     _principalView.DisplayMessage($"\nSubmissions for Classroom: {classroomName}\n");
 
@@ -185,7 +185,7 @@ namespace ProjectManagementSystem.Controllers
                         Message = ex.Message
                     }, true);
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError(ex.Message);
+                    _principalView.DisplayError($"[ERROR] {ex.Message}");
                 }
                 continue;
             }

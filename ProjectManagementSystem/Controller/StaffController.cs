@@ -122,7 +122,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidateObjectInstance(roleResult);
+                    ValidateObjectInstance(roleResult, "Role not found");
 
                     // Check permissions
                     List<string> roleList = new List<string> { "teacher", "student" };
@@ -130,7 +130,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // get classrom and validate it
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
-                    ValidateObjectInstance(classroomResult);
+                    ValidateObjectInstance(classroomResult, "Classroom not found");
                     ValidateEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
 
                     // add role to classroom
@@ -198,7 +198,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidateObjectInstance(roleResult);
+                    ValidateObjectInstance(roleResult, "Role not found");
 
                     // Check permissions
                     List<string> roleList = new List<string> { "student" };
@@ -206,13 +206,13 @@ namespace ProjectManagementSystem.Controllers
 
                     // get classrom and validate it
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
-                    ValidateObjectInstance(classroomResult);
+                    ValidateObjectInstance(classroomResult, "Classroom not found");
                     ValidateNoEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
 
 
                     // get enrollment
                     Enrollment enrollmentResult = this._classroomRepository.GetEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
-                    ValidateObjectInstance(classroomResult);
+                    ValidateObjectInstance(classroomResult, "Classroom not found");
 
                     // Mark attendance
                     _classroomRepository.AddAttendance(enrollmentResult.Id, DateTime.Now, true);
