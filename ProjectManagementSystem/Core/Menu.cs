@@ -34,25 +34,6 @@ namespace ProjectManagementSystem.Core
             //Console.WriteLine($">>{Name}");
             Console.WriteLine($"[Help] Press '0' to quit\n");
         }
-
-        // Helper method to handle user input with error handling
-        protected string? Input(string text, string errorMessage)
-        {
-            Console.Write($"{text}: ");
-            string name = Console.ReadLine();
-            if (name == "0")
-            {
-                return "0";
-            }
-
-            if (name == "" || name == null)
-            {
-                Console.WriteLine($"\n{errorMessage}\n");
-                return null;
-            }
-
-            return name;
-        }
     }
 
     // Class representing a menu, which contains menu items and submenus
@@ -318,11 +299,11 @@ namespace ProjectManagementSystem.Core
     // Factory class to create different menus based on the role
     class MenuFactory
     {
-        private Role Role { get; set; }
+        private readonly Role _role;
 
         public MenuFactory(Role role)
         {
-            Role = role;
+            _role = role;
         }
 
         // Builds the appropriate menu based on the role
@@ -330,7 +311,7 @@ namespace ProjectManagementSystem.Core
         {
             var config = new DatabaseConfig();
 
-            if (Role.RoleType == "admin")
+            if (_role.RoleType == "admin")
             {
                 var adminInterface = new AdminView();
                 var roleRepository = new RoleRepository(config);
@@ -341,7 +322,7 @@ namespace ProjectManagementSystem.Core
                 menuAdmin.Build();
                 return menuAdmin;
             }
-            else if (Role.RoleType == "principal")
+            else if (_role.RoleType == "principal")
             {
                 var principalView = new PrincipalView();
                 var roleRepository = new RoleRepository(config);
@@ -353,7 +334,7 @@ namespace ProjectManagementSystem.Core
                 return menuPrincipal;
 
             }
-            else if (Role.RoleType == "staff")
+            else if (_role.RoleType == "staff")
             {
                 var staffView = new StaffView();
                 var roleRepository = new RoleRepository(config);
@@ -364,7 +345,7 @@ namespace ProjectManagementSystem.Core
                 menuStaff.Build();
                 return menuStaff;
             }
-            else if (Role.RoleType == "teacher")
+            else if (_role.RoleType == "teacher")
             {
                 var teacherView = new TeacherView();
                 var roleRepository = new RoleRepository(config);
@@ -375,7 +356,7 @@ namespace ProjectManagementSystem.Core
                 menuTeacher.Build();
                 return menuTeacher;
             }
-            else if (Role.RoleType == "student")
+            else if (_role.RoleType == "student")
             {
                 var studentView = new StudentView();
                 var roleRepository = new RoleRepository(config);
@@ -394,7 +375,9 @@ namespace ProjectManagementSystem.Core
 
         public void AttachLogger(IPublisher publisher)
         {
-            Logger logger = new Logger();
+            var _config = new DatabaseConfig();
+            LogRepository _logRepository = new LogRepository(_config);
+            Logger logger = new Logger(_logRepository);
             publisher.AddSubscriber(logger);
         }
 

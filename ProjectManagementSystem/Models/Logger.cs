@@ -1,4 +1,5 @@
 ﻿using ProjectManagementSystem.Core.Interfaces;
+using ProjectManagementSystem.Database;
 
 namespace ProjectManagementSystem.Models
 {
@@ -7,8 +8,11 @@ namespace ProjectManagementSystem.Models
     /// </summary>
     public class Logger : ISubscriber
     {
-        private Database_ database = new Database_();
+        private LogRepository _logRepository;
 
+        public Logger(LogRepository logRepository) { 
+            _logRepository = logRepository;
+        }   
 
         /// <summary>
         /// Updates the admin with the alert, logging it for future reference.
@@ -20,7 +24,7 @@ namespace ProjectManagementSystem.Models
             {
                 System.Console.WriteLine($"\n{alert.Message}\n");
             }
-            this.database.InsertLog(alert);
+            _logRepository.InsertLog(alert);
         }
     }
 }

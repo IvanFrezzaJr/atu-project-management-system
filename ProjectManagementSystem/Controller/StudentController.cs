@@ -30,17 +30,31 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
+                    _studentView.DisplayTitle("Add Submission");
+
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _studentView.DisplayClassrooms(classrooms);
+
                     // get classroom name and make validation
-                    string classroom = _studentView.GetInput("What is the Classroom name?");
-                    if (classroom == "<EXIT>") break;
-                    ValidateStringInput(classroom);
+                    string classroomName = _studentView.GetInput("Enter Classroom's name:");
+                    if (classroomName == "<EXIT>") break;
+                    ValidateStringInput(classroomName);
+
+                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroomName);
+                    ValidateObjectInstance(classroomInstance, "Classroom not found");
+
+                    // validate enrollment
+                    Enrollment enrollmentInstance = this._classroomRepository.GetEnrollment(classroomInstance.Id, Session.LoggedUser.Id, "student");
+                    ValidateObjectInstance(enrollmentInstance, "Enrollment not found");
+
 
                     // list assessment in the classroom
-                    List<Assessment> assessments = this._classroomRepository.GetAssignmentsByClassroom(classroom);
-                    _studentView.ShowAssignmentsMenu(assessments);
+                    List<Assessment> assessments = this._classroomRepository.GetAssignmentsByClassroom(classroomName);
+                    _studentView.DisplayAssessmentResult(assessments);
 
                     // get classroom name and make validation
-                    string assessment = _studentView.GetInput("What is the assessment description?");
+                    string assessment = _studentView.GetInput("Enter Assessment's name:");
                     if (assessment == "<EXIT>") break;
                     ValidateStringInput(assessment);
 
@@ -48,17 +62,14 @@ namespace ProjectManagementSystem.Controllers
                     ValidateObjectInstance(assessmentInstance, "Assessment not found");
 
                     // get filepath
-                    string filePath = _studentView.GetInput("What is the filepath?");
+                    string filePath = _studentView.GetInput("Enter the filepath to the assessment:");
                     if (filePath == "<EXIT>") break;
                     ValidateStringInput(filePath);
 
-                    
-                    bool status = _classroomRepository.AddSubmission(assessmentInstance.Id, Session.LoggedUser.Id, filePath);
-                    if (status)
-                    {
-                        _studentView.DisplayMessage($"\nAssignment added with successful\n");
-                        break;
-                    }
+                    _classroomRepository.AddSubmission(assessmentInstance.Id, Session.LoggedUser.Id, filePath);
+                    _studentView.DisplaySuccess($"\nAssignment added with successful\n");
+                    break;
+                  
                 }
                 catch (Exception ex) when (
                     ex is ArgumentException ||
@@ -87,32 +98,25 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
-                    // get classroom name and make validation
-                    string classroom = _studentView.GetInput("What is the Classroom name?");
-                    if (classroom == "<EXIT>") break;
-                    ValidateStringInput(classroom);
+                    _studentView.DisplayTitle("Show Score");
 
-                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _studentView.DisplayClassrooms(classrooms);
+
+                    // get classroom name and make validation
+                    string classroomName = _studentView.GetInput("Enter Classroom's name:");
+                    if (classroomName == "<EXIT>") break;
+                    ValidateStringInput(classroomName);
+
+                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroomName);
                     ValidateObjectInstance(classroomInstance, "Classroom not found");
 
-                    int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomInstance.Id, Session.LoggedUser.Id);
-                    if (enrollmentId == null)
-                    {
-                        this._studentView.DisplayMessage("Student enrollment not found.");
-                        break;
-                    }
+                    // validate enrollment
+                    Enrollment enrollmentInstance = this._classroomRepository.GetEnrollment(classroomInstance.Id, Session.LoggedUser.Id, "student");
+                    ValidateObjectInstance(enrollmentInstance, "Enrollment not found");
 
-                    List<dynamic> studentSubmissions = this._roleRepository.GetStudentSubmissions(classroom);
-
-                    List<dynamic> studentSubmissionsResult = null;
-                    foreach (dynamic studentSubmission in studentSubmissions) 
-                    {
-                        if (studentSubmission.ClassName == classroom)
-                        {
-                            studentSubmissionsResult.Add(studentSubmission);
-                            
-                        }
-                    }
+                    List<dynamic> studentSubmissions = this._roleRepository.GetStudentSubmissions(classroomName, Session.LoggedUser.UserName);
 
                     _studentView.ShowSubmissionsResult(studentSubmissions);
                     break;

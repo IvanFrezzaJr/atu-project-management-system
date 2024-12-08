@@ -270,16 +270,11 @@ namespace ProjectManagementSystem.Controllers
                     ValidatePermission(roleResult.RoleType, roleList);
 
 
-                    int enrollmentId = this._classroomRepository.GetEnrollmentId(classroomInstance.Id, roleResult.Id);
-                    if (enrollmentId == 0)
-                    {
-                        this._teacherView.DisplayMessage("Student enrollment not found.");
-                        break;
-    
-                    }
+                    Enrollment enrollmentInstance = this._classroomRepository.GetEnrollment(classroomInstance.Id, roleResult.Id, "student");
+                    ValidateObjectInstance(enrollmentInstance, "Enrollment not found");
 
 
-                    Submission submissionResult = this._classroomRepository.GetSubmissionById(enrollmentId);
+                    Submission submissionResult = this._classroomRepository.GetSubmissionById(enrollmentInstance.Id);
                     ValidateObjectInstance(submissionResult, "Student submission not found");
 
 

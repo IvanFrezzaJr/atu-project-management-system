@@ -271,19 +271,22 @@ namespace ProjectManagementSystem.Database
         public List<dynamic> GetStudentSubmissions(string classroomName, string studentName)
         {
             string query = @"
-                SELECT 
-                     c.Name AS ClassroomName,
-                     a.Description AS AssessmentDescription,
-                     CASE
-                         WHEN s.File IS NULL THEN 'Pendent'
-                         ELSE (
-                             CASE 
-                                 WHEN s.Score IS NULL THEN '-'
-                                 ELSE CAST(s.Score AS TEXT)
-                             END
-                         )
-                     END AS ScoreStatus,
-                     a.MaxScore AS MaxScore
+                 SELECT 
+                    c.Name AS ClassroomName,
+                    a.Description AS AssessmentDescription,
+                    CASE
+                        WHEN s.File IS NULL THEN 'Pendent' 
+                        ELSE (
+                            CASE 
+                                WHEN s.Score IS NULL THEN '-'
+                                ELSE CAST(s.Score AS TEXT)
+                            END
+                        )
+                    END AS ScoreStatus,
+                    r.Username AS StudentName,
+                    s.File,
+                    s.Score,
+                    a.MaxScore
                  FROM 
                       Classroom c
  
@@ -318,6 +321,9 @@ namespace ProjectManagementSystem.Database
                                 ClassroomName = reader["ClassroomName"].ToString(),
                                 AssessmentDescription = reader["AssessmentDescription"].ToString(),
                                 ScoreStatus = reader["ScoreStatus"].ToString(),
+                                StudentName = reader["StudentName"].ToString(),
+                                File = reader["File"].ToString(),
+                                Score = reader["Score"] == DBNull.Value ? 0 : float.Parse(reader["Score"].ToString()),
                                 MaxScore = reader["MaxScore"] == DBNull.Value ? 0 : float.Parse(reader["MaxScore"].ToString())
                             });
                         }

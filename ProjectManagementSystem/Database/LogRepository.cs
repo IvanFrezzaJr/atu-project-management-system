@@ -11,6 +11,32 @@ namespace ProjectManagementSystem.Database
             _config = config;
         }
 
+        public void InsertLog(Alert alert)
+        {
+            try
+            {
+                using (var connection = _config.CreateConnection())
+                {
+                    connection.Open();
+                    string query = "INSERT INTO Logs (Date, Role, Action, Message) VALUES (@Date, @Role, @Action, @Message)";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Date", alert.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                        command.Parameters.AddWithValue("@Role", alert.Role);
+                        command.Parameters.AddWithValue("@Action", alert.Action);
+                        command.Parameters.AddWithValue("@Message", alert.Message);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding attendance: {ex.Message}", ex);
+            }
+        }
+
 
         public List<Alert> GetAllLogs()
         {

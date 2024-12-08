@@ -89,34 +89,6 @@ namespace ProjectManagementSystem.Database
             return true;
         }
 
-        public int GetEnrollmentId(int classroomId, int roleId)
-        {
-            using (var connection = _config.CreateConnection())
-            {
-                connection.Open();
-
-                string query = @"
-                SELECT Id 
-                FROM Enrollment 
-                WHERE ClassroomId = @ClassroomId AND RoleId = @RoleId
-                LIMIT 1";
-
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
-                    command.Parameters.AddWithValue("@RoleId", roleId);
-
-                    var result = command.ExecuteScalar();
-                    if (result != null && int.TryParse(result.ToString(), out int id))
-                    {
-                        return id;
-                    }
-
-                    return 0;
-                }
-            }
-        }
-
         public void AddAttendance(int enrollmentId, DateTime date, bool present)
         {
             try
@@ -556,7 +528,7 @@ namespace ProjectManagementSystem.Database
         }
 
 
-        public bool AddSubmission(int assessmentId, int studentId, string filePath)
+        public void AddSubmission(int assessmentId, int studentId, string filePath)
         {
             using (var connection = _config.CreateConnection())
             {
@@ -576,8 +548,6 @@ namespace ProjectManagementSystem.Database
                     command.ExecuteNonQuery();
                 }
             }
-
-            return true;
         }
 
 
