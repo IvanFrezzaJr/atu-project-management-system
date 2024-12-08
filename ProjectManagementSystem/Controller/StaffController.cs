@@ -252,7 +252,6 @@ namespace ProjectManagementSystem.Controllers
             }
         }
 
-
         private void ValidateEnrollment(int classroomId, int roleId, string roletype)
         {
             if (_classroomRepository.EnrollmentExists(classroomId, roleId, roletype))

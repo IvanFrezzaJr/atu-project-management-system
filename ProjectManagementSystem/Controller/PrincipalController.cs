@@ -2,6 +2,7 @@
 using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
 using ProjectManagementSystem.Views;
+using System.Data.SQLite;
 using System.Reflection;
 
 namespace ProjectManagementSystem.Controllers
@@ -33,39 +34,59 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
-                    // get classroom name and make validation
-                    string classroom = _principalView.GetInput("What is the Classroom name?");
-                    if (classroom == "<EXIT>") break;
-                    ValidateStringInput(classroom);  
-                    
+                    _principalView.DisplayTitle("Assign Role To Classroom");
 
-                    // get teacher name and make validation
-                    string userName = _principalView.GetInput("What is Teacher name?");
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _principalView.DisplayClassrooms(classrooms);
+
+                    // get classroom name and make validation
+                    string classroom = _principalView.GetInput("Enter Classroom's name:");
+                    if (classroom == "<EXIT>") break;
+                    ValidateStringInput(classroom);
+
+                    // show students
+                    List<Role> roles = _classroomRepository.GetAllRoles("teacher");
+                    _principalView.DisplayRoles(roles);
+
+                    // get student name and make validation
+                    string userName = _principalView.GetInput("Enter Teacher's name:");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
 
-
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    List<string> roleList = new List<string> { "teacher", "student" };
+                    ValidateObjectInstance(roleResult);
+
+                    // Check permissions
+                    List<string> roleList = new List<string> { "teacher"};
                     ValidatePermission(roleResult.RoleType, roleList);
 
-                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move Classroom to Classroom
-                    ValidateObjectInstance(classroomResult, $"'{classroom}' classroom not found");
+                    // get classrom and validate it
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
+                    ValidateObjectInstance(classroomResult);
+                    ValidateEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
 
-                    bool status = this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
-                    ValidateCondition(
-                        status,
-                        $"Added role '{roleResult.RoleType}' to classroom  {classroomResult.Name}",
-                        $"Fail to add role '{roleResult.RoleType}' to classroom  {classroomResult.Name}",
-                         _principalView.DisplayMessage
-                     );
+                    // add role to classroom
+                    this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+                    _principalView.DisplayTitle($"Enrollment added successful");
+                    _principalView.DisplayEnrollmentInfo(roleResult, classroomResult);
+
+                    // Notify observers that the classroom already exists.
+                    this.NotifyObservers(new Alert
+                    {
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"Added role '{roleResult.RoleType}' to classroom  {classroomResult.Name}"
+                    });
+
                     break;
                 }
                 catch (Exception ex) when (
-                    ex is ArgumentException || 
-                    ex is AccessViolationException || 
+                    ex is ArgumentException ||
+                    ex is AccessViolationException ||
                     ex is ArgumentNullException ||
+                    ex is SQLiteException ||
                     ex is ApplicationException)
                 {
                     this.NotifyObservers(new Alert
@@ -82,17 +103,18 @@ namespace ProjectManagementSystem.Controllers
             }
         }
 
-
         public void ToggleRole()
         {
             while (true)
             {
                 try
                 {
-                    // get username
-                    string userName = _principalView.GetInput("What is username?");
+                    _principalView.DisplayTitle("Enable/Disable Role");
+                    // get classroom name and make validation
+                    string userName = _principalView.GetInput("Enter User's name:");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
+
 
                     // get role from database
                     Role role = this._roleRepository.GetRoleByUserName(userName);
@@ -101,12 +123,8 @@ namespace ProjectManagementSystem.Controllers
                     // toggle role 
                     bool active = (role.Active) ? false : true;
                     bool status = this._roleRepository.ActivateRole(userName, active);
-                    ValidateCondition(
-                        status,
-                        $"Role '{role.RoleType}' is '{active}'",
-                        $"Role '{role.RoleType}' is '{active}'",
-                         _principalView.DisplayMessage
-                     );
+                    _principalView.DisplayMessage($"User {role.UserName}: set activate {active}");
+                    
                     break;
                 }
                 catch (Exception ex) when (
@@ -134,16 +152,19 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
+                    _principalView.DisplayTitle("Display Student Submissions");
+
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _principalView.DisplayClassrooms(classrooms);
+
                     // get classroom name and make validation
-                    string classroomName = _principalView.GetInput("What is the Classroom name?");
+                    string classroomName = _principalView.GetInput("Enter Classroom's name:");
                     if (classroomName == "<EXIT>") break;
                     ValidateStringInput(classroomName);
 
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move Classroom to Classroom
-                    ValidateObjectInstance(
-                        classroomResult, 
-                        $"'{classroomName}' classroom not found"
-                        );
+                    ValidateObjectInstance(classroomResult);
 
                     _principalView.DisplayMessage($"\nSubmissions for Classroom: {classroomName}\n");
 
@@ -170,6 +191,24 @@ namespace ProjectManagementSystem.Controllers
             }
 
         }
+
+
+        private void ValidateEnrollment(int classroomId, int roleId, string roletype)
+        {
+            if (_classroomRepository.EnrollmentExists(classroomId, roleId, roletype))
+            {
+                throw new ApplicationException("The enrollment for this user already exists");
+            }
+        }
+
+        private void ValidateNoEnrollment(int classroomId, int roleId, string roletype)
+        {
+            if (!_classroomRepository.EnrollmentExists(classroomId, roleId, roletype))
+            {
+                throw new ApplicationException("Enrollment not exists");
+            }
+        }
+
 
     }
 }

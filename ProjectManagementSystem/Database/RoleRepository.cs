@@ -209,19 +209,21 @@ namespace ProjectManagementSystem.Database
         {
             string query = @"
                 SELECT 
-                     r.Username AS StudentName,
-                     c.Name AS ClassroomName,
-                     a.Description AS AssessmentDescription,
-                     CASE
-                         WHEN s.File IS NULL THEN 'Pendent'
-                         ELSE (
-                             CASE 
-                                 WHEN s.Score IS NULL THEN '-'
-                                 ELSE CAST(s.Score AS TEXT)
-                             END
-                         )
-                     END AS ScoreStatus,
-                     a.MaxScore AS MaxScore
+                    c.Name AS ClassroomName,
+                    a.Description AS AssessmentDescription,
+                    CASE
+                        WHEN s.File IS NULL THEN 'Pendent' 
+                        ELSE (
+                            CASE 
+                                WHEN s.Score IS NULL THEN '-'
+                                ELSE CAST(s.Score AS TEXT)
+                            END
+                        )
+                    END AS ScoreStatus,
+                    r.Username AS StudentName,
+                    s.File,
+                    s.Score,
+                    a.MaxScore
                  FROM 
                       Classroom c
  
@@ -250,10 +252,12 @@ namespace ProjectManagementSystem.Database
                         {
                             result.Add(new
                             {
-                                StudentName = reader["StudentName"].ToString(),
                                 ClassroomName = reader["ClassroomName"].ToString(),
                                 AssessmentDescription = reader["AssessmentDescription"].ToString(),
                                 ScoreStatus = reader["ScoreStatus"].ToString(),
+                                StudentName = reader["StudentName"].ToString(),
+                                File = reader["File"].ToString(),
+                                Score = reader["Score"] == DBNull.Value ? 0 : float.Parse(reader["Score"].ToString()),
                                 MaxScore = reader["MaxScore"] == DBNull.Value ? 0 : float.Parse(reader["MaxScore"].ToString())
                             });
                         }
