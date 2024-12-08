@@ -47,12 +47,13 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidatePermission(roleResult.RoleType);
+                    List<string> roleList = new List<string> { "teacher", "student" };
+                    ValidatePermission(roleResult.RoleType, roleList);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move Classroom to Classroom
                     ValidateObjectInstance(classroomResult, $"'{classroom}' classroom not found");
 
-                    bool status = this._classroomRepository.AddRoleToClassroom(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+                    bool status = this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
                     ValidateCondition(
                         status,
                         $"Added role '{roleResult.RoleType}' to classroom  {classroomResult.Name}",
@@ -138,7 +139,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroomName == "<EXIT>") break;
                     ValidateStringInput(classroomName);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move ClassroomSchema to Classroom
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move Classroom to Classroom
                     ValidateObjectInstance(
                         classroomResult, 
                         $"'{classroomName}' classroom not found"

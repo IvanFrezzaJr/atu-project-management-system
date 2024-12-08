@@ -34,7 +34,7 @@ namespace ProjectManagementSystem.Controllers
         {
             List<Alert> allLogs = this._logRepository.GetAllLogs();
 
-            _adminView.ShowTitle($"Show logs");
+            _adminView.DisplayTitle($"Show logs");
             this._adminView.ShowLogs(allLogs);
         }
 
@@ -65,7 +65,7 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
-                    _adminView.ShowTitle($"{typeRole} registration");
+                    _adminView.DisplayTitle($"{typeRole} registration");
                     // get role name and make validation
                     string userName = _adminView.GetInput($"Enter user's name:");
                     if (userName == "<EXIT>") break;
@@ -80,7 +80,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateStringInput(password);
 
                     // insert Role in the database
-                    Role role = new Role(
+                    Role roleInstance = new Role(
                         userName,
                         password,
                         true,
@@ -88,15 +88,15 @@ namespace ProjectManagementSystem.Controllers
                     );
 
                     // persist role into the database
-                    this._roleRepository.AddRole(role);
+                    this._roleRepository.AddRole(roleInstance);
 
-                    _adminView.ShowTitle($"Registration Successful!");
-                    _adminView.DisplayUserInfo(role);
+                    _adminView.DisplayTitle($"Registration Successful!");
+                    _adminView.DisplayUserInfo(roleInstance);
                     this.NotifyObservers(new Alert
                     {
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
-                        Message = $"{Session.LoggedUser.UserName} inserted the {role.UserName} user successful."
+                        Message = $"{Session.LoggedUser.UserName} inserted the {roleInstance.UserName} user successful."
                     }, false);
                     // Mostra o erro e solicita novamente
                     break;
@@ -127,7 +127,7 @@ namespace ProjectManagementSystem.Controllers
             while (true)
             {
                 try { 
-                    _adminView.ShowTitle($"Perform password reset");
+                    _adminView.DisplayTitle($"Perform password reset");
                     string userName = _adminView.GetValue("Enter role username: ");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
@@ -141,7 +141,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // reset password
                     this._roleRepository.UpdateRolePassword(userName, password);
-                    _adminView.ShowTitle($"Password was reseted successful!");
+                    _adminView.DisplayTitle($"Password was reseted successful!");
 
                     // Notify observers that the classroom already exists.
                     this.NotifyObservers(new Alert

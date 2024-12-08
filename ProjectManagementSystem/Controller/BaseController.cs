@@ -60,13 +60,6 @@ namespace ProjectManagementSystem.Controller
         {
             if (obj == null)
             {
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = message
-                }, false);
-
                 if (message != null && successCallback != null) {
 
                     successCallback(message);
@@ -94,19 +87,13 @@ namespace ProjectManagementSystem.Controller
                 throw new ArgumentException("String can only contain letters, numbers and spaces.");
         }
 
-        protected void ValidatePermission(string typeRole, string allowRole = "teacher")
+        protected void ValidatePermission(string typeRole, List<string> allowRole)
         {
-            if (allowRole != typeRole)
+            bool exists = allowRole.Contains(typeRole);
+            if (!exists)
             {
 
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = $"Operation denied. Only allowed to assign '{typeRole}' role."
-                }, false);
-
-                throw new AccessViolationException($"Operation denied. Only allowed to assign '{typeRole}' role.");
+                throw new AccessViolationException($"Operation denied. Only allowed to assign '{string.Join(", ", allowRole)}' roles.");
             }
         }
 

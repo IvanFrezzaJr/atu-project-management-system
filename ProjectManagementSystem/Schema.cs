@@ -9,20 +9,6 @@
         public bool Active { get; set; }
     }
 
-    public class ClassroomSchema
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-    }
-
-
-    public class AttendanceSchema
-    {
-        DateTime Date { get; set; }
-        bool Present { get; set; }
-    }
-
 
 
 

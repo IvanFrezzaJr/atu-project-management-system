@@ -6,14 +6,6 @@ namespace ProjectManagementSystem.Models
     public class Admin : Role
     {
 
-        private string _role = string.Empty;
-
-        private List<Alert> _logs = new List<Alert>();
-
-        private Database_ database = new Database_();
-
-        private Logger logger = new Logger();
-
         public Admin(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
 

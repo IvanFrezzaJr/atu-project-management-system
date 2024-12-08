@@ -5,19 +5,19 @@
         const int MaxWidth = 40;
 
 
-        private string GettextCenter(string text)
+        public string GettextCenter(string text, int maxWidth)
         {
-            int totalPadding = MaxWidth - text.Length;
+            int totalPadding = maxWidth - text.Length;
             int padLeft = totalPadding / 2; // Espaços à esquerda
             int padRight = totalPadding - padLeft; // Espaços à direita
-            return text.PadLeft(padLeft + text.Length).PadRight(MaxWidth);
+            return text.PadLeft(padLeft + text.Length).PadRight(maxWidth);
         }
 
-        public void ShowTitle(string title)
+        public void DisplayTitle(string title)
         {
             Console.WriteLine("");
             Console.WriteLine(new string('=', MaxWidth));
-            Console.WriteLine($"{GettextCenter(title)}");
+            Console.WriteLine($"{GettextCenter(title, MaxWidth)}");
             Console.WriteLine(new string('=', MaxWidth));
         }
 

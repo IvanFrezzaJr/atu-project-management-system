@@ -35,7 +35,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move Classroom to Classroom
                     ValidateObjectInstance(classroomResult);
 
                     // get teacher name and make validation
@@ -91,7 +91,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
-                    ClassroomSchema classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
+                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
                     ValidateObjectInstance(classroomInstance);
 
 
@@ -144,7 +144,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroomName == "<EXIT>") break;
                     ValidateStringInput(classroomName);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move ClassroomSchema to Classroom
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move Classroom to Classroom
                     ValidateObjectInstance(
                         classroomResult,
                         $"'{classroomName}' classroom not found"
@@ -187,7 +187,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
-                    ClassroomSchema classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
+                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
                     ValidateObjectInstance(classroomInstance);
 
                     // list assessment in the classroom
@@ -210,7 +210,10 @@ namespace ProjectManagementSystem.Controllers
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
                     ValidateObjectInstance(roleResult, $"'User {userName}' not found");
-                    ValidatePermission(roleResult.RoleType);
+
+                    // check permissions
+                    List<string> roleList = new List<string> { "student" };
+                    ValidatePermission(roleResult.RoleType, roleList);
 
 
                     int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomInstance.Id, roleResult.Id);

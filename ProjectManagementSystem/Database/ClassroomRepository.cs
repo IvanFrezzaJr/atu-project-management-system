@@ -1,4 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using System.Data;
+using System.Data.SQLite;
+using System.Xml.Linq;
 using ProjectManagementSystem.Models;
     
 namespace ProjectManagementSystem.Database
@@ -13,7 +15,7 @@ namespace ProjectManagementSystem.Database
         }
 
 
-        public ClassroomSchema GetClassroomByName(string classroomName)
+        public Classroom GetClassroomByName(string classroomName)
         {
             var classroom = new List<(int Id, string Name)>();
 
@@ -34,11 +36,11 @@ namespace ProjectManagementSystem.Database
                     {
                         if (reader.Read())
                         {
-                            return new ClassroomSchema
-                            {
-                                Id = reader.GetInt32(0),
-                                Name = reader.GetString(1)
-                            };
+                            return new Classroom
+                            (
+                                reader.GetInt32(0), // Id
+                                reader.GetString(1) // Name
+                            );
                         }
                         else
                         {
@@ -49,7 +51,7 @@ namespace ProjectManagementSystem.Database
             }
         }
 
-        public bool InsertClassroom(string name)
+        public void InsertClassroom(Classroom classroom)
         {
             using (var connection = _config.CreateConnection())
             {
@@ -59,15 +61,13 @@ namespace ProjectManagementSystem.Database
 
                 using (var command = new SQLiteCommand(insertQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@Name", classroom.Name);
                     command.ExecuteNonQuery();
                 }
             }
-
-            return true;
         }
 
-        public bool AddRoleToClassroom(int classroomId, int roleId, string roleType)
+        public bool AddEnrollment(int classroomId, int roleId, string roleType)
         {
             using (var connection = _config.CreateConnection())
             {
@@ -141,6 +141,47 @@ namespace ProjectManagementSystem.Database
             }
         }
 
+
+        public List<Attendance> GetAttendances(int enrollmentId)
+        {
+            try
+            {
+                var attendances = new List<Attendance>();
+
+                using (var connection = _config.CreateConnection())
+                {
+                    connection.Open();
+                    string query = "SELECT Id, EnrollmentId, Date, Present FROM Attendance WHERE EnrollmentId = @EnrollmentId";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@EnrollmentId", enrollmentId);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                attendances.Add(new Attendance
+                                {
+                                    Id = reader.GetInt32(0), // Assuming 'Id' is the first column
+                                    EnrollmentId = reader.GetInt32(1), // 'EnrollmentId' is the second column
+                                    Date = reader.GetDateTime(2), // 'Date' is the third column
+                                    Present = reader.GetInt32(3) == 1 // Assuming 'Present' stores 1 for true and 0 for false
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return attendances;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving attendances: {ex.Message}", ex);
+            }
+        }
+
+
         public bool ClassroomExists(string name)
         {
             using (var connection = _config.CreateConnection())
@@ -151,6 +192,70 @@ namespace ProjectManagementSystem.Database
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Name", name);
+                    long count = (long)command.ExecuteScalar();
+                    return count > 0; // Returns true if the user exists
+                }
+            }
+        }
+
+        public Enrollment GetEnrollment(int classroomId, int roleId, string roleType)
+        {
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT Id, ClassroomId, RoleId, RoleType
+                FROM Enrollment 
+                WHERE ClassroomId = @ClassroomId AND RoleId = @RoleId AND RoleType = @RoleType
+                LIMIT 1";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
+                    command.Parameters.AddWithValue("@RoleId", roleId);
+                    command.Parameters.AddWithValue("@RoleType", roleType);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Enrollment
+                            (
+                                reader.GetInt32(0), // id
+                                reader.GetInt32(1), // classroomId
+                                reader.GetInt32(2), // roleId
+                                reader.GetString(3) // roleType
+                            );
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public bool EnrollmentExists(int classroomId, int roleId, string roleType)
+        {
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT COUNT(*) 
+                FROM Enrollment 
+                WHERE ClassroomId = @ClassroomId 
+                AND RoleId = @RoleId 
+                AND RoleType = @RoleType";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassroomId", classroomId);
+                    command.Parameters.AddWithValue("@RoleId", roleId);
+                    command.Parameters.AddWithValue("@RoleType", roleType);
                     long count = (long)command.ExecuteScalar();
                     return count > 0; // Returns true if the user exists
                 }
@@ -283,6 +388,123 @@ namespace ProjectManagementSystem.Database
                 }
             }
             return assessments;
+        }
+
+
+        public List<Role> GetRolesByClassroom(string classroomName)
+        {
+            List<Role> roles = new List<Role>();
+
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                SELECT a.Id, a.Username, a.Password, a.Active, a.RoleType
+                FROM Role a
+                JOIN Enrollment e ON e.RoleId = a.Id
+                JOIN Classroom c ON c.Id = e.ClassroomId
+                WHERE c.Name = @Classroom";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Classroom", classroomName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string password = reader.GetString(2);
+                            bool active = reader.GetInt32(3) != 0;
+                            string _roleType = reader.GetString(4);
+
+                            roles.Add(new Role(id, name, password, active, _roleType));
+
+                        }
+                    }
+                }
+            }
+            return roles;
+        }
+
+
+        public List<Classroom> GetAllClassroom()
+        {
+            List<Classroom> classrooms = new List<Classroom>();
+
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT Id, Name
+                    FROM Classroom;";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+ 
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string classroom = reader.GetString(1);
+
+                            classrooms.Add(new Classroom(
+                                id,  // Id
+                                classroom  // Classroom
+                            ));
+                        }
+                
+                    }
+                }
+            }
+
+            return classrooms;
+        }
+
+
+        public List<Role> GetAllRoles(string roleType=null)
+        {
+            List<Role> roles = new List<Role>();
+
+            using (var connection = _config.CreateConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT Id, Username, Password, Active, RoleType
+                    FROM Role";
+
+         
+                string where = (roleType != null) ? $" WHERE RoleType = @RoleType;" : ";";
+                query += where;
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+
+                    command.Parameters.AddWithValue("@RoleType", roleType);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string password = reader.GetString(2);
+                            bool active = reader.GetInt32(3) != 0;
+                            string _roleType = reader.GetString(4);
+
+                            roles.Add(new Role(id,  name, password, active, _roleType));
+                        }
+
+                    }
+                }
+            }
+
+            return roles;
         }
 
 

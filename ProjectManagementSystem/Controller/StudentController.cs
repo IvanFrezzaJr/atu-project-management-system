@@ -92,7 +92,7 @@ namespace ProjectManagementSystem.Controllers
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
-                    ClassroomSchema classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
+                    Classroom classroomInstance = this._classroomRepository.GetClassroomByName(classroom);
                     ValidateObjectInstance(classroomInstance);
 
                     int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomInstance.Id, Session.LoggedUser.Id);

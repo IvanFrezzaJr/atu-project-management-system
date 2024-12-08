@@ -47,9 +47,6 @@ namespace ProjectManagementSystem.Views
             Console.WriteLine($"Role: {role.RoleType}");
             Console.WriteLine($"Active: {role.Active}\n");
         }
-
-
-
        
     }
 }

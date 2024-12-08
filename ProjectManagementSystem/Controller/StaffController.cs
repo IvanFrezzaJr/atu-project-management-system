@@ -2,8 +2,13 @@
 using ProjectManagementSystem.Database;
 using ProjectManagementSystem.Models;
 using ProjectManagementSystem.Views;
+using System;
+using System.Data;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.SQLite;
+using System.Diagnostics.Metrics;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 
 namespace ProjectManagementSystem.Controllers
 {
@@ -27,29 +32,41 @@ namespace ProjectManagementSystem.Controllers
             AddSubscriber(logger);
         }
 
+        private void ValidateClassroomExists(string userName)
+        {
+            if (this._classroomRepository.ClassroomExists(userName))
+            {
+                throw new ApplicationException("Classroom already exists");
+            }
+        }
+
         public void CreateClassroom()
         {
             while (true)
             {
                 try
                 {
+                    _staffView.DisplayTitle("Classroom registration");
                     // get classroom name and make validation
-                    string classroom = _staffView.GetInput("What is the Classroom name?");
-                    if (classroom == "<EXIT>")
-                        break;
-
+                    string classroom = _staffView.GetInput("Enter Classroom's name:");
+                    if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
+                    // get classroom and validate it
+                    Classroom classroomInstance = new Classroom(classroom);
 
-                    bool status = _classroomRepository.ClassroomExists(classroom);
-                    if (status)
+                    // insert classroom
+                    this._classroomRepository.InsertClassroom(classroomInstance);
+                    _staffView.DisplayTitle($"Classroom added successfully");
+                    _staffView.DisplayClassroomInfo(classroomInstance);
+
+                    // Notify observers that the classroom already exists.
+                    this.NotifyObservers(new Alert
                     {
-                        _staffView.DisplayMessage($"Classroom {classroom} already exists");
-                        continue;
-                    }
-
-                    this._classroomRepository.InsertClassroom(classroom);
-                    _staffView.DisplayMessage($"Classroom {classroom} added successfully");
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"{Session.LoggedUser.UserName} inserted the {classroomInstance.Name} classroom successful."
+                    }, false);
                     break;
                 }
 
@@ -66,7 +83,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _staffView.DisplayError(ex.Message);
                 }
@@ -76,7 +93,6 @@ namespace ProjectManagementSystem.Controllers
             
         }
 
-
         public void AssignRoleToClassroom()
         {
             //string classroom, string role, string typeRole
@@ -84,31 +100,52 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
-                    // get classroom name and make validation
-                    string classroom = _staffView.GetInput("What is the Classroom name?");
-                    if (classroom == "<EXIT>") break;
-                    ValidateStringInput(classroom);  
-                    
+                    _staffView.DisplayTitle("Assign Role To Classroom");
 
-                    // get teacher name and make validation
-                    string userName = _staffView.GetInput("What is Student name?");
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _staffView.DisplayClassrooms(classrooms);
+
+                    // get classroom name and make validation
+                    string classroom = _staffView.GetInput("Enter Classroom's name:");
+                    if (classroom == "<EXIT>") break;
+                    ValidateStringInput(classroom);
+
+                    // show students
+                    List<Role> roles = _classroomRepository.GetAllRoles("student");
+                    _staffView.DisplayRoles(roles);
+
+                    // get student name and make validation
+                    string userName = _staffView.GetInput("Enter Student's name:");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
 
-
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidatePermission(roleResult.RoleType);
+                    ValidateObjectInstance(roleResult);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
-                    if (classroomResult == null)
-                    { 
-                        _staffView.DisplayMessage($"'{classroom}' classroom not found");
-                        continue;
-                    }
+                    // Check permissions
+                    List<string> roleList = new List<string> { "teacher", "student" };
+                    ValidatePermission(roleResult.RoleType, roleList);
 
-                    this._classroomRepository.AddRoleToClassroom(classroomResult.Id, roleResult.Id, roleResult.RoleType);
-                    _staffView.DisplayMessage($"Added role '{roleResult.RoleType}' to classroom  {classroomResult.Name}");
+                    // get classrom and validate it
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
+                    ValidateObjectInstance(classroomResult);
+                    ValidateEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+
+                    // add role to classroom
+                    this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+                    _staffView.DisplayTitle($"Enrollment added successful");
+                    _staffView.DisplayEnrollmentInfo(roleResult, classroomResult);
+
+                    // Notify observers that the classroom already exists.
+                    this.NotifyObservers(new Alert
+                    {
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"Added role '{roleResult.RoleType}' to classroom  {classroomResult.Name}"
+                    });
+
                     break;
                 }
                 catch (Exception ex) when (
@@ -132,7 +169,6 @@ namespace ProjectManagementSystem.Controllers
             }
         }
 
-
         public void MarkStudentAttendance()
         {
             //string classroom, string role, string typeRole
@@ -140,32 +176,59 @@ namespace ProjectManagementSystem.Controllers
             {
                 try
                 {
+                    _staffView.DisplayTitle("Mark Student Attendance");
+
+                    // show classrooms
+                    List<Classroom> classrooms = _classroomRepository.GetAllClassroom();
+                    _staffView.DisplayClassrooms(classrooms);
+
                     // get classroom name and make validation
-                    string classroom = _staffView.GetInput("What is the Classroom name?");
+                    string classroom = _staffView.GetInput("Enter Classroom's name:");
                     if (classroom == "<EXIT>") break;
                     ValidateStringInput(classroom);
 
+                    // show students
+                    List<Role> roles = _classroomRepository.GetRolesByClassroom(classroom);
+                    _staffView.DisplayRoles(roles);
 
-                    // get teacher name and make validation
-                    string userName = _staffView.GetInput("What is Student name?");
+                    // get student name and make validation
+                    string userName = _staffView.GetInput("Enter Student's name:");
                     if (userName == "<EXIT>") break;
                     ValidateStringInput(userName);
 
-
                     // add role to classroom
                     Role roleResult = this._roleRepository.GetRoleByUserName(userName);
-                    ValidateObjectInstance(roleResult, $"'User {userName}' not found");
+                    ValidateObjectInstance(roleResult);
 
-                    ClassroomSchema classroomResult = this._classroomRepository.GetClassroomByName(classroom);  // TODO: move ClassroomSchema to Classroom
-                    int? enrollmentId = this._classroomRepository.GetEnrollmentId(classroomResult.Id, roleResult.Id);
-                    if (enrollmentId == null)
+                    // Check permissions
+                    List<string> roleList = new List<string> { "student" };
+                    ValidatePermission(roleResult.RoleType, roleList);
+
+                    // get classrom and validate it
+                    Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroom);
+                    ValidateObjectInstance(classroomResult);
+                    ValidateNoEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+
+
+                    // get enrollment
+                    Enrollment enrollmentResult = this._classroomRepository.GetEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
+                    ValidateObjectInstance(classroomResult);
+
+                    // Mark attendance
+                    _classroomRepository.AddAttendance(enrollmentResult.Id, DateTime.Now, true);
+                    _staffView.DisplayTitle($"Mark student attendance successful");
+
+                    List<Attendance> attendances = _classroomRepository.GetAttendances(enrollmentResult.Id);
+                    _staffView.DisplayAttendanceInfo(attendances, classroomResult, roleResult);
+
+                    // Notify observers that the classroom already exists.
+                    this.NotifyObservers(new Alert
                     {
-                        _staffView.DisplayMessage("Student enrollment not found");
-                        break;
-                    }
+                        Role = Session.LoggedUser.UserName,
+                        Action = MethodBase.GetCurrentMethod().Name,
+                        Message = $"Added attendance to {roleResult.UserName} in {classroomResult.Name}"
+                    });
 
-                    _classroomRepository.AddAttendance((int)enrollmentId, DateTime.Now, true);
-                    _staffView.DisplayMessage($"Added attendance to {roleResult.UserName} in {classroomResult.Name}");
                     break;
                 }
                 catch (Exception ex) when (
@@ -188,5 +251,23 @@ namespace ProjectManagementSystem.Controllers
                 continue;
             }
         }
+
+
+        private void ValidateEnrollment(int classroomId, int roleId, string roletype)
+        {
+            if (_classroomRepository.EnrollmentExists(classroomId, roleId, roletype))
+            {
+                throw new ApplicationException("The enrollment for this user already exists");
+            }
+        }
+
+        private void ValidateNoEnrollment(int classroomId, int roleId, string roletype)
+        {
+            if (!_classroomRepository.EnrollmentExists(classroomId, roleId, roletype))
+            {
+                throw new ApplicationException("Enrollment not exists");
+            }
+        }
+
     }
 }
