@@ -327,7 +327,8 @@ namespace ProjectManagementSystem.Core
                 var principalView = new PrincipalView();
                 var roleRepository = new RoleRepository(config);
                 var classroomRepository = new ClassroomRepository(config);
-                var principalController = new PrincipalController(principalView, roleRepository, classroomRepository);
+                var logRepository = new LogRepository(config);
+                var principalController = new PrincipalController(principalView, roleRepository, classroomRepository, logRepository);
 
                 MenuPrincipalBuilder menuPrincipal = new MenuPrincipalBuilder(principalController);
                 menuPrincipal.Build();
@@ -339,7 +340,8 @@ namespace ProjectManagementSystem.Core
                 var staffView = new StaffView();
                 var roleRepository = new RoleRepository(config);
                 var classroomRepository = new ClassroomRepository(config);
-                var staffController = new StaffController(staffView, roleRepository, classroomRepository);
+                var logRepository = new LogRepository(config);
+                var staffController = new StaffController(staffView, roleRepository, classroomRepository, logRepository);
 
                 MenuStaffBuilder menuStaff = new MenuStaffBuilder(staffController);
                 menuStaff.Build();
@@ -350,7 +352,8 @@ namespace ProjectManagementSystem.Core
                 var teacherView = new TeacherView();
                 var roleRepository = new RoleRepository(config);
                 var classroomRepository = new ClassroomRepository(config);
-                var teacherController = new TeacherController(teacherView, roleRepository, classroomRepository);
+                var logRepository = new LogRepository(config);
+                var teacherController = new TeacherController(teacherView, roleRepository, classroomRepository, logRepository);
 
                 MenuTeacherBuilder menuTeacher = new MenuTeacherBuilder(teacherController);
                 menuTeacher.Build();
@@ -361,7 +364,8 @@ namespace ProjectManagementSystem.Core
                 var studentView = new StudentView();
                 var roleRepository = new RoleRepository(config);
                 var classroomRepository = new ClassroomRepository(config);
-                var studentController = new StudentController(studentView, roleRepository, classroomRepository);
+                var logRepository = new LogRepository(config);
+                var studentController = new StudentController(studentView, roleRepository, classroomRepository, logRepository);
 
                 MenuStudentBuilder menuStudent = new MenuStudentBuilder(studentController);
                 menuStudent.Build();

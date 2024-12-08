@@ -12,16 +12,19 @@ namespace ProjectManagementSystem.Controllers
         private readonly StudentView _studentView;
         private readonly RoleRepository _roleRepository;
         private readonly ClassroomRepository _classroomRepository;
+        private readonly LogRepository _logRepository;
 
-        public StudentController(StudentView studentView, RoleRepository roleRepository, ClassroomRepository classroomRepository)
+        public StudentController(StudentView studentView, RoleRepository roleRepository, ClassroomRepository classroomRepository, LogRepository logRepository)
         {
             _studentView = studentView;
             _roleRepository = roleRepository;
             _classroomRepository = classroomRepository;
+            _logRepository = logRepository;
 
             // add logger
-            Logger logger = new Logger();
+            Logger logger = new Logger(_logRepository);
             AddSubscriber(logger);
+            _logRepository = logRepository;
         }
 
         public void AddSubmission()
@@ -83,7 +86,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _studentView.DisplayError(ex.Message);
                 }
@@ -135,7 +138,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _studentView.DisplayError(ex.Message);
                 }

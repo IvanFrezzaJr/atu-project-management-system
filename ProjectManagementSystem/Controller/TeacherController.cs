@@ -13,16 +13,19 @@ namespace ProjectManagementSystem.Controllers
         private readonly TeacherView _teacherView;
         private readonly RoleRepository _roleRepository;
         private readonly ClassroomRepository _classroomRepository;
+        private readonly LogRepository _logRepository;
 
-        public TeacherController(TeacherView teacherView, RoleRepository roleRepository, ClassroomRepository classroomRepository)
+        public TeacherController(TeacherView teacherView, RoleRepository roleRepository, ClassroomRepository classroomRepository, LogRepository logRepository)
         {
             _teacherView = teacherView;
             _roleRepository = roleRepository;
             _classroomRepository = classroomRepository;
+            _logRepository = logRepository;
 
             // add logger
-            Logger logger = new Logger();
+            Logger logger = new Logger(_logRepository);
             AddSubscriber(logger);
+            _logRepository = logRepository;
         }
 
         public void MarkStudentAttendance()
@@ -99,7 +102,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _teacherView.DisplayError(ex.Message);
                 }
@@ -167,7 +170,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _teacherView.DisplayError(ex.Message);
                 }
@@ -213,7 +216,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _teacherView.DisplayError(ex.Message);
                 }
@@ -304,7 +307,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _teacherView.DisplayError(ex.Message);
                 }

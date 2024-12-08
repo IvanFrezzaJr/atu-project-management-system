@@ -24,7 +24,7 @@ namespace ProjectManagementSystem.Controller
                     Role = this.GetType().Name,
                     Action = MethodBase.GetCurrentMethod().Name,
                     Message = trueMessage
-                }, false);
+                });
                 if (successCallback != null)
                 {
                     successCallback(trueMessage);
@@ -37,7 +37,7 @@ namespace ProjectManagementSystem.Controller
                     Role = this.GetType().Name,
                     Action = MethodBase.GetCurrentMethod().Name,
                     Message = falseMessage
-                }, false);
+                });
                 throw new ApplicationException(falseMessage);
             }
         }
@@ -51,7 +51,7 @@ namespace ProjectManagementSystem.Controller
                     Role = this.GetType().Name,
                     Action = MethodBase.GetCurrentMethod().Name,
                     Message = "Classroom already exists"
-                }, false);
+                });
                 throw new ApplicationException(message);
             }
         }

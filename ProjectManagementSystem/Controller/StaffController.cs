@@ -17,19 +17,19 @@ namespace ProjectManagementSystem.Controllers
         private readonly StaffView _staffView;
         private readonly RoleRepository _roleRepository;
         private readonly ClassroomRepository _classroomRepository;
+        private readonly LogRepository _logRepository;
 
-        public string UserName { get; set; }
-        public bool IsAutheticated { get; set; }
-
-        public StaffController(StaffView staffView, RoleRepository roleRepository, ClassroomRepository classroomRepository)
+        public StaffController(StaffView staffView, RoleRepository roleRepository, ClassroomRepository classroomRepository, LogRepository logRepository)
         {
             _staffView = staffView;
             _roleRepository = roleRepository;
             _classroomRepository = classroomRepository;
+            _logRepository = logRepository;
 
             // add logger
-            Logger logger = new Logger();
+            Logger logger = new Logger(_logRepository);
             AddSubscriber(logger);
+            _logRepository = logRepository;
         }
 
         private void ValidateClassroomExists(string userName)
@@ -66,7 +66,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = $"{Session.LoggedUser.UserName} inserted the {classroomInstance.Name} classroom successful."
-                    }, false);
+                    });
                     break;
                 }
 
@@ -160,7 +160,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _staffView.DisplayError(ex.Message);
                 }
@@ -243,7 +243,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
                     _staffView.DisplayError(ex.Message);
                 }

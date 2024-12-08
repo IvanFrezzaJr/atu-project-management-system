@@ -12,18 +12,17 @@ namespace ProjectManagementSystem.Controllers
         private readonly PrincipalView _principalView;
         private readonly RoleRepository _roleRepository;
         private readonly ClassroomRepository _classroomRepository;
+        private readonly LogRepository _logRepository;
 
-        public string UserName { get; set; }
-        public bool IsAutheticated { get; set; }
-
-        public PrincipalController(PrincipalView principalView, RoleRepository roleRepository, ClassroomRepository classroomRepository)
+        public PrincipalController(PrincipalView principalView, RoleRepository roleRepository, ClassroomRepository classroomRepository, LogRepository logRepository)
         {
             _principalView = principalView;
             _roleRepository = roleRepository;
             _classroomRepository = classroomRepository;
+            _logRepository = logRepository;
 
             // add logger
-            Logger logger = new Logger();
+            Logger logger = new Logger(_logRepository);
             AddSubscriber(logger);
         }
 
@@ -94,9 +93,9 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError($"[ERROR] {ex.Message}");
+                    _principalView.DisplayError(ex.Message);
                 }
 
                 continue;
@@ -138,9 +137,9 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError($"[ERROR] {ex.Message}");
+                    _principalView.DisplayError(ex.Message);
                 }
                 continue;
             }
@@ -183,9 +182,9 @@ namespace ProjectManagementSystem.Controllers
                         Role = this.GetType().Name,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, true);
+                    });
                     // Mostra o erro e solicita novamente
-                    _principalView.DisplayError($"[ERROR] {ex.Message}");
+                    _principalView.DisplayError(ex.Message);
                 }
                 continue;
             }

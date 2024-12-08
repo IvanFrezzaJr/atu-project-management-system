@@ -23,23 +23,6 @@ namespace ProjectManagementSystem.Views
             Console.WriteLine(new string('=', MaxWidth));
         }
 
-        //public string? Input(string text, string errorMessage)
-        //{
-        //    Console.Write($"{text}: ");
-        //    string name = Console.ReadLine();
-        //    if (name == "0")
-        //    {
-        //        return "0";
-        //    }
-
-        //    if (name == "" || name == null)
-        //    {
-        //        Console.WriteLine($"\n{errorMessage}\n");
-        //        return null;
-        //    }
-
-        //    return name;
-        //}
 
         public bool CheckExit(string input)
         {
@@ -72,14 +55,14 @@ namespace ProjectManagementSystem.Views
         public void DisplayError(string errorMessage)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(errorMessage);
+            Console.WriteLine($"[ERROR] {errorMessage}");
             Console.ResetColor();
         }
 
         public void DisplaySuccess(string successMessage)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(successMessage);
+            Console.WriteLine($"[SUCCESS] {successMessage}");
             Console.ResetColor();
         }
 

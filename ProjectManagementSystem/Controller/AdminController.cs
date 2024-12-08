@@ -22,7 +22,7 @@ namespace ProjectManagementSystem.Controllers
             _logRepository = logRepository;
 
             // add logger
-            Logger logger = new Logger();
+            Logger logger = new Logger(_logRepository);
             AddSubscriber(logger);
         }
 
@@ -97,7 +97,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = $"{Session.LoggedUser.UserName} inserted the {roleInstance.UserName} user successful."
-                    }, false);
+                    });
                     // Mostra o erro e solicita novamente
                     break;
                 }
@@ -113,7 +113,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, false);
+                    });
                     // Mostra o erro e solicita novamente
                     _adminView.DisplayError(ex.Message);
                 }
@@ -149,7 +149,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = $"{Session.LoggedUser.UserName} updated the {userName} password successful."
-                    }, false);
+                    });
 
                     break;
 
@@ -166,7 +166,7 @@ namespace ProjectManagementSystem.Controllers
                         Role = Session.LoggedUser.UserName,
                         Action = MethodBase.GetCurrentMethod().Name,
                         Message = ex.Message
-                    }, false);
+                    });
                     // Mostra o erro e solicita novamente
                     _adminView.DisplayError(ex.Message);
                 }
