@@ -57,7 +57,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // insert classroom
                     this._classroomRepository.InsertClassroom(classroomInstance);
-                    _staffView.DisplayTitle($"Classroom added successfully");
+                    _staffView.DisplaySuccess($"Classroom added successfully\n");
                     _staffView.DisplayClassroomInfo(classroomInstance);
 
                     // Notify observers that the classroom already exists.
@@ -135,7 +135,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
-                    _staffView.DisplayTitle($"Enrollment added successful");
+                    _staffView.DisplaySuccess($"Enrollment added successful\n");
                     _staffView.DisplayEnrollmentInfo(roleResult, classroomResult);
 
                     // Notify observers that the classroom already exists.
@@ -216,7 +216,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // Mark attendance
                     _classroomRepository.AddAttendance(enrollmentResult.Id, DateTime.Now, true);
-                    _staffView.DisplayTitle($"Mark student attendance successful");
+                    _staffView.DisplaySuccess($"Mark student attendance successful\n");
 
                     List<Attendance> attendances = _classroomRepository.GetAttendances(enrollmentResult.Id);
                     _staffView.DisplayAttendanceInfo(attendances, classroomResult, roleResult);

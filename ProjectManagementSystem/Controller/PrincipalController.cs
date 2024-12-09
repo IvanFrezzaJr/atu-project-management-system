@@ -68,7 +68,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add role to classroom
                     this._classroomRepository.AddEnrollment(classroomResult.Id, roleResult.Id, roleResult.RoleType);
-                    _principalView.DisplayTitle($"Enrollment added successful");
+                    _principalView.DisplaySuccess($"Enrollment added successful\n");
                     _principalView.DisplayEnrollmentInfo(roleResult, classroomResult);
 
                     // Notify observers that the classroom already exists.
@@ -122,8 +122,7 @@ namespace ProjectManagementSystem.Controllers
                     // toggle role 
                     bool active = (role.Active) ? false : true;
                     bool status = this._roleRepository.ActivateRole(userName, active);
-                    _principalView.DisplayMessage($"User {role.UserName}: set activate {active}");
-                    
+                    _principalView.DisplaySuccess($"User {role.UserName}: set activate {active}\n");  
                     break;
                 }
                 catch (Exception ex) when (
@@ -165,7 +164,7 @@ namespace ProjectManagementSystem.Controllers
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);  // TODO: move Classroom to Classroom
                     ValidateObjectInstance(classroomResult, "Classroom not found");
 
-                    _principalView.DisplayMessage($"\nSubmissions for Classroom: {classroomName}\n");
+                    _principalView.DisplaySuccess($"Submissions for Classroom: {classroomName}\n");
 
                     List<dynamic> studentSubmissions = this._roleRepository.GetStudentSubmissions(classroomName);
                     _principalView.ShowSubmissionsResult(studentSubmissions);

@@ -90,7 +90,7 @@ namespace ProjectManagementSystem.Controllers
                     // persist role into the database
                     this._roleRepository.AddRole(roleInstance);
 
-                    _adminView.DisplayTitle($"Registration Successful!");
+                    _adminView.DisplaySuccess($"Registration Successful!\n");
                     _adminView.DisplayUserInfo(roleInstance);
                     this.NotifyObservers(new Alert
                     {
@@ -141,7 +141,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // reset password
                     this._roleRepository.UpdateRolePassword(userName, password);
-                    _adminView.DisplayTitle($"Password was reseted successful!");
+                    _adminView.DisplaySuccess($"Password was reseted successful!\n");
 
                     // Notify observers that the classroom already exists.
                     this.NotifyObservers(new Alert

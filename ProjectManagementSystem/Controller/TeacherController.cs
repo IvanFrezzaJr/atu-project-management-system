@@ -75,7 +75,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // Mark attendance
                     _classroomRepository.AddAttendance(enrollmentResult.Id, DateTime.Now, true);
-                    _teacherView.DisplayTitle($"Mark student attendance successful");
+                    _teacherView.DisplaySuccess($"Mark student attendance successful\n");
 
                     List<Attendance> attendances = _classroomRepository.GetAttendances(enrollmentResult.Id);
                     _teacherView.DisplayAttendanceInfo(attendances, classroomResult, roleResult);
@@ -144,7 +144,7 @@ namespace ProjectManagementSystem.Controllers
 
                     // add assignment
                     this._classroomRepository.AddAssessment(classroomInstance.Id, Session.LoggedUser.Id, description, maxScore);
-                    _teacherView.DisplayMessage($"\nAssessment '{description}' added with successful\n");
+                    _teacherView.DisplaySuccess($"Assessment '{description}' added with successful\n");
 
 
                     // Notify observers that the classroom already exists.
@@ -199,7 +199,7 @@ namespace ProjectManagementSystem.Controllers
                     Classroom classroomResult = this._classroomRepository.GetClassroomByName(classroomName);
                     ValidateObjectInstance(classroomResult, "Classroom not found");
 
-                    _teacherView.DisplayMessage($"\nSubmissions for Classroom: {classroomName}\n");
+                    _teacherView.DisplaySuccess($"Submissions for Classroom: {classroomName}\n");
 
                     List<dynamic> studentSubmissions = this._roleRepository.GetStudentSubmissions(classroomName);
                     _teacherView.ShowSubmissionsResult(studentSubmissions);
@@ -277,7 +277,7 @@ namespace ProjectManagementSystem.Controllers
                     ValidateObjectInstance(enrollmentInstance, "Enrollment not found");
 
 
-                    Submission submissionResult = this._classroomRepository.GetSubmissionById(enrollmentInstance.Id);
+                    Submission submissionResult = this._classroomRepository.GetSubmissionById(assessmentInstance.Id);
                     ValidateObjectInstance(submissionResult, "Student submission not found");
 
 
@@ -287,11 +287,11 @@ namespace ProjectManagementSystem.Controllers
 
                     if (score > assessmentInstance.MaxScore)
                     {
-                        this._teacherView.DisplayMessage($"Score should be less than '{assessmentInstance.MaxScore}'");
+                        this._teacherView.DisplayError($"Score should be less than '{assessmentInstance.MaxScore}'");
                         break;
                     }
                     this._classroomRepository.UpdateScore(assessmentInstance.Id, roleResult.Id, score);
-                    this._teacherView.DisplayMessage($"\nUpdate score {score} to student {roleResult.UserName}\n");
+                    this._teacherView.DisplaySuccess($"Update score {score} to student {roleResult.UserName}\n");
                     break;
 
                 }

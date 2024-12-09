@@ -281,7 +281,7 @@ namespace ProjectManagementSystem.Database
                             {
                                 Id = reader.GetInt32(0),
                                 Description = reader.GetString(1),
-                                MaxScore = (float)reader.GetDouble(2)
+                                MaxScore = Convert.ToSingle(reader.GetDouble(2))
                             };
                         }
 
@@ -312,6 +312,8 @@ namespace ProjectManagementSystem.Database
                 FROM Submission
                 WHERE Id = @SubmissionId";
 
+
+
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@SubmissionId", submissionId);
@@ -323,10 +325,10 @@ namespace ProjectManagementSystem.Database
                             return new Submission
                             {
                                 Id = reader.GetInt32(0),
-                                AssessmentId = reader.GetInt32(0),
-                                StudentId = reader.GetInt32(0),
-                                Score = (float)reader.GetDouble(2),
-                                File = reader.GetString(1),  
+                                AssessmentId = reader.GetInt32(1),
+                                StudentId = reader.GetInt32(2),
+                                Score = (float)(reader.GetValue(3) as double? ?? 0.0),
+                                File = reader.GetString(4),  
                             };
                         }
 

@@ -216,7 +216,7 @@ namespace ProjectManagementSystem.Database
                         ELSE (
                             CASE 
                                 WHEN s.Score IS NULL THEN '-'
-                                ELSE CAST(s.Score AS TEXT)
+                                ELSE CAST('Completed' AS TEXT)
                             END
                         )
                     END AS ScoreStatus,

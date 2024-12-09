@@ -67,10 +67,10 @@ namespace ProjectManagementSystem.Controllers
                     // get filepath
                     string filePath = _studentView.GetInput("Enter the filepath to the assessment:");
                     if (filePath == "<EXIT>") break;
-                    ValidateStringInput(filePath);
+                    ValidateFilePath(filePath);
 
                     _classroomRepository.AddSubmission(assessmentInstance.Id, Session.LoggedUser.Id, filePath);
-                    _studentView.DisplaySuccess($"\nAssignment added with successful\n");
+                    _studentView.DisplaySuccess($"Assignment added with successful\n");
                     break;
                   
                 }

@@ -87,6 +87,25 @@ namespace ProjectManagementSystem.Controller
                 throw new ArgumentException("String can only contain letters, numbers and spaces.");
         }
 
+        protected void ValidateFilePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path is empty.");
+
+            if (filePath.Length > 260) // Limite comum para caminhos no Windows
+                throw new ArgumentException("File path must be less than 260 characters long.");
+
+            // Regex para validar caracteres permitidos em caminhos de arquivo
+            if (!System.Text.RegularExpressions.Regex.IsMatch(filePath, @"^[a-zA-Z0-9_\-\.\:\\\/ ]+$"))
+                throw new ArgumentException("File path contains invalid characters.");
+
+            // Verifica se o caminho contém pelo menos uma barra ou barra invertida
+            if (!filePath.Contains("\\") && !filePath.Contains("/"))
+                throw new ArgumentException("File path must contain at least one directory separator.");
+        }
+
+
+
         protected void ValidatePermission(string typeRole, List<string> allowRole)
         {
             bool exists = allowRole.Contains(typeRole);
