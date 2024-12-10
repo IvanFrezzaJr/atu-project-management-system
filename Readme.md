@@ -67,6 +67,17 @@ ProjectManagementSystem.exe
 ##### Example Usage
 When the program starts, you will be guided through interactive menus in the terminal to manage your classrooms. 
 
+#### 🏃 How to Run the Tests
+##### Run via Visual Studio
+1. Open the project in Visual Studio.
+2. Select the menu `Test -> Run all tests` or  (Ctrl + R, A).
+
+##### Run via Terminal
+```bash
+dotnet test
+````
+
+
 #### 📂 Project Structure
 
 ```
