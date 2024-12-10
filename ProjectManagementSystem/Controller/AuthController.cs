@@ -9,13 +9,15 @@ namespace ProjectManagementSystem.Controllers
         private readonly LoginView _loginView;
         private readonly AuthRepository _authRepository;
 
-        public string UserName { get; set; }
-        public bool IsAutheticated { get; set; }
+        private string _userName;
+        private bool _isAutheticated;
 
         public AuthenticationController(LoginView loginView, AuthRepository authRepository)
         {
             _loginView = loginView;
             _authRepository = authRepository;
+            _isAutheticated = false;
+            _userName = "";
         }
 
         public void AuthenticateUser()
@@ -25,17 +27,22 @@ namespace ProjectManagementSystem.Controllers
 
             while (true)
             {
+                _loginView.DisplayMessage("Press 0 + Enter to exit.");
                 _loginView.DisplayTitle("LOGIN SYSTEM");
-                UserName = _loginView.GetInput("Enter username:");
+
+                _userName = _loginView.GetInput("Enter username:");
+                CheckExit(_userName);
+
                 string password = _loginView.GetPasswordInput($"Enter password:");
+                CheckExit(password);
 
                 // Directly use the repository to validate credentials
-                IsAutheticated = _authRepository.ValidateCredentials(this.UserName, password);
+                _isAutheticated = _authRepository.ValidateCredentials(_userName, password);
 
-                _loginView.ShowAuthenticationResult(IsAutheticated);
+                _loginView.ShowAuthenticationResult(_isAutheticated);
 
 
-                if (IsAutheticated)
+                if (_isAutheticated)
                 {
                     break;
                 }
@@ -48,6 +55,24 @@ namespace ProjectManagementSystem.Controllers
                     Environment.Exit(0);
 
                 }
+            }
+        }
+
+        public string GetLoggedUserName()
+        {
+            return _userName;
+        }
+
+        public bool IsAuthenticated()
+        {
+            return _isAutheticated;
+        }
+
+        private void CheckExit(string input)
+        {
+            if (input == "<EXIT>"){
+                _loginView.DisplayTitle("\nBYE BYE!\n");
+                Environment.Exit(0);
             }
         }
     }

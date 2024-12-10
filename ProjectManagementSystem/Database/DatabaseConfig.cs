@@ -4,13 +4,19 @@ namespace ProjectManagementSystem.Database
 {
     public class DatabaseConfig
     {
-        private const string _dbFile = "database.db";
+        private readonly string _dbFile = "database.db";
 
-        private string ConnectionString = $"Data Source={_dbFile};Version=3;"; // Path to the SQLite database file
+        private readonly string _connectionString;
+
+        public DatabaseConfig(string dbFile = "database.db") { 
+             _dbFile = dbFile;
+             _connectionString = $"Data Source={_dbFile};Version=3;"; // Path to the SQLite database file
+        }
+        
 
         public SQLiteConnection CreateConnection()
         {
-            return new SQLiteConnection(ConnectionString);
+            return new SQLiteConnection(_connectionString);
         }
 
         // Method to create the database and the user table

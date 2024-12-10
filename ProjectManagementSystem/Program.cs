@@ -33,32 +33,35 @@ internal class Program
     /// <param name="args">Command line arguments (not used in this program).</param>
     static void Main(string[] args)
     {
-        // Initialize the necessary layers
-        var config = new DatabaseConfig();
-        config.CreateDatabase();
+        while (true)
+        {
+            // Initialize the necessary layers
+            var config = new DatabaseConfig();
+            config.CreateDatabase();
 
-        var userView = new LoginView();
-        var authRepository = new AuthRepository(config);
-        var authenticationController = new AuthenticationController(userView, authRepository);
+            var userView = new LoginView();
+            var authRepository = new AuthRepository(config);
+            var authenticationController = new AuthenticationController(userView, authRepository);
 
-        // Start the authentication process
-        authenticationController.AuthenticateUser();
+            // Start the authentication process
+            authenticationController.AuthenticateUser();
 
-        // Retrieve the role details of the authenticated user from the database.
-        var roleRepository = new RoleRepository(config);
-        Role userRole = roleRepository.GetRoleByUserName(authenticationController.UserName);
+            // Retrieve the role details of the authenticated user from the database.
+            var roleRepository = new RoleRepository(config);
+            Role userRole = roleRepository.GetRoleByUserName(authenticationController.GetLoggedUserName());
 
-        // set session
-        Session.LoggedUser = userRole;
+            // set session
+            Session.LoggedUser = userRole;
 
-        // Create a menu factory to generate the appropriate menu for the user's role.
-        MenuFactory menuFactory = new MenuFactory(userRole);
+            // Create a menu factory to generate the appropriate menu for the user's role.
+            MenuFactory menuFactory = new MenuFactory(userRole);
 
-        // Build the menu based on the user's role.
-        MenuBuilder menu = menuFactory.Build();
+            // Build the menu based on the user's role.
+            MenuBuilder menu = menuFactory.Build();
 
-        // Display the generated menu to the user.
-        menu.Show();
+            // Display the generated menu to the user.
+            menu.Show();
+        }
 
     }
 }
