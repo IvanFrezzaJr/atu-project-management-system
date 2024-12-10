@@ -38,28 +38,7 @@ namespace ProjectManagementSystem.Controllers
             this._adminView.ShowLogs(allLogs);
         }
 
-        public void CreatePrincipal()
-        {
-            CreateRole("principal");
-        }
-
-        public void CreateStaff()
-        {
-            CreateRole("staff");
-        }
-
-        public void CreateTeacher()
-        {
-            CreateRole("teacher");
-        }
-
-
-        public void CreateStudent()
-        {
-            CreateRole("student");
-        }
-
-        private void CreateRole(string typeRole)
+        public void CreateRole(string typeRole)
         {
             while (true)
             {
@@ -79,13 +58,9 @@ namespace ProjectManagementSystem.Controllers
                     if (password == "<EXIT>") break;
                     ValidateStringInput(password);
 
-                    // insert Role in the database
-                    Role roleInstance = new Role(
-                        userName,
-                        password,
-                        true,
-                        typeRole
-                    );
+                    // Retrieve the factory function and use it to create the Role instance later
+                    var roleFactory = GetRoleFactory(typeRole);
+                    Role roleInstance = roleFactory(userName, password);
 
                     // persist role into the database
                     this._roleRepository.AddRole(roleInstance);
@@ -174,6 +149,21 @@ namespace ProjectManagementSystem.Controllers
                 continue;
             }
         }
+
+        private Func<string, string, Role> GetRoleFactory(string typeRole)
+        {
+            return typeRole switch
+            {
+                "student" => (userName, password) => new Student(userName, password),
+                "teacher" => (userName, password) => new Teacher(userName, password),
+                "staff" => (userName, password) => new Staff(userName, password),
+                "principal" => (userName, password) => new Principal(userName, password),
+                "admin" => (userName, password) => new Admin(userName, password),
+                _ => throw new ArgumentException($"Unknown role type: {typeRole}")
+            };
+        }
+
+
 
         private void ValidateRoleExists(string userName)
         {

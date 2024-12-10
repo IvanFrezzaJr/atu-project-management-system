@@ -18,7 +18,7 @@ namespace ProjectManagementSystem.Core
         {
             base.Execute();
 
-            AdminController.CreatePrincipal();
+            AdminController.CreateRole("principal");
         }
     }
 
@@ -37,7 +37,7 @@ namespace ProjectManagementSystem.Core
         {
             base.Execute();
 
-            AdminController.CreateStaff();
+            AdminController.CreateRole("staff");
         }
     }
 
@@ -56,7 +56,7 @@ namespace ProjectManagementSystem.Core
         {
             base.Execute();
 
-            AdminController.CreateTeacher();
+            AdminController.CreateRole("teacher");
         }
     }
 
@@ -75,7 +75,7 @@ namespace ProjectManagementSystem.Core
         {
             base.Execute();
 
-            AdminController.CreateStudent();
+            AdminController.CreateRole("student");
 
         }
     }

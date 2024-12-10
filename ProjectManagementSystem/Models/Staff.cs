@@ -1,5 +1,3 @@
-using ProjectManagementSystem._to_be_deleted;
-
 namespace ProjectManagementSystem.Models
 {
     /// <summary>
@@ -7,14 +5,12 @@ namespace ProjectManagementSystem.Models
     /// </summary>
     public class Staff : Role
     {
-        // Instance of the database to handle data operations.
-        private Database_ database = new Database_();
 
         public Staff(int id, string userName, string password, bool active, string roleType) : base(id, userName, password, active, roleType) { }
 
         // Overload: Construtor with Id default value
-        public Staff(string userName, string password, bool active, string roleType)
-            : this(0, userName, password, active, "staff")
+        public Staff(string userName, string password)
+            : this(0, userName, password, true, "staff")
         {
         }
     }

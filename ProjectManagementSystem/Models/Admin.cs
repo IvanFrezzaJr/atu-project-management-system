@@ -10,8 +10,8 @@ namespace ProjectManagementSystem.Models
 
 
         // Overload: Construtor with Id default value
-        public Admin(string userName, string password, bool active, string roleType)
-            : this(0, userName, password, active, "admin") 
+        public Admin(string userName, string password)
+            : this(0, userName, password, true, "admin") 
         {
         }
     }
