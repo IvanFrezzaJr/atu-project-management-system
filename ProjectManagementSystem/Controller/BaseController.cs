@@ -7,55 +7,6 @@ namespace ProjectManagementSystem.Controller
 {
     public class BaseController: Publisher
     {
-        public static string CapitalizeFirstLetter(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-
-            return char.ToUpper(input[0]) + input.Substring(1);
-        }
-
-        protected void ValidateCondition(bool condition, string trueMessage, string falseMessage, Action<string> successCallback = null)
-        {
-            if (condition)
-            {
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = trueMessage
-                });
-                if (successCallback != null)
-                {
-                    successCallback(trueMessage);
-                }
-            }
-            else
-            {
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = falseMessage
-                });
-                throw new ApplicationException(falseMessage);
-            }
-        }
-
-        protected void ValidateCondition(bool condition, string message)
-        {
-            if (condition == true)
-            {
-                this.NotifyObservers(new Alert
-                {
-                    Role = this.GetType().Name,
-                    Action = MethodBase.GetCurrentMethod().Name,
-                    Message = "Classroom already exists"
-                });
-                throw new ApplicationException(message);
-            }
-        }
-   
         protected void ValidateObjectInstance(object obj, string message = null, Action<string> successCallback = null)
         {
             if (obj == null)
@@ -103,8 +54,6 @@ namespace ProjectManagementSystem.Controller
             if (!filePath.Contains("\\") && !filePath.Contains("/"))
                 throw new ArgumentException("File path must contain at least one directory separator.");
         }
-
-
 
         protected void ValidatePermission(string typeRole, List<string> allowRole)
         {
