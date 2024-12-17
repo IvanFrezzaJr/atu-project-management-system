@@ -318,7 +318,7 @@ namespace ProjectManagementSystem.Core
                 var logRepository = new LogRepository(config);
                 var adminController = new AdminController(adminInterface, roleRepository, logRepository);
 
-                MenuAdminBuilder menuAdmin = new MenuAdminBuilder(adminController);
+                MenuBuilder menuAdmin = new MenuAdminBuilder(adminController);
                 menuAdmin.Build();
                 return menuAdmin;
             }
@@ -330,7 +330,7 @@ namespace ProjectManagementSystem.Core
                 var logRepository = new LogRepository(config);
                 var principalController = new PrincipalController(principalView, roleRepository, classroomRepository, logRepository);
 
-                MenuPrincipalBuilder menuPrincipal = new MenuPrincipalBuilder(principalController);
+                MenuBuilder menuPrincipal = new MenuPrincipalBuilder(principalController);
                 menuPrincipal.Build();
                 return menuPrincipal;
 
@@ -343,7 +343,7 @@ namespace ProjectManagementSystem.Core
                 var logRepository = new LogRepository(config);
                 var staffController = new StaffController(staffView, roleRepository, classroomRepository, logRepository);
 
-                MenuStaffBuilder menuStaff = new MenuStaffBuilder(staffController);
+                MenuBuilder menuStaff = new MenuStaffBuilder(staffController);
                 menuStaff.Build();
                 return menuStaff;
             }
@@ -355,7 +355,7 @@ namespace ProjectManagementSystem.Core
                 var logRepository = new LogRepository(config);
                 var teacherController = new TeacherController(teacherView, roleRepository, classroomRepository, logRepository);
 
-                MenuTeacherBuilder menuTeacher = new MenuTeacherBuilder(teacherController);
+                MenuBuilder menuTeacher = new MenuTeacherBuilder(teacherController);
                 menuTeacher.Build();
                 return menuTeacher;
             }
@@ -367,7 +367,7 @@ namespace ProjectManagementSystem.Core
                 var logRepository = new LogRepository(config);
                 var studentController = new StudentController(studentView, roleRepository, classroomRepository, logRepository);
 
-                MenuStudentBuilder menuStudent = new MenuStudentBuilder(studentController);
+                MenuBuilder menuStudent = new MenuStudentBuilder(studentController);
                 menuStudent.Build();
                 return menuStudent;
             }

@@ -83,13 +83,13 @@ dotnet test
 ```
 ProjectManagementSystem/
 ├── Program.cs		# Entry point of the application
-├── Menu.cs			# Menu manager
-├── Database.cs		# Database queries
-├── Auth.cs			# Authentication logic
 ├── Schema.cs		# Schemas to convert data
-├── Domains/		# Data models (Students, Teachers, etc.)
+├── Helpers.cs		# helpers (ReadPassword)
+├── Database/		# Database queries
+├── Models/			# Data models (Students, Teachers, etc.)
 ├── Controller/		# Business logic and database access
-├── Interfaces/	  	# Common classes interfaces
+├── Views/			# View logic
+├── Core/		  	# System common classes (Interfaces, Menus, Subscribers)
 
 ```
 
